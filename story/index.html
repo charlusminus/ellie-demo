@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="description" content="Ellie in eight scenes: your team, looked after the way your team looks after your guests.">
+<title>Ellie Design Partner Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600&display=swap">
+<style>
+/* Layout: a story rail (chapters) beside a live Ellie screen; one chapter at a time, stacked on phones. */
+:root {
+  --ink: #0b1426;          /* Ellie night navy, page ground */
+  --panel: #12203a;        /* raised surfaces */
+  --panel-2: #172a4a;      /* inputs, rows */
+  --line: #24365a;         /* hairlines */
+  --text: #ece7dc;         /* warm ivory text */
+  --muted: #a6adbd;        /* secondary text */
+  --gold: #d3b77c;         /* Ellie gold, accents and primary action */
+  --gold-ink: #1a1408;     /* text on gold */
+  --ok: #7cc39a;
+  --warn: #e3b25c;
+  --crit: #e07a6e;
+  --soon: #9fb3e6;         /* "in co-design" marker */
+  --display: "Cormorant Garamond", "Cormorant", Georgia, "Times New Roman", serif;
+  --body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --r: 10px;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { background: var(--ink); color: var(--text); }
+body {
+  font-family: var(--body); font-size: 15px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 20px 40px;
+}
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 20px; }
+
+/* Header */
+.top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 20px; }
+.brand { font-family: var(--display); font-size: 30px; letter-spacing: .32em; font-weight: 600; }
+.tag { font-family: var(--display); font-style: italic; color: var(--gold); font-size: 19px; }
+.note { color: var(--muted); font-size: 12.5px; }
+
+/* Chapter rail */
+.rail { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: thin; }
+.rail button {
+  flex: 0 0 auto; display: flex; align-items: center; gap: 8px;
+  background: transparent; border: 1px solid var(--line); border-radius: 999px;
+  padding: 7px 13px; color: var(--muted); font-size: 13px; white-space: nowrap;
+}
+.rail button .n { font-variant-numeric: tabular-nums; color: var(--gold); }
+.rail button[aria-current="step"] { background: var(--panel-2); color: var(--text); border-color: var(--gold); }
+.rail .soonDot { width: 6px; height: 6px; border-radius: 50%; background: var(--soon); }
+
+/* Stage */
+.stage { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 20px; align-items: start; }
+@media (max-width: 900px) { .stage { grid-template-columns: 1fr; } }
+.story { display: grid; gap: 14px; min-width: 0; }
+.kicker { text-transform: uppercase; letter-spacing: .14em; font-size: 11.5px; color: var(--gold); display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.badge { border: 1px solid currentColor; border-radius: 999px; padding: 2px 8px; font-size: 10.5px; letter-spacing: .08em; }
+.badge.today { color: var(--ok); }
+.badge.soon { color: var(--soon); }
+h1, h2 { font-family: var(--display); font-weight: 600; margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(32px, 4.6vw, 48px); line-height: 1.05; }
+h2 { font-size: clamp(26px, 3.4vw, 36px); line-height: 1.1; }
+.lede { color: var(--muted); max-width: 58ch; margin: 0; }
+.why { border-left: 2px solid var(--gold); padding: 4px 0 4px 14px; max-width: 58ch; }
+.why b { color: var(--gold); font-weight: 600; }
+.steps { margin: 0; padding-left: 20px; color: var(--muted); display: grid; gap: 4px; }
+.nav { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn { border-radius: 8px; padding: 10px 16px; border: 1px solid var(--line); background: transparent; }
+.btn.primary { background: var(--gold); color: var(--gold-ink); border-color: var(--gold); font-weight: 600; }
+.btn.small { padding: 6px 11px; font-size: 13px; }
+.btn[disabled] { opacity: .45; cursor: default; }
+
+/* Ellie screen mock */
+.screen { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; min-width: 0; }
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+.bar .ev { font-family: var(--display); font-size: 19px; }
+.bar .ev i { color: var(--gold); }
+.live { font-size: 11px; letter-spacing: .1em; color: var(--ok); border: 1px solid var(--ok); border-radius: 999px; padding: 2px 8px; }
+.body { padding: 16px; display: grid; gap: 12px; min-height: 380px; align-content: start; }
+.row { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; flex-wrap: wrap; }
+.row .l { display: grid; gap: 2px; min-width: 0; }
+.row .t { font-weight: 500; }
+.row .s { color: var(--muted); font-size: 12.5px; }
+.code { font-variant-numeric: tabular-nums; letter-spacing: .02em; color: var(--gold); font-weight: 600; }
+.pill { font-size: 11px; border-radius: 999px; padding: 3px 9px; border: 1px solid var(--line); white-space: nowrap; }
+.pill.ok { color: var(--ok); border-color: var(--ok); }
+.pill.warn { color: var(--warn); border-color: var(--warn); }
+.pill.crit { color: var(--crit); border-color: var(--crit); }
+.pill.soon { color: var(--soon); border-color: var(--soon); }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip { border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; font-size: 13px; background: transparent; }
+.chip[aria-pressed="true"] { border-color: var(--gold); background: rgba(211,183,124,.12); }
+.chip .c { color: var(--gold); font-variant-numeric: tabular-nums; margin-left: 6px; }
+.days { display: flex; gap: 6px; overflow-x: auto; }
+.day { flex: 0 0 auto; border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; font-size: 12.5px; background: transparent; position: relative; }
+.day[aria-pressed="true"] { border-color: var(--gold); }
+.day .dot { position: absolute; top: 4px; right: 4px; width: 6px; height: 6px; border-radius: 50%; background: var(--crit); }
+.label { text-transform: uppercase; letter-spacing: .12em; font-size: 10.5px; color: var(--muted); }
+.file { display: flex; align-items: center; gap: 12px; border: 1px dashed var(--gold); border-radius: 10px; padding: 14px; }
+.file .ico { width: 34px; height: 40px; border-radius: 4px; background: #1f6f43; display: grid; place-items: center; font-size: 11px; font-weight: 700; color: #e9f5ee; flex: 0 0 auto; }
+.log { display: grid; gap: 6px; }
+.log div { display: flex; gap: 8px; align-items: baseline; font-size: 13.5px; }
+.log .k { color: var(--ok); }
+.tbl-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th { color: var(--muted); font-weight: 500; font-size: 11.5px; text-transform: uppercase; letter-spacing: .08em; }
+td.num, th.num { text-align: right; }
+.timeIn { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.timeIn input { background: var(--panel-2); border: 1px solid var(--line); color: var(--text); border-radius: 8px; padding: 8px 10px; width: 92px; font-variant-numeric: tabular-nums; }
+.phone { width: min(300px, 100%); margin: 0 auto; border: 1px solid var(--line); border-radius: 26px; padding: 14px; background: var(--ink); display: grid; gap: 10px; }
+.bubble { background: var(--panel-2); border-radius: 12px; padding: 10px 12px; font-size: 13.5px; border: 1px solid var(--line); }
+.bubble.me { background: rgba(211,183,124,.14); border-color: var(--gold); justify-self: end; }
+.bubble .who { font-size: 11px; color: var(--muted); display: block; margin-bottom: 2px; }
+.meter { height: 8px; border-radius: 999px; background: var(--panel-2); border: 1px solid var(--line); overflow: hidden; }
+.meter i { display: block; height: 100%; width: 0; background: var(--ok); transition: width .5s ease; }
+.banner { border: 1px solid var(--warn); color: var(--warn); border-radius: 8px; padding: 10px 12px; font-size: 13.5px; }
+.banner.okb { border-color: var(--ok); color: var(--ok); }
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 560px) { .grid2 { grid-template-columns: 1fr; } }
+.card { background: var(--panel-2); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: grid; gap: 8px; align-content: start; }
+.card h3 { margin: 0; font-family: var(--display); font-size: 21px; font-weight: 600; }
+.card ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; color: var(--muted); }
+.bars { display: grid; gap: 8px; }
+.barline { display: grid; grid-template-columns: 110px minmax(0,1fr) 72px; gap: 10px; align-items: center; font-size: 13px; font-variant-numeric: tabular-nums; }
+.barline .track { height: 10px; background: var(--panel); border-radius: 4px; overflow: hidden; border: 1px solid var(--line); }
+.barline .fill { height: 100%; background: var(--gold); }
+.barline .v { text-align: right; color: var(--muted); }
+.foot { color: var(--muted); font-size: 12px; text-align: center; }
+.fade { animation: fade .35s ease both; }
+@keyframes fade { from { opacity: .35; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .fade { animation: none; } .meter i { transition: none; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <div><span class="brand">ELLIE</span> <span class="tag">Your team, looked after like your guests.</span></div>
+    <span class="note">Guided demo · fictional data · <span style="color:var(--ok)">Today</span> = in the product · <span style="color:var(--soon)">In co-design</span> = to build with you</span>
+  </header>
+
+  <nav class="rail" id="rail" aria-label="Demo chapters"></nav>
+
+  <main class="stage">
+    <section class="story" id="story" aria-live="polite"></section>
+    <section class="screen" aria-label="Ellie screen">
+      <div class="bar">
+        <span class="ev">Maison Aurore · <i>Private Viewing Bangkok</i></span>
+        <span class="live">LIVE · DAY 1 OF 4</span>
+      </div>
+      <div class="body" id="screen"></div>
+    </section>
+  </main>
+
+  <p class="foot">All guests, codes, hotels and costs on this page are fictional. Features marked "In co-design" are proposals to shape with the agency, not promises of a date.</p>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var $ = function (sel, el) { return (el || document).querySelector(sel); };
+  var h = function (html) { var t = document.createElement("template"); t.innerHTML = html.trim(); return t.content; };
+  var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); };
+
+  // ---------------------------------------------------------------- data
+  var GUESTS = [
+    { code: "TH-0001", party: "TH01", tier: "VVIP", land: "14:20 TG 102", hotel: "Riverside Suites", diet: "No shellfish (allergy)", crit: true },
+    { code: "TH-0002", party: "TH01", tier: "VVIP", land: "14:20 TG 102", hotel: "Riverside Suites", diet: "" },
+    { code: "HK-0001", party: "HK01", tier: "VVIP", land: "15:40 CX 705", hotel: "Lumière Bangkok", diet: "No shellfish" },
+    { code: "HK-0002", party: "HK01", tier: "VVIP", land: "15:40 CX 705", hotel: "Lumière Bangkok", diet: "" },
+    { code: "SG-0001", party: "SG01", tier: "VIP", land: "09:10 SQ 708", hotel: "Lumière Bangkok", diet: "Vegetarian" },
+    { code: "CN-0004", party: "CN01", tier: "VIP", land: "09:05 CA 959", hotel: "Riverside Suites", diet: "Halal" },
+    { code: "AE-0001", party: "AE01", tier: "VVIP", land: "19:35 EK 372", hotel: "Riverside Suites", diet: "No pork, no alcohol" },
+    { code: "ES-0001", party: "ES01", tier: "Premium", land: "08:00 QR 836", hotel: "Lumière Bangkok", diet: "" }
+  ];
+  var CARS = [
+    { code: "S-01", cat: "S-Class", seats: 3, free: ["08:00-12:00", "16:30-23:00"] },
+    { code: "S-02", cat: "S-Class", seats: 3, free: ["13:00-21:00"] },
+    { code: "V-01", cat: "V-Class", seats: 6, free: ["06:00-14:00", "18:00-01:00"] },
+    { code: "V-02", cat: "V-Class", seats: 6, free: ["15:00-23:30"] },
+    { code: "E-01", cat: "E-Class", seats: 3, free: ["10:00-18:00"] }
+  ];
+  var toMin = function (hhmm) { var p = hhmm.split(":"); return (+p[0]) * 60 + (+p[1]); };
+  var freeAt = function (car, t) {
+    var m = toMin(t);
+    return car.free.some(function (w) {
+      var a = toMin(w.split("-")[0]), b = toMin(w.split("-")[1]);
+      if (b <= a) b += 24 * 60;
+      return (m >= a && m < b) || (m + 1440 >= a && m + 1440 < b);
+    });
+  };
+
+  // ---------------------------------------------------------------- chapters
+  var state = {};
+  var CHAPTERS = [
+    {
+      id: "welcome", rail: "The week", status: null,
+      story: function () { return '' +
+        '<div class="kicker">A maison event, seen from the agency</div>' +
+        '<h1>Ellie looks after your team, so your team can look after your guests.</h1>' +
+        '<p class="lede">A VIP feels exceptional because someone anticipated everything: the car already there, the allergy already known, the room already set. That someone is your team, carrying thirty guests, four days and forty WhatsApp groups in their heads.</p>' +
+        '<div class="why"><b>Our idea.</b> Give the people who serve the same care they give the guests: warned before, told what matters to them, never alone with a problem, thanked at the end of the day.</div>' +
+        '<p class="lede">This demo follows your team through one private viewing in Bangkok, in eight short scenes. Tap "Start" or pick a scene above.</p>'; },
+      screen: function () { return '' +
+        '<div class="label">The same care, on both sides</div>' +
+        '<div class="tbl-wrap"><table><thead><tr><th>What a VIP receives</th><th>What Ellie gives your team</th></tr></thead><tbody>' +
+          [["Needs anticipated", "Warned before it goes wrong"],
+           ["Never asked twice", "Each person gets what matters to their role"],
+           ["Someone always reachable", "One number, an answer in their language"],
+           ["Never alone with a problem", "Protocols, and everyone told in a minute"],
+           ["Guided with elegance", "Onboarded by role, not by a manual"],
+           ["Heard", "A status in one tap or one sentence"],
+           ["Thanked", "A thank-you at the end of the day"]].map(function (r) { return '<tr><td>' + r[0] + '</td><td style="color:var(--gold)">' + r[1] + '</td></tr>'; }).join("") +
+        '</tbody></table></div>' +
+        '<div class="grid2">' +
+          card("This week", "30 guests", "8 markets, 11 parties, 9 VVIP, 4 days") +
+          card("Your team", "22 people", "event leads, dispatch, 14 drivers, hosts") +
+        '</div>' +
+        '<div class="banner okb">Discreet by design: the agency works with guest codes like TH-0001. Names stay with the maison.</div>'; }
+    },
+    {
+      id: "import", rail: "Import", status: "today",
+      story: function () { return '' +
+        kicker("Scene 1 · Nothing to retype", "today") +
+        '<h2>The maison\'s file goes in as it comes.</h2>' +
+        '<p class="lede">No retyping. Ellie reads the columns, finds tiers, companions, flights and allergies, and shows what it will create before writing anything.</p>' +
+        '<div class="why"><b>How Ellie looks after your team:</b> no late night copying the maison\'s file, and one guest list everyone trusts.</div>'; },
+      screen: function () {
+        var stage = state.importStage || 0;
+        var lines = [
+          ["Columns recognised", "12 of 12"],
+          ["Guests", "30 created"],
+          ["Companions linked to their party", "11 parties"],
+          ["Critical allergies flagged", "3, shown in red"],
+          ["Arrival transfers built from flights", "30"]
+        ];
+        var shown = lines.slice(0, stage === 0 ? 0 : stage === 1 ? 3 : 5);
+        return '' +
+          '<div class="file"><span class="ico">XLS</span><div class="l"><div class="t">guest_list_v3.xlsx</div><div class="s">Sent by the maison yesterday at 23:40</div></div></div>' +
+          '<div class="log">' + shown.map(function (l) { return '<div class="fade"><span class="k">✓</span><span>' + l[0] + ': <b>' + l[1] + '</b></span></div>'; }).join("") + '</div>' +
+          (stage < 2 ? '<button class="btn primary" id="importBtn">' + (stage === 0 ? "Read the file" : "Continue reading") + '</button>'
+                     : '<div class="banner okb fade">Nothing written yet. Review done: 30 creations, 0 errors. Import confirmed.</div>' + guestTable(GUESTS.slice(0, 5)));
+      },
+      wire: function () {
+        var b = $("#importBtn"); if (b) b.onclick = function () { state.importStage = (state.importStage || 0) + 1; render(); };
+      }
+    },
+    {
+      id: "tower", rail: "Control tower", status: "today",
+      story: function () { return '' +
+        kicker("Scene 2 · Warned before", "today") +
+        '<h2>The morning starts with what needs attention.</h2>' +
+        '<p class="lede">One day at a time, one lane per trade. Points of attention come first: VVIP arrivals, critical allergies, blocked steps, a transfer with no car.</p>' +
+        '<div class="why"><b>How Ellie looks after your team:</b> they hear about tonight\'s problem at 8:00, not at 22:00. Tap a point of attention to filter the board.</div>'; },
+      screen: function () {
+        var f = state.towerFilter || "all";
+        var items = [
+          { k: "vvip", code: "HK-0001", t: "Landing 15:40 CX 705 · VVIP", p: '<span class="pill warn">VVIP arrival</span>' },
+          { k: "vvip", code: "TH-0001", t: "Landing 14:20 TG 102 · VVIP", p: '<span class="pill warn">VVIP arrival</span>' },
+          { k: "diet", code: "TH-0001", t: "Dinner 20:00 · No shellfish (allergy)", p: '<span class="pill crit">Critical dietary</span>' },
+          { k: "car", code: "AE-0001", t: "Transfer 20:30 · party of 4", p: '<span class="pill crit">No car assigned</span>' },
+          { k: "ok", code: "SG-0001", t: "Check-in 11:00 · suite ready", p: '<span class="pill ok">Confirmed</span>' }
+        ];
+        var shown = items.filter(function (i) { return f === "all" || i.k === f; });
+        var chip = function (k, label, c) { return '<button class="chip" data-f="' + k + '" aria-pressed="' + (f === k) + '">' + label + '<span class="c">' + c + '</span></button>'; };
+        return '' +
+          '<div class="days">' + ["Thu 3", "Fri 4", "Sat 5", "Sun 6"].map(function (d, i) { return '<button class="day" aria-pressed="' + (i === 0) + '">Day ' + (i + 1) + ' · ' + d + (i === 2 ? '<span class="dot" aria-label="blocked step"></span>' : '') + '</button>'; }).join("") + '</div>' +
+          '<div class="label">Points of attention · Day 1</div>' +
+          '<div class="chips">' + chip("all", "All", 5) + chip("vvip", "VVIP arrivals", 2) + chip("diet", "Critical dietary", 1) + chip("car", "No car", 1) + '</div>' +
+          shown.map(function (i) { return '<div class="row fade"><div class="l"><span class="code">' + i.code + '</span><span class="s">' + esc(i.t) + '</span></div>' + i.p + '</div>'; }).join("");
+      },
+      wire: function () {
+        Array.prototype.forEach.call(document.querySelectorAll("[data-f]"), function (b) { b.onclick = function () { state.towerFilter = b.getAttribute("data-f"); render(); }; });
+      }
+    },
+    {
+      id: "fleet", rail: "Fleet", status: "today",
+      story: function () { return '' +
+        kicker("Scene 3 · An answer in a second", "today") +
+        '<h2>Who is free at 18:30?</h2>' +
+        '<p class="lede">Every car and driver with their duty hours, night shifts included. Type a time and see only the cars you can still use, then assign one from the transfer card.</p>' +
+        '<div class="why"><b>How Ellie looks after your dispatcher:</b> no round of calls to find a car, and a warning before a double booking or a car too small. Ellie warns, it never blocks.</div>'; },
+      screen: function () {
+        var t = state.fleetTime || "18:30";
+        var free = CARS.filter(function (c) { return freeAt(c, t); });
+        var assigned = state.assigned;
+        return '' +
+          '<div class="timeIn"><label for="fleetTime" class="label">Free at</label><input id="fleetTime" type="time" value="' + t + '"><span class="s note">' + free.length + ' of ' + CARS.length + ' cars</span></div>' +
+          free.map(function (c) { return '<div class="row fade"><div class="l"><span class="t">' + c.code + ' · ' + c.cat + '</span><span class="s">' + c.seats + ' seats · on duty ' + c.free.join(", ") + '</span></div><button class="btn small" data-car="' + c.code + '" data-seats="' + c.seats + '">Assign to AE01 transfer</button></div>'; }).join("") +
+          (assigned ? (assigned.seats < 4
+            ? '<div class="banner fade">Warning: ' + assigned.code + ' has ' + assigned.seats + ' seats, party AE01 is 4. Pick a V-Class, or confirm anyway.</div>'
+            : '<div class="banner okb fade">' + assigned.code + ' assigned to AE01 · 20:30. Signage and driver brief added to tonight\'s check-list.</div>') : '');
+      },
+      wire: function () {
+        var i = $("#fleetTime"); if (i) i.onchange = function () { state.fleetTime = i.value || "18:30"; state.assigned = null; render(); };
+        Array.prototype.forEach.call(document.querySelectorAll("[data-car]"), function (b) { b.onclick = function () { state.assigned = { code: b.getAttribute("data-car"), seats: +b.getAttribute("data-seats") }; render(); }; });
+      }
+    },
+    {
+      id: "plusone", rail: "One more guest", status: "soon",
+      story: function () { return '' +
+        kicker("Scene 4 · Nobody forgets", "soon") +
+        '<h2>A VVIP lands with one more guest.</h2>' +
+        '<p class="lede">The most common change of the week. Ellie adds the seat to the party and lists every step to adjust for the new person: room, car, viewing, gala cover. One tap tells the maison why.</p>' +
+        '<div class="why"><b>How Ellie looks after your team:</b> the extra gala cover is on the list, not in someone\'s memory at 22:00. And the maison knows before it has to ask.</div>'; },
+      screen: function () {
+        var s = state.plus || 0;
+        var steps = [
+          ["Suite, 3 nights", "Room for 3 or a connecting room"],
+          ["Arrival transfer 15:40", "3 seats: S-Class still fits"],
+          ["Private viewing, Day 2 16:30", "One more place"],
+          ["Gala dinner, Day 3 18:30", "One more cover, ask the main course"]
+        ];
+        return '' +
+          '<div class="row"><div class="l"><span class="code">HK01</span><span class="s">Party of 2 · VVIP · lands 15:40 CX 705</span></div><span class="pill warn">Change request</span></div>' +
+          (s === 0 ? '<button class="btn primary" id="plusBtn">Add a seat to HK01</button>' : '') +
+          (s >= 1 ? '<div class="label fade">New seat HK-0003 · steps to adjust</div>' + steps.map(function (x, i) {
+              var done = state.plusDone && state.plusDone[i];
+              return '<div class="row fade"><div class="l"><span class="t">' + x[0] + '</span><span class="s">' + x[1] + '</span></div><button class="btn small" data-step="' + i + '"' + (done ? ' disabled' : '') + '>' + (done ? "Done" : "Mark done") + '</button></div>'; }).join("") +
+              (s === 1 ? '<button class="btn primary" id="notifyBtn">Tell the maison</button>' : '') : '') +
+          (s >= 2 ? '<div class="banner okb fade">Sent to the maison: "HK01 is now 3. Suite, viewing and gala cover being adjusted." It sees the same steps on its side.</div>' : '');
+      },
+      wire: function () {
+        var b = $("#plusBtn"); if (b) b.onclick = function () { state.plus = 1; render(); };
+        var n = $("#notifyBtn"); if (n) n.onclick = function () { state.plus = 2; render(); };
+        Array.prototype.forEach.call(document.querySelectorAll("[data-step]"), function (x) { x.onclick = function () { state.plusDone = state.plusDone || {}; state.plusDone[x.getAttribute("data-step")] = true; render(); }; });
+      }
+    },
+    {
+      id: "ground", rail: "Team on the ground", status: "soon",
+      story: function () { return '' +
+        kicker("Scene 5 · Looked after on the ground", "soon") +
+        '<h2>Your drivers get their ride, not a manual.</h2>' +
+        '<p class="lede">Each person sees only their role: the car, the time, the sign, the guest code. A status is one tap or one sentence. If a status is missing fifteen minutes before pick-up, Ellie asks first, then calls, then alerts the event lead.</p>' +
+        '<div class="why"><b>How Ellie looks after your team:</b> reminded before, helped when stuck, thanked at the end of the day. And the event lead stops calling fifty people.</div>'; },
+      screen: function () {
+        var s = state.ground || 0;
+        var msgs = [
+          '<div class="bubble fade"><span class="who">Ellie · 14:35</span>Your next ride: <b>15:40</b>, BKK arrivals, party <b>HK01</b>, sign <b>ELLIE 12</b>. Car S-01.</div>',
+          '<div class="bubble fade"><span class="who">Ellie · 15:25</span>No status yet for HK01. Are you at arrivals?</div>',
+          '<div class="bubble fade"><span class="who">Ellie · 15:30</span>Calling you now about HK01 (voice, in Thai).</div>',
+          '<div class="bubble me fade"><span class="who">Driver S-01 · 15:31</span>"At gate 3, sign up, flight landed."</div>',
+          '<div class="bubble fade"><span class="who">Ellie · 15:31</span>Noted: <b>driver at arrivals 15:31</b>. The event lead sees it on the board.</div>',
+          '<div class="bubble fade"><span class="who">Ellie · 23:10</span>End of day: 6 rides, all on time, and HK01 asked for you again tomorrow. Thank you. Your first ride tomorrow is at 09:30.</div>'
+        ];
+        return '' +
+          '<div class="phone" aria-label="Driver phone">' + msgs.slice(0, s + 1).join("") + '</div>' +
+          (s < msgs.length - 1 ? '<button class="btn primary" id="groundBtn">' + ["Fifteen minutes before, no status", "Five minutes later, still nothing", "The driver answers", "Ellie records it", "End of the day"][s] + '</button>' : '<div class="banner okb fade">Board updated, no call made by the event lead.</div>');
+      },
+      wire: function () { var b = $("#groundBtn"); if (b) b.onclick = function () { state.ground = (state.ground || 0) + 1; render(); }; }
+    },
+    {
+      id: "protocol", rail: "When it goes wrong", status: "soon",
+      story: function () { return '' +
+        kicker("Scene 6 · Never alone with a problem", "soon") +
+        '<h2>A flight is two hours late. Everyone knows in a minute.</h2>' +
+        '<p class="lede">Your procedures, and the maison\'s, become protocols in Ellie. The event lead triggers one; Ellie tells each person what changes for them, on their channel, and shows who has confirmed.</p>' +
+        '<div class="why"><b>How Ellie looks after your team:</b> in a crisis, each person knows what to do in a minute. For the maison, a duty of care it can see. A person always decides; Ellie carries the message.</div>'; },
+      screen: function () {
+        var s = state.proto || 0, total = 12, conf = s === 0 ? 0 : s === 1 ? 7 : 12;
+        return '' +
+          '<div class="row"><div class="l"><span class="t">TG 102 delayed to 16:20</span><span class="s">Affects party TH01 · transfer, check-in, dinner</span></div><span class="pill crit">Delay</span></div>' +
+          (s === 0 ? '<button class="btn primary" id="protoBtn">Run "Flight delay" protocol</button>' :
+          '<div class="label fade">Who was told</div>' +
+          '<div class="row fade"><div class="l"><span class="t">Driver S-02</span><span class="s">New pick-up 16:50, same sign</span></div><span class="pill ' + (s > 0 ? "ok" : "") + '">Confirmed</span></div>' +
+          '<div class="row fade"><div class="l"><span class="t">Hotel, Riverside Suites</span><span class="s">Late check-in 17:45, welcome kept</span></div><span class="pill ' + (s > 1 ? "ok" : "warn") + '">' + (s > 1 ? "Confirmed" : "Waiting") + '</span></div>' +
+          '<div class="row fade"><div class="l"><span class="t">Restaurant, dinner 20:00</span><span class="s">Move to 21:00, allergy note resent</span></div><span class="pill ' + (s > 1 ? "ok" : "warn") + '">' + (s > 1 ? "Confirmed" : "Called again") + '</span></div>' +
+          '<div class="label">Confirmations ' + conf + ' of ' + total + '</div><div class="meter"><i style="width:' + Math.round(conf / total * 100) + '%"></i></div>' +
+          (s === 1 ? '<button class="btn" id="protoBtn">Ten minutes later</button>' : '<div class="banner okb fade">Everyone confirmed. The maison was informed with the new times.</div>'));
+      },
+      wire: function () { var b = $("#protoBtn"); if (b) b.onclick = function () { state.proto = (state.proto || 0) + 1; render(); }; }
+    },
+    {
+      id: "costs", rail: "What it cost", status: "today",
+      story: function () { return '' +
+        kicker("Scene 7 · Paid sooner", "today") +
+        '<h2>Every advance lands on a guest, a market and a service.</h2>' +
+        '<p class="lede">Transport, hair and make-up, activities and restaurants are advanced by the agency and recharged weeks later. In Ellie, each cost is recorded as it happens, per guest and per market.</p>' +
+        '<div class="why"><b>How Ellie looks after your accounts team:</b> the recharge is ready at close-out, not weeks later. And the maison sees what each market cost.</div>'; },
+      screen: function () {
+        var rows = [["Transport", 18400], ["Hair and make-up", 6200], ["Activities", 9800], ["Restaurants", 12600]];
+        var max = 18400, sum = rows.reduce(function (a, r) { return a + r[1]; }, 0);
+        return '' +
+          '<div class="label">Advanced by the agency · USD · fictional</div>' +
+          '<div class="bars">' + rows.map(function (r) { return '<div class="barline"><span>' + r[0] + '</span><span class="track"><span class="fill" style="display:block;width:' + Math.round(r[1] / max * 100) + '%"></span></span><span class="v">' + r[1].toLocaleString("en-US") + '</span></div>'; }).join("") + '</div>' +
+          '<div class="tbl-wrap"><table><thead><tr><th>Market</th><th class="num">Guests</th><th class="num">Advanced</th><th class="num">Per guest</th></tr></thead><tbody>' +
+          [["Thailand", 8, 12900], ["Hong Kong", 6, 10200], ["China", 7, 11300], ["UAE", 4, 7800], ["Others", 5, 4800]].map(function (m) { return '<tr><td>' + m[0] + '</td><td class="num">' + m[1] + '</td><td class="num">' + m[2].toLocaleString("en-US") + '</td><td class="num">' + Math.round(m[2] / m[1]).toLocaleString("en-US") + '</td></tr>'; }).join("") +
+          '</tbody></table></div>' +
+          '<div class="banner okb">Total advanced: ' + sum.toLocaleString("en-US") + ' USD, ready to recharge per market.</div>';
+      }
+    },
+    {
+      id: "partner", rail: "Build it with us", status: null,
+      story: function () { return '' +
+        '<div class="kicker">The proposal</div>' +
+        '<h2>Design the agency side of Ellie with us.</h2>' +
+        '<p class="lede">Ellie was born inside a maison, from the long nights of the person who runs its events. The next step is to look after the agency team the same way, and to build it with the agency that knows that team best, on a real event in January.</p>' +
+        '<ol class="steps"><li>Week of 8 December: kick-off, your day and your roles</li><li>December: two design workshops, your account and fleet set up</li><li>Late December: your January event loaded, your team onboarded</li><li>January: the pilot event, our team on site</li><li>After: a debrief on five measures agreed on day one</li></ol>' +
+        '<div class="nav"><button class="btn primary" id="startBtn">Let\'s start</button></div>'; },
+      screen: function () { return '' +
+        '<div class="grid2">' +
+          '<div class="card"><h3>What you get</h3><ul><li>Ellie free for your team until your January event ends</li><li>Your needs first on the roadmap: fleet and team on the ground</li><li>Founder pricing after the pilot</li><li>Our team with you, on site for the first event</li><li>A share of every maison you bring</li></ul></div>' +
+          '<div class="card"><h3>What we ask</h3><ul><li>One lead person, about two hours a week</li><li>The files you already use, anonymised</li><li>One real event in January, run on Ellie</li><li>Honest feedback, and a case study without names</li></ul></div>' +
+        '</div>' +
+        '<div class="label">The five measures of the pilot</div>' +
+        '<div class="chips">' + ["Time to build a guest's journey", "Issues solved before landing", "Tomorrow ready tonight", "Maison requests answered on time", "Maison and guest feedback"].map(function (m) { return '<span class="chip">' + m + '</span>'; }).join("") + '</div>' +
+        (state.started ? '<div class="banner okb fade">Thank you. Next: pick a date for the kick-off workshop, week of 8 December.</div>' : ''); },
+      wire: function () { var b = $("#startBtn"); if (b) b.onclick = function () { state.started = true; render(); }; }
+    }
+  ];
+
+  function kicker(text, status) {
+    return '<div class="kicker">' + text + (status === "today" ? ' <span class="badge today">Today</span>' : status === "soon" ? ' <span class="badge soon">In co-design</span>' : '') + '</div>';
+  }
+  function card(label, big, sub) {
+    return '<div class="card"><span class="label">' + label + '</span><span style="font-family:var(--display);font-size:30px;line-height:1">' + big + '</span><span class="s note">' + sub + '</span></div>';
+  }
+  function guestTable(list) {
+    return '<div class="tbl-wrap fade"><table><thead><tr><th>Guest</th><th>Party</th><th>Tier</th><th>Lands</th><th>Hotel</th><th>Dietary</th></tr></thead><tbody>' +
+      list.map(function (g) { return '<tr><td class="code">' + g.code + '</td><td>' + g.party + '</td><td>' + g.tier + '</td><td>' + g.land + '</td><td>' + g.hotel + '</td><td' + (g.crit ? ' style="color:var(--crit)"' : '') + '>' + (g.diet || "None") + '</td></tr>'; }).join("") +
+      '</tbody></table></div>';
+  }
+
+  // ---------------------------------------------------------------- render
+  var current = 0;
+  function render() {
+    var ch = CHAPTERS[current];
+    var rail = $("#rail");
+    rail.innerHTML = CHAPTERS.map(function (c, i) {
+      return '<button data-i="' + i + '"' + (i === current ? ' aria-current="step"' : '') + '><span class="n">' + i + '</span>' + c.rail + (c.status === "soon" ? '<span class="soonDot" aria-label="in co-design"></span>' : '') + '</button>';
+    }).join("");
+    Array.prototype.forEach.call(rail.querySelectorAll("button"), function (b) { b.onclick = function () { go(+b.getAttribute("data-i")); }; });
+    var activeTab = rail.querySelector('[aria-current="step"]');
+    if (activeTab && activeTab.scrollIntoView) activeTab.scrollIntoView({ block: "nearest", inline: "nearest" });
+
+    var story = $("#story");
+    story.innerHTML = ch.story() +
+      '<div class="nav">' +
+        (current > 0 ? '<button class="btn" id="prevBtn">Back</button>' : '') +
+        (current < CHAPTERS.length - 1 ? '<button class="btn primary" id="nextBtn">' + (current === 0 ? "Start" : "Next scene") + '</button>' : '') +
+      '</div>';
+    $("#screen").innerHTML = ch.screen();
+    var p = $("#prevBtn"); if (p) p.onclick = function () { go(current - 1); };
+    var n = $("#nextBtn"); if (n) n.onclick = function () { go(current + 1); };
+    if (ch.wire) ch.wire();
+  }
+  function go(i) {
+    current = Math.max(0, Math.min(CHAPTERS.length - 1, i));
+    var id = CHAPTERS[current].id;
+    if (location.hash !== "#" + id) history.replaceState(null, "", "#" + id);
+    render();
+  }
+  function fromHash() {
+    var id = (location.hash || "").replace("#", "");
+    var i = CHAPTERS.findIndex(function (c) { return c.id === id; });
+    current = i >= 0 ? i : 0;
+    render();
+  }
+  document.addEventListener("keydown", function (e) {
+    if (e.target && /input|textarea/i.test(e.target.tagName)) return;
+    if (e.key === "ArrowRight") go(current + 1);
+    if (e.key === "ArrowLeft") go(current - 1);
+  });
+  window.addEventListener("hashchange", fromHash);
+  fromHash();
+})();
+</script>
+</body>
+</html>
