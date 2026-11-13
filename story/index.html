@@ -380,9 +380,9 @@ td.num, th.num { text-align: right; }
       wire: function () { var b = $("#protoBtn"); if (b) b.onclick = function () { state.proto = (state.proto || 0) + 1; render(); }; }
     },
     {
-      id: "costs", rail: "What it cost", status: "today",
+      id: "costs", rail: "What it cost", status: "soon",
       story: function () { return '' +
-        kicker("Scene 7 · Paid sooner", "today") +
+        kicker("Scene 7 · Paid sooner", "soon") +
         '<h2>Every advance lands on a guest, a market and a service.</h2>' +
         '<p class="lede">Transport, hair and make-up, activities and restaurants are advanced by the agency and recharged weeks later. In Ellie, each cost is recorded as it happens, per guest and per market.</p>' +
         '<div class="why"><b>How Ellie looks after your accounts team:</b> the recharge is ready at close-out, not weeks later. And the maison sees what each market cost.</div>'; },

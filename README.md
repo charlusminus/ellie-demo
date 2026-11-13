@@ -1,11 +1,13 @@
 # Ellie, interactive demo
 
-A clickable Ellie agency account with a guided tour, to present Ellie without slides:
-your team, looked after the way your team looks after your guests.
+Presents Ellie without slides: your team, looked after the way your team looks after the guests.
 
-- Live: https://charlusminus.github.io/ellie-demo/ (clickable account and guided tour)
-- Other version, for comparison: https://charlusminus.github.io/ellie-demo/story/ (the same story in eight scenes)
-- One file, `index.html`, no build step, no tracking. Published with GitHub Pages from `main`, root folder.
-- All guests, hotels, cars and costs are fictional. Features marked "In co-design" are proposals to shape with
-  the agency; the profile menu switches them on or off while presenting.
-- The tour starts on first visit; it can be replayed from the profile menu ("Show the tour").
+- **Live: https://charlusminus.github.io/ellie-demo/** · a day at a DMC, transport first, across Create, Orchestrate and
+  Analyse. Built for a projector: story on the left, a live Ellie screen on the right. Arrow keys to move, N for presenter
+  notes (what to say, what to show live in Ellie, what to ask), F for full screen.
+  The agency's name can be set for a meeting with `?dmc=Name`; the page itself names no real company.
+- Earlier versions, kept for reference: https://charlusminus.github.io/ellie-demo/account/ (clickable agency account with a
+  guided tour) and https://charlusminus.github.io/ellie-demo/story/ (the same story in eight scenes).
+- One file per version, no build step, no tracking. Published with GitHub Pages from `main`, root folder.
+- Guests, hotels, cars and costs are fictional. "In Ellie today" is in the product now; "In co-design" is a proposal to
+  build with the agency.
