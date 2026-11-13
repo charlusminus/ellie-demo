@@ -216,8 +216,10 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
 .frame td:not(:first-child) { color: var(--muted); }
 .frame tr.sel td { color: var(--text); }
 
-.team { display: grid; grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr)); gap: 1.4rem; }
-.team div { display: grid; gap: .1rem; }
+.team { display: grid; grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr)); gap: 1.2rem; }
+.team button { display: grid; gap: .1rem; text-align: left; align-content: start; padding: .65rem 0 0; border-top: 1px solid var(--line-strong); }
+.team button[aria-pressed="true"] { border-top: 2px solid var(--accent); padding-top: calc(.65rem - 1px); }
+.mods button[disabled] { opacity: .35; cursor: default; }
 
 /* transport plan */
 .gantt { display: grid; gap: .22rem; }
@@ -371,6 +373,10 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
   // The look picker shows on the first screen unless the link already fixes a look, or the viewer hid it.
   try { if (new URLSearchParams(location.search).get("look") || sessionStorage.getItem("ellie-demo-pick-hidden")) S.pickBar = false; } catch (e) {}
   var LOOKS = [["a", "A", "Night blue"], ["b", "B", "Verdigris"], ["c", "C", "Earth and sand"]];
+  // One person's day can be followed on its own: chosen on the first screen, or with ?profile=arun in the link.
+  var PROFILES = [["nok", "Nok", "Event manager"], ["arun", "Arun", "Transport coordinator"], ["ploy", "Ploy", "Airport host"], ["somchai", "Somchai", "Driver"], ["mai", "Mai", "Accounts"]];
+  S.profile = "all";
+  try { var pr = (new URLSearchParams(location.search).get("profile") || "").toLowerCase(); if (PROFILES.some(function (p) { return p[0] === pr; })) S.profile = pr; } catch (e) {}
   try { var saved = JSON.parse(localStorage.getItem("ellie-dmc-picks") || "[]"); if (Array.isArray(saved)) S.picks = saved.slice(0, 9); } catch (e) {}
 
   var st = function (tone, text) { return '<span class="st ' + tone + '">' + text + '</span>'; };
@@ -393,16 +399,19 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
           '<div class="tbl"><table class="frame"><thead><tr><th></th><th class="label">Create</th><th class="label">Orchestrate</th><th class="label">Analyse</th></tr></thead><tbody>' +
           rows.map(function (r) { return '<tr data-frame="' + r.k + '" class="' + (S.frame === r.k ? "sel" : "") + '"><td>' + r.who + '</td><td>' + r.c + '</td><td>' + r.o + '</td><td>' + r.a + '</td></tr>'; }).join("") +
           '</tbody></table></div>' +
-          '<div class="sec"><div class="label">Your team on this event</div></div>' +
-          '<div class="team">' +
-          [["Nok", "Event manager"], ["Arun", "Transport coordinator"], ["Ploy", "Airport host"], ["Somchai", "Driver"], ["Mai", "Accounts"]].map(function (p) { return '<div><span class="t">' + p[0] + '</span><span class="s">' + p[1] + '</span></div>'; }).join("") +
+          '<div class="label">Follow the whole team, or one person\'s day</div>' +
+          '<div class="team" role="group" aria-label="Choose a profile">' +
+          [["all", "The whole team", "Every screen"]].concat(PROFILES).map(function (p) { return '<button data-profile="' + p[0] + '" aria-pressed="' + (S.profile === p[0]) + '"><span class="t">' + p[1] + '</span><span class="s">' + p[2] + '</span></button>'; }).join("") +
           '</div>' +
           '<p class="sum">And seventeen hosts, guides and drivers, each with their own day.</p>';
       },
-      wire: function () { $$("[data-frame]").forEach(function (r) { r.onclick = function () { S.frame = r.getAttribute("data-frame"); render(); }; }); }
+      wire: function () {
+        $$("[data-frame]").forEach(function (r) { r.onclick = function () { S.frame = r.getAttribute("data-frame"); render(); }; });
+        $$("[data-profile]").forEach(function (b) { b.onclick = function () { S.profile = b.getAttribute("data-profile"); render(); }; });
+      }
     },
     {
-      id: "brief", mod: "create", status: "today", who: "<b>Nok</b>, event manager",
+      id: "brief", p: "nok", mod: "create", status: "today", who: "<b>Nok</b>, event manager",
       title: "The maison's file and your booking sheet go in as they are.",
       lede: "Ellie reads both, builds the transfers from the flights, and shows what it will create before writing anything.",
       before: "Two days rebuilding one list from thirty e-mail threads.",
@@ -433,7 +442,7 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
       wire: function () { var b = $("#impBtn"); if (b) b.onclick = function () { S.imp++; render(); }; }
     },
     {
-      id: "fleet", mod: "create", status: "today", who: "<b>Arun</b>, transport coordinator",
+      id: "fleet", p: "arun", mod: "create", status: "today", who: "<b>Arun</b>, transport coordinator",
       title: "Every car, every transfer, every conflict, before the day.",
       lede: "Each transfer finds its car. Ellie warns on an overlap, a car too small, or a car already promised elsewhere. It warns, it never blocks.",
       before: "A whiteboard and the phone. The double booking shows up at the airport.",
@@ -511,7 +520,7 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
       }
     },
     {
-      id: "checklist", mod: "create", status: "today", who: "<b>Ploy</b>, airport host",
+      id: "checklist", p: "ploy", mod: "create", status: "today", who: "<b>Ploy</b>, airport host",
       title: "Each person sees what they have to do today, and nothing else.",
       lede: "The itinerary writes the check-list, with an owner and a time for every task.",
       before: "The run sheet lives in the event manager's head and in forty WhatsApp groups.",
@@ -554,7 +563,7 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
       }
     },
     {
-      id: "arrivals", mod: "orchestrate", status: "today", who: "<b>Nok</b>, event manager",
+      id: "arrivals", p: "nok", mod: "orchestrate", status: "today", who: "<b>Nok</b>, event manager",
       title: "The morning starts with what needs attention.",
       lede: "One day at a time, problems first: VVIP arrivals, a bottleneck at the airport, a party nobody meets.",
       before: "Problems are found when a guest is already waiting at arrivals.",
@@ -598,7 +607,7 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
       }
     },
     {
-      id: "delay", mod: "orchestrate", status: "soon", who: "<b>Arun</b>, transport coordinator",
+      id: "delay", p: "arun", mod: "orchestrate", status: "soon", who: "<b>Arun</b>, transport coordinator",
       title: "TG 102 lands two hours late. Everyone knows in a minute.",
       lede: "Ellie proposes the new pick-up and a free car, and tells each person what changes for them. A person approves.",
       before: "Twelve calls in twenty minutes, and the restaurant hears about it last.",
@@ -620,7 +629,7 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
       wire: function () { var b = $("#delayBtn"); if (b) b.onclick = function () { S.delay++; render(); }; }
     },
     {
-      id: "driver", mod: "orchestrate", status: "soon", who: "<b>Somchai</b>, driver, S-01",
+      id: "driver", p: "somchai", mod: "orchestrate", status: "soon", who: "<b>Somchai</b>, driver, S-01",
       title: "Your drivers get their ride. Arun sees every car.",
       lede: "A status is one tap. With location on, a late car is seen before anyone has to call.",
       privacy: "Location is the driver's choice, during rides only, seen by the coordinator only, deleted after the event.",
@@ -688,7 +697,7 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
       }
     },
     {
-      id: "review", mod: "analyse", status: "soon", who: "<b>Mai</b>, accounts",
+      id: "review", p: "mai", mod: "analyse", status: "soon", who: "<b>Mai</b>, accounts",
       title: "After the event, the review writes itself.",
       lede: "Every transfer and change was recorded as it happened. Costs land per guest and per market.",
       before: "A week rebuilding what happened. The recharge leaves a month later.",
@@ -751,21 +760,24 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
   var MODS = [["create", "Create"], ["orchestrate", "Orchestrate"], ["analyse", "Analyse"]];
 
   // ------------------------------------------------------------ render
+  // The screens of the presentation: all of them, or the first, one person's screens and the last.
+  function seq() { var out = []; SCENES.forEach(function (s, i) { if (!s.p || S.profile === "all" || s.p === S.profile) out.push(i); }); return out; }
   function impactUpTo(i) {
     var t = { hours: 0, messages: 0, calls: 0, caught: 0 };
-    for (var k = 0; k <= i; k++) { var m = SCENES[k].impact; if (m) for (var x in t) t[x] += m[x]; }
+    seq().forEach(function (k) { var m = SCENES[k].impact; if (k <= i && m) for (var x in t) t[x] += m[x]; });
     return t;
   }
   function render() {
-    var sc = SCENES[S.i], imp = impactUpTo(S.i);
+    var sc = SCENES[S.i], imp = impactUpTo(S.i), q = seq(), pos = q.indexOf(S.i);
+    var who = PROFILES.filter(function (p) { return p[0] === S.profile; })[0];
     var html = '' +
       '<div class="top">' +
       (S.i === 0 && S.pickBar ? '<div class="pick" role="group" aria-label="Choose a look"><span class="q">Three looks for this demo. Which one do you prefer?</span><span class="looks">' + LOOKS.map(function (l) { return '<button data-look="' + l[0] + '" aria-pressed="' + (S.look === l[0]) + '">' + l[1] + '. ' + l[2] + '</button>'; }).join("") + '</span><span class="hint"><span>Keys 1, 2, 3 switch at any time</span><button class="link" id="pickHide">Hide</button></span></div>' : '') +
       '<header class="hdr">' +
-        '<div><span class="brand">ELLIE</span><span class="evt">Private Viewing Bangkok, with ' + esc(DMC) + '</span></div>' +
+        '<div><button class="brand" id="homeBtn" title="Back to the start">ELLIE</button><span class="evt">Private Viewing Bangkok, with ' + esc(DMC) + '</span></div>' +
         '<nav class="mods" aria-label="Modules">' + MODS.map(function (m) {
-          var first = SCENES.findIndex(function (s) { return s.mod === m[0]; });
-          return '<button class="label" data-mod="' + first + '" aria-current="' + (sc.mod === m[0]) + '">' + m[1] + '</button>';
+          var first = q.filter(function (k) { return SCENES[k].mod === m[0]; })[0];
+          return '<button class="label" ' + (first === undefined ? 'disabled' : 'data-mod="' + first + '"') + ' aria-current="' + (sc.mod === m[0]) + '">' + m[1] + '</button>';
         }).join("") + '</nav>' +
         '<div class="tools">' +
           '<button id="themeBtn" title="Switch theme (T)">' + (S.theme === "dark" ? "Light" : "Dark") + '</button><button id="notesBtn" aria-pressed="' + S.notes + '" title="Presenter notes (N)">Notes</button><button id="fsBtn" title="Full screen (F)">Full screen</button></div>' +
@@ -777,15 +789,15 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
           '<p class="lede">' + sc.lede + '</p>' +
           (sc.privacy ? '<p class="priv">' + sc.privacy + '</p>' : '') +
           (sc.before ? '<dl class="ba"><div><dt class="label">Today</dt><dd>' + sc.before + '</dd></div><div class="after"><dt class="label">With Ellie</dt><dd>' + sc.after + '</dd></div></dl>' : '') +
-          (S.notes ? '<div class="notes">' + (sc.notes.say ? '<span><b>Say.</b> ' + sc.notes.say + '</span>' : '') + (sc.notes.live ? '<span><b>Show it live in Ellie.</b> ' + sc.notes.live + '</span>' : (sc.status === "soon" ? '<span><b>Not in Ellie yet.</b> Present it as a proposal to design together.</span>' : '')) + (sc.notes.ask ? '<span><b>Ask.</b> ' + sc.notes.ask + '</span>' : '') + '<span>Keys: arrows to move, N notes, T theme, 1 2 3 looks, F full screen.</span></div>' : '') +
-          '<div class="nav">' + (S.i > 0 ? '<button class="btn" id="prev">Back</button>' : '') + (S.i < SCENES.length - 1 ? '<button class="btn primary" id="next">' + (S.i === 0 ? "Start with the brief" : "Next") + '</button>' : '') + '</div>' +
+          (S.notes ? '<div class="notes">' + (sc.notes.say ? '<span><b>Say.</b> ' + sc.notes.say + '</span>' : '') + (sc.notes.live ? '<span><b>Show it live in Ellie.</b> ' + sc.notes.live + '</span>' : (sc.status === "soon" ? '<span><b>Not in Ellie yet.</b> Present it as a proposal to design together.</span>' : '')) + (sc.notes.ask ? '<span><b>Ask.</b> ' + sc.notes.ask + '</span>' : '') + '<span>Keys: arrows to move, N notes, T theme, 1 2 3 looks, F full screen. Click ELLIE to start over.</span></div>' : '') +
+          '<div class="nav">' + (pos > 0 ? '<button class="btn" id="prev">Back</button>' : '') + (pos < q.length - 1 ? '<button class="btn primary" id="next">' + (S.i === 0 ? (who ? "Follow " + who[1] : "Start with the brief") : "Next") + '</button>' : '') + '</div>' +
         '</section>' +
         '<section class="screen" aria-label="Ellie screen">' +
           '<div class="bar"><span class="label">' + sc.where + '</span>' + (sc.status === "today" ? '<span class="state st ok">In Ellie today</span>' : sc.status === "soon" ? '<span class="state st soon">In co-design</span>' : '') + '</div>' +
           '<div class="sbody" id="sbody">' + sc.screen() + '</div>' +
         '</section>' +
       '</div>' +
-      '<div class="meter" role="status" aria-label="Given back to your team so far"><span class="label">Given back to your team</span><span><b>' + imp.hours + '</b><span class="u">hours</span></span><span><b>' + imp.calls + '</b><span class="u">calls not made</span></span><span><b>' + imp.messages + '</b><span class="u">messages not sent</span></span><span><b>' + imp.caught + '</b><span class="u">problems seen early</span></span><span class="ill">Illustrative figures, fictional data</span></div>';
+      '<div class="meter" role="status" aria-label="Given back to your team so far"><span class="label">' + (who ? "Given back in " + who[1] + "'s day" : "Given back to your team") + '</span><span><b>' + imp.hours + '</b><span class="u">hours</span></span><span><b>' + imp.calls + '</b><span class="u">calls not made</span></span><span><b>' + imp.messages + '</b><span class="u">messages not sent</span></span><span><b>' + imp.caught + '</b><span class="u">problems seen early</span></span><span class="ill">Illustrative figures, fictional data</span></div>';
     var sb = $("#sbody"), keep = sb ? sb.scrollTop : 0, same = render.last === S.i;
     $("#app").innerHTML = html;
     if (same) $("#sbody").scrollTop = keep;
@@ -794,8 +806,9 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
   }
   function wire(sc) {
     var on = function (id, fn) { var e = document.getElementById(id); if (e) e.onclick = fn; };
-    on("prev", function () { go(S.i - 1); });
-    on("next", function () { go(S.i + 1); });
+    on("prev", function () { step(-1); });
+    on("next", function () { step(1); });
+    on("homeBtn", restart);
     on("notesBtn", function () { S.notes = !S.notes; render(); });
     on("themeBtn", toggleTheme);
     on("fsBtn", toggleFs);
@@ -807,6 +820,15 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
   function setLook(l) { S.look = l; root.setAttribute("data-look", l); try { localStorage.setItem("ellie-demo-look", l); } catch (e) {} render(); }
   function toggleTheme() { S.theme = S.theme === "dark" ? "light" : "dark"; root.setAttribute("data-theme", S.theme); try { localStorage.setItem("ellie-demo-theme", S.theme); } catch (e) {} render(); }
   function toggleFs() { try { if (!document.fullscreenElement) root.requestFullscreen(); else document.exitFullscreen(); } catch (e) {} }
+  function step(d) { var q = seq(), k = Math.max(0, q.indexOf(S.i)); go(q[Math.max(0, Math.min(q.length - 1, k + d))]); }
+  // Back to the first screen with every scene as new. The look, the theme, the profile and the co-design priorities are kept.
+  function restart() {
+    S.imp = 0; S.transfers = JSON.parse(JSON.stringify(TRANSFERS0)); S.pick = null; S.lastAssign = null; S.freeAt = "16:00";
+    S.owner = "all"; S.tasksDone = {}; S.signal = "all"; S.reasons = {}; S.blocking = null;
+    S.cards = { AU01: "confirmed", ES01: "confirmed", CN01: "confirmed", SG01: "confirmed", JP01: "confirmed", TH01: "progress", HK01: "progress", KR01: "todo", AE01: "todo" };
+    S.delay = 0; S.drv = 0; S.drvAlert = 0; S.drvNight = false; S.loc = false; S.choice = null; S.tab = "transport";
+    go(0);
+  }
   function go(i) {
     S.i = Math.max(0, Math.min(SCENES.length - 1, i));
     var id = SCENES[S.i].id;
@@ -818,17 +840,18 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
     var id = (location.hash || "").replace("#", "");
     var k = SCENES.findIndex(function (s) { return s.id === id; });
     S.i = k >= 0 ? k : 0;
+    if (seq().indexOf(S.i) < 0) S.profile = "all";
     render();
   }
   document.addEventListener("keydown", function (e) {
     if (e.target && /input|textarea|select/i.test(e.target.tagName)) return;
-    if (e.key === "ArrowRight" || e.key === "PageDown") go(S.i + 1);
-    else if (e.key === "ArrowLeft" || e.key === "PageUp") go(S.i - 1);
+    if (e.key === "ArrowRight" || e.key === "PageDown") step(1);
+    else if (e.key === "ArrowLeft" || e.key === "PageUp") step(-1);
     else if (e.key === "n" || e.key === "N") { S.notes = !S.notes; render(); }
     else if (e.key === "f" || e.key === "F") toggleFs();
     else if (e.key === "t" || e.key === "T") toggleTheme();
     else if (e.key === "1" || e.key === "2" || e.key === "3") setLook(["a", "b", "c"][+e.key - 1]);
-    else if (e.key === "Home") go(0);
+    else if (e.key === "Home") restart();
   });
   window.addEventListener("hashchange", fromHash);
   fromHash();
