@@ -4,7 +4,8 @@ Presents Ellie without slides: your team, looked after the way your team looks a
 
 - **Live: https://charlusminus.github.io/ellie-demo/** · a day at a DMC, transport first, across Create, Orchestrate and
   Analyse. Built for a projector: story on the left, a live Ellie screen on the right. Arrow keys to move, N for presenter
-  notes (what to say, what to show live in Ellie, what to ask), F for full screen.
+  notes (what to say, what to show live in Ellie, what to ask), T for the theme, F for full screen. Dark blue and gold
+  by default, like the app; `?theme=light` opens it in the light theme.
   The agency's name can be set for a meeting with `?dmc=Name`; the page itself names no real company.
 - Earlier versions, kept for reference: https://charlusminus.github.io/ellie-demo/account/ (clickable agency account with a
   guided tour) and https://charlusminus.github.io/ellie-demo/story/ (the same story in eight scenes).
