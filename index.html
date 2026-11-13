@@ -11,23 +11,24 @@
 <style>
 /* Layout: built for a projector. A header with the three modules and the team impact, then the story on the left and a live Ellie screen on the right. */
 :root {
-  --ink: #0b1426;
-  --panel: #12203a;
-  --panel-2: #172a4a;
-  --panel-3: #1d3358;
-  --line: #2a3d63;
-  --text: #ece7dc;
-  --muted: #b0b6c4;
-  --gold: #d3b77c;
-  --gold-ink: #1a1408;
-  --ok: #7cc39a;
-  --warn: #e3b25c;
-  --crit: #e88a7f;
-  --soon: #a9bcec;
-  --shade: rgba(4, 8, 18, .72);
+  --ink: #fbf9f5;
+  --panel: #ffffff;
+  --panel-2: #f9f6ef;
+  --panel-3: #f1ece2;
+  --line: #e4dccc;
+  --text: #0b1f3a;
+  --muted: #5f6a7c;
+  --gold: #7a5c24;
+  --gold-ink: #fdfbf7;
+  --ok: #2e6b4f;
+  --warn: #8a6212;
+  --crit: #a03d33;
+  --soon: #3d5a96;
+  --wash: rgba(176, 141, 74, .12);
+  --shade: rgba(7, 26, 51, .42);
   --display: "Cormorant Garamond", "Cormorant", Georgia, "Times New Roman", serif;
   --body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  color-scheme: dark;
+  color-scheme: light;
 }
 * { box-sizing: border-box; }
 html { font-size: clamp(14px, 0.55vw + 8.5px, 21px); }
@@ -66,7 +67,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--gold); outl
 .stage { display: grid; grid-template-columns: minmax(0, 36fr) minmax(0, 64fr); gap: 1.2rem; min-height: 0; }
 @media (max-width: 1099px) { .stage { grid-template-columns: 1fr; } }
 .story { display: flex; flex-direction: column; gap: .8rem; min-height: 0; overflow-y: auto; padding-right: .2rem; }
-.screen { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; display: grid; grid-template-rows: auto minmax(0, 1fr); min-height: 0; overflow: hidden; }
+.screen { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 1px 2px rgba(11,31,58,.04); display: grid; grid-template-rows: auto minmax(0, 1fr); min-height: 0; overflow: hidden; }
 .screen .bar { display: flex; justify-content: space-between; align-items: center; gap: .6rem; padding: .6rem 1rem; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
 .screen .bar .where { font-size: .82rem; color: var(--muted); }
 .screen .bar .where b { color: var(--text); font-weight: 500; }
@@ -89,12 +90,18 @@ h3 { font-size: 1.2rem; }
 .ba .row2 .t { font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; padding-top: .15rem; }
 .ba .before { color: var(--muted); }
 .ba .before .t { color: var(--muted); }
-.ba .after { border-color: var(--gold); background: rgba(211,183,124,.08); }
+.ba .after { border-color: var(--gold); background: var(--wash); }
 .ba .after .t { color: var(--gold); }
 .gain { display: flex; gap: .4rem; flex-wrap: wrap; }
 .gain span { font-size: .75rem; border: 1px solid var(--line); border-radius: 999px; padding: .15rem .55rem; color: var(--muted); }
 .gain span b { color: var(--gold); font-weight: 600; }
 .built { font-size: .8rem; color: var(--soon); border-left: 2px solid var(--soon); padding-left: .6rem; }
+.priv { font-size: .8rem; color: var(--ok); border-left: 2px solid var(--ok); padding-left: .6rem; }
+.sw { width: 2.4rem; height: 1.35rem; border-radius: 999px; background: var(--panel-3); border: 1px solid var(--line-strong, #cfc3ab); position: relative; flex: 0 0 auto; }
+.sw::after { content: ""; position: absolute; top: .12rem; left: .12rem; width: .95rem; height: .95rem; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.2); transition: left .2s; }
+.sw[aria-checked="true"] { background: var(--ok); border-color: var(--ok); }
+.sw[aria-checked="true"]::after { left: 1.25rem; }
+.mapcar { transition: transform .8s ease; }
 .nav { display: flex; gap: .6rem; flex-wrap: wrap; margin-top: auto; padding-top: .4rem; }
 .btn { border-radius: 8px; padding: .55rem 1rem; border: 1px solid var(--line); font-size: .9rem; }
 .btn.primary { background: var(--gold); color: var(--gold-ink); border-color: var(--gold); font-weight: 600; }
@@ -113,7 +120,7 @@ h3 { font-size: 1.2rem; }
 .pill.crit { color: var(--crit); border-color: var(--crit); } .pill.soon { color: var(--soon); border-color: var(--soon); }
 .chips { display: flex; gap: .45rem; flex-wrap: wrap; }
 .chip { border: 1px solid var(--line); border-radius: 999px; padding: .3rem .75rem; font-size: .82rem; }
-.chip[aria-pressed="true"] { border-color: var(--gold); background: rgba(211,183,124,.12); }
+.chip[aria-pressed="true"] { border-color: var(--gold); background: var(--wash); }
 .chip .c { color: var(--gold); margin-left: .35rem; font-variant-numeric: tabular-nums; }
 .chip .rk { display: inline-grid; place-items: center; width: 1.2rem; height: 1.2rem; border-radius: 50%; background: var(--gold); color: var(--gold-ink); font-size: .7rem; font-weight: 700; margin-right: .35rem; }
 .banner { border: 1px solid var(--warn); color: var(--warn); border-radius: 8px; padding: .55rem .75rem; font-size: .85rem; }
@@ -128,11 +135,11 @@ table { width: 100%; border-collapse: collapse; font-size: .85rem; font-variant-
 th, td { text-align: left; padding: .45rem .55rem; border-bottom: 1px solid var(--line); white-space: nowrap; }
 th { color: var(--muted); font-weight: 500; font-size: .68rem; text-transform: uppercase; letter-spacing: .08em; }
 td.num, th.num { text-align: right; }
-tr.hl td { background: rgba(211,183,124,.1); }
+tr.hl td { background: var(--wash); }
 
 /* frame table on the intro */
 .frame td, .frame th { white-space: normal; vertical-align: top; }
-.frame tr.sel td { background: rgba(211,183,124,.1); }
+.frame tr.sel td { background: var(--wash); }
 .frame td:first-child { font-weight: 600; }
 
 /* gantt */
@@ -141,13 +148,13 @@ tr.hl td { background: rgba(211,183,124,.1); }
 .g-hours { position: relative; height: 1.1rem; }
 .g-hours span { position: absolute; transform: translateX(-50%); font-size: .66rem; color: var(--muted); font-variant-numeric: tabular-nums; }
 .g-lab { font-size: .8rem; } .g-lab b { font-weight: 600; } .g-lab .s { font-size: .7rem; }
-.g-track { position: relative; height: 2.1rem; border-radius: 6px; background: repeating-linear-gradient(90deg, transparent 0, transparent calc(100%/18 - 1px), rgba(255,255,255,.05) calc(100%/18 - 1px), rgba(255,255,255,.05) calc(100%/18)); border: 1px solid var(--line); overflow: hidden; }
-.g-win { position: absolute; top: 0; bottom: 0; background: rgba(124,195,154,.08); border-left: 1px solid rgba(124,195,154,.35); border-right: 1px solid rgba(124,195,154,.35); }
-.g-other { position: absolute; top: 0; bottom: 0; background: repeating-linear-gradient(135deg, rgba(232,138,127,.18) 0 6px, transparent 6px 12px); }
+.g-track { position: relative; height: 2.1rem; border-radius: 6px; background: repeating-linear-gradient(90deg, transparent 0, transparent calc(100%/18 - 1px), rgba(11,31,58,.07) calc(100%/18 - 1px), rgba(11,31,58,.07) calc(100%/18)); border: 1px solid var(--line); overflow: hidden; }
+.g-win { position: absolute; top: 0; bottom: 0; background: rgba(46,107,79,.07); border-left: 1px solid rgba(46,107,79,.3); border-right: 1px solid rgba(46,107,79,.3); }
+.g-other { position: absolute; top: 0; bottom: 0; background: repeating-linear-gradient(135deg, rgba(160,61,51,.16) 0 6px, transparent 6px 12px); }
 .g-blk { position: absolute; top: .25rem; bottom: .25rem; border-radius: 5px; background: var(--panel-3); border: 1px solid var(--gold); font-size: .66rem; padding: 0 .3rem; display: flex; align-items: center; overflow: hidden; white-space: nowrap; color: var(--text); }
-.g-blk.vip { background: rgba(211,183,124,.25); }
+.g-blk.vip { background: rgba(176,141,74,.22); }
 .g-blk.new { background: var(--gold); color: var(--gold-ink); font-weight: 600; }
-.g-blk.bad { border-color: var(--crit); background: rgba(232,138,127,.25); }
+.g-blk.bad { border-color: var(--crit); background: rgba(160,61,51,.12); }
 .g-now { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--warn); }
 .legend { display: flex; gap: 1rem; flex-wrap: wrap; font-size: .72rem; color: var(--muted); }
 .legend i { display: inline-block; width: .9rem; height: .6rem; border-radius: 2px; margin-right: .3rem; vertical-align: middle; }
@@ -171,7 +178,7 @@ tr.hl td { background: rgba(211,183,124,.1); }
 @media (max-width: 700px) { .duo { grid-template-columns: 1fr; } }
 .phone { border: 1px solid var(--line); border-radius: 1.6rem; padding: .8rem; background: var(--ink); display: grid; gap: .55rem; }
 .bub { background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: .5rem .65rem; font-size: .8rem; }
-.bub.me { background: rgba(211,183,124,.14); border-color: var(--gold); justify-self: end; }
+.bub.me { background: var(--wash); border-color: var(--gold); justify-self: end; }
 .bub .w { font-size: .66rem; color: var(--muted); display: block; }
 .stat { display: grid; grid-template-columns: 1fr 1fr; gap: .4rem; }
 .stat button { border: 1px solid var(--line); border-radius: 10px; padding: .45rem; font-size: .78rem; background: var(--panel-2); }
@@ -191,13 +198,13 @@ tr.hl td { background: rgba(211,183,124,.1); }
 .progress i { display: block; height: 100%; background: var(--ok); transition: width .5s ease; }
 
 /* notes and footer */
-.notes { border: 1px dashed var(--gold); border-radius: 10px; padding: .7rem .9rem; display: grid; gap: .35rem; font-size: .85rem; background: rgba(211,183,124,.05); }
+.notes { border: 1px dashed var(--gold); border-radius: 10px; padding: .7rem .9rem; display: grid; gap: .35rem; font-size: .85rem; background: var(--wash); }
 .notes b { color: var(--gold); font-weight: 600; }
 .foot { font-size: .72rem; color: var(--muted); text-align: center; padding-bottom: .6rem; }
 .fade { animation: fade .3s ease both; }
 @keyframes fade { from { opacity: .3; transform: translateY(3px); } to { opacity: 1; transform: none; } }
 @media (max-height: 820px) and (min-width: 1100px) { html { font-size: 14.5px; } .foot { display: none; } h2 { font-size: 1.7rem; } .meter { padding: .35rem .8rem; } }
-@media (prefers-reduced-motion: reduce) { .fade { animation: none; } .progress i { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .fade { animation: none; } .progress i, .mapcar, .sw::after { transition: none; } }
 </style>
 </head>
 <body>
@@ -256,7 +263,7 @@ tr.hl td { background: rgba(211,183,124,.1); }
     owner: "all", tasksDone: {},
     signal: "all", cards: { AU01: "confirmed", ES01: "confirmed", CN01: "confirmed", SG01: "confirmed", JP01: "confirmed", TH01: "progress", HK01: "progress", KR01: "todo", AE01: "todo" }, reasons: {}, blocking: null,
     delay: 0,
-    drv: 0, drvAlert: 0, drvNight: false,
+    drv: 0, drvAlert: 0, drvNight: false, loc: false, choice: null,
     tab: "transport",
     picks: []
   };
@@ -276,7 +283,7 @@ tr.hl td { background: rgba(211,183,124,.1); }
       lede: function () { return "Thirty VIP guests, four days in Bangkok, a maison that expects everything to the letter. Behind every perfect arrival there is a coordinator, a host at the airport, a driver and an event manager. Ellie gives them the same care they give the guests."; },
       impact: null,
       where: "Ellie · one event, two sides",
-      notes: { say: "Ellie has two users on the same event: the maison, who owns the guests, and the DMC, who delivers everything on the ground. Same three modules, different jobs. Tonight we follow your team.", ask: "On an event like this one, who in your team carries the most?" },
+      notes: { say: "Ellie has two users on the same event: the maison, who owns the guests, and the DMC, who delivers everything on the ground. Same three modules, different jobs. In Ellie they are the three phases of an event: Definition, Live, Close-out. Tonight we follow your team.", ask: "On an event like this one, who in your team carries the most?" },
       screen: function () {
         var rows = [
           { k: "maison", who: "The maison", c: "The guest journeys and every requirement, to the letter", o: "Follows progress, approves changes, without calling", a: "The guest experience, reviewed and remembered" },
@@ -309,7 +316,7 @@ tr.hl td { background: rgba(211,183,124,.1); }
       after: "One import, reviewed in an hour. One list the whole team trusts.",
       impact: { hours: 14, messages: 60, calls: 0, caught: 3 },
       where: "Guests · Import services",
-      notes: { live: "Guests, then Import services: drop the services file, show the review (to create, to update, in error), then import.", ask: "How does a brief reach you today: e-mail, Excel, WhatsApp? Who rebuilds it, and how long does it take?" },
+      notes: { live: "Guest management, Import for the maison's file, then Import services for your booking sheet: the review shows what will be created, updated or is in error before anything is written.", ask: "How does a brief reach you today: e-mail, Excel, WhatsApp? Who rebuilds it, and how long does it take?" },
       screen: function () {
         var st = S.imp;
         return '' +
@@ -342,7 +349,7 @@ tr.hl td { background: rgba(211,183,124,.1); }
       after: "Conflicts show up on the plan days before. Who is free at 16:00 answers in a second.",
       impact: { hours: 6, messages: 40, calls: 25, caught: 4 },
       where: "Fleet · Day 1, arrivals",
-      notes: { live: "Fleet, the board: Who's free at, then a transfer without a car, Assign. Show a warning (capacity, other event).", ask: "How many cars on a big event? Your own fleet or subcontracted? Where do double bookings happen today?" },
+      notes: { live: "Orchestration, Transportation tab, Fleet view: type a time in Who's free at, open a car to see its timeline and the transfers without a car, then Assign. Show a warning (overlap, capacity, another event).", ask: "How many cars on a big event? Your own fleet or subcontracted? Where do double bookings happen today?" },
       screen: function () {
         var T = S.transfers;
         var unassigned = T.filter(function (t) { return !t.car; });
@@ -371,7 +378,7 @@ tr.hl td { background: rgba(211,183,124,.1); }
               '</div></div>';
             }).join("") +
           '</div>' +
-          '<div class="legend"><span><i style="background:rgba(124,195,154,.25)"></i>Service window</span><span><i style="background:rgba(211,183,124,.45)"></i>VVIP transfer</span><span><i style="background:repeating-linear-gradient(135deg, rgba(232,138,127,.5) 0 3px, transparent 3px 6px)"></i>Promised to another event</span><span><i style="background:var(--warn)"></i>Who is free at</span></div>' +
+          '<div class="legend"><span><i style="background:rgba(46,107,79,.25)"></i>Service window</span><span><i style="background:rgba(176,141,74,.45)"></i>VVIP transfer</span><span><i style="background:repeating-linear-gradient(135deg, rgba(160,61,51,.5) 0 3px, transparent 3px 6px)"></i>Promised to another event</span><span><i style="background:var(--warn)"></i>Who is free at</span></div>' +
           '<div class="grid2">' +
             '<div class="card"><div class="label">Transfers without a car</div>' +
               (unassigned.length ? unassigned.map(function (t) { return '<div class="row' + (S.pick === t.id ? '" style="border-color:var(--gold)' : '') + '"><div class="l"><span class="t"><span class="code">' + t.party + '</span> · ' + t.a + ' · ' + t.pax + ' pax</span><span class="s">' + t.what + '</span></div><button class="btn sm" data-pick="' + t.id + '">Assign</button></div>'; }).join("") : '<div class="banner ok">Every transfer today has a car.</div>') +
@@ -417,7 +424,7 @@ tr.hl td { background: rgba(211,183,124,.1); }
       after: "Tomorrow is ready tonight. A new person on the team knows what to do in five minutes.",
       impact: { hours: 5, messages: 30, calls: 10, caught: 2 },
       where: "Orchestration · To do · Day 1",
-      notes: { live: "Orchestration, the To do tab: filter by owner (Transport, Hotel, Concierge), tick a task.", ask: "Who writes tomorrow's run sheet today, and at what time of night?" },
+      notes: { live: "Orchestration, To do view: filter Transport, Hotel or Concierge, tick a task.", ask: "Who writes tomorrow's run sheet today, and at what time of night?" },
       screen: function () {
         var TASKS = [
           ["m1", "morning", "Transport", "Check the flight status", "TH01 · TG 102", "11:00", true],
@@ -464,7 +471,7 @@ tr.hl td { background: rgba(211,183,124,.1); }
       after: "At 08:00 the team sees the 15:00 bottleneck and adds a host. A blocked step always says why.",
       impact: { hours: 3, messages: 20, calls: 15, caught: 3 },
       where: "Orchestration · Day 1 · Transportation",
-      notes: { live: "Orchestration, Day 1, Points of attention, then the Transportation lane. Drag a card; blocking asks for a reason.", ask: "What went wrong at arrivals in Bangkok last time? Where did your team lose time?" },
+      notes: { live: "Orchestration, Day 1: the Points of attention (critical dietary, VVIP arrivals, no meet and greet), then the Kanban view. Drag a card; blocking asks for a reason.", ask: "What went wrong at arrivals in Bangkok last time? Where did your team lose time?" },
       screen: function () {
         var SIG = [
           { k: "vvip", label: "VVIP arrivals", items: [["TH01", "Lands 14:20 · TG 102 · S-02"], ["HK01", "Lands 15:40 · CX 705 · S-01"], ["AE01", "Lands 19:35 · EK 372 · party of 4"]] },
@@ -541,42 +548,75 @@ tr.hl td { background: rgba(211,183,124,.1); }
     {
       id: "driver", mod: "orchestrate", status: "soon",
       person: ["SC", "Somchai", "Driver, S-01"],
-      kicker: "Orchestrate · On the driver's phone",
-      title: "Your drivers get their ride, not a manual.",
-      lede: function () { return "Each driver sees only their rides: time, place, sign, guest code, in their own language. A status is one tap. When a status is missing, Ellie asks, then calls, then tells the coordinator."; },
-      before: "The coordinator calls every driver to know where they are.",
-      after: "The board updates itself from the drivers' taps. At night, each driver gets tomorrow's first ride and a thank-you.",
-      impact: { hours: 2, messages: 25, calls: 30, caught: 1 },
-      where: "Somchai's phone · Arun's board",
-      notes: { ask: "What do your drivers use today, WhatsApp groups? In which language? Who chases a missing status?" },
+      kicker: "Orchestrate · Every car, live",
+      title: "Your drivers get their ride. Arun sees every car.",
+      lede: function () { return "Each driver sees only their rides: time, place, sign, guest code, in their own language. A status is one tap. If the driver turns on location sharing, the coordinator sees the car on the map, and Ellie knows a car is late before anyone has to call."; },
+      privacy: "Location is shared by the driver's choice, only during their rides, seen only by the coordinator, and deleted after the event.",
+      before: "The coordinator calls every driver to know where they are, often while they drive.",
+      after: "Every car on one map. A late car is seen before the guest waits, and nobody calls a driver at the wheel.",
+      impact: { hours: 2, messages: 25, calls: 40, caught: 2 },
+      where: "Somchai's phone · Arun's live map",
+      notes: { say: "Turn on location on Somchai's phone first, then press the 15:55 button: Ellie sees the traffic jam on the map, warns Arun and the airport host, and nobody calls the driver.", ask: "Do your drivers share their location today, with which app? Would they accept it during their rides only?" },
       screen: function () {
         var ST = ["On my way", "At arrivals", "Guest met", "Dropped off"];
+        var stuck = S.drvAlert >= 1 && S.drv === 0;
+        // S-01's position on the map, by status
+        var P = S.drv >= 4 ? [205, 112] : S.drv >= 2 ? [528, 150] : S.drv === 1 ? [492, 152] : stuck ? [410, 150] : [300, 142];
         var msgs = ['<div class="bub"><span class="w">Ellie · 14:35 · sent in Thai</span>Your next ride: <b>16:10</b>, BKK arrivals, party <b>HK01</b>, sign <b>ELLIE 12</b>. Car S-01.</div>'];
-        if (S.drvAlert >= 1) msgs.push('<div class="bub fade"><span class="w">Ellie · 15:55</span>No status yet for HK01. Are you on your way?</div>');
-        if (S.drvAlert >= 2) msgs.push('<div class="bub fade"><span class="w">Ellie · 16:00</span>Calling you now about HK01, in Thai.</div>');
-        if (S.drvAlert >= 2) msgs.push('<div class="bub me fade"><span class="w">Somchai · 16:01 · by voice</span>"Stuck on the expressway, ten minutes."</div>');
-        if (S.drvNight) msgs.push('<div class="bub fade"><span class="w">Ellie · 23:10</span>Six rides today, all on time, and HK01 asked for you again. Thank you. Tomorrow: first ride 09:30, temple visit, car S-01.</div>');
-        var boardStatus = S.drvAlert >= 2 && S.drv === 0 ? '<span class="pill warn">Late 10 min, Arun told at 16:01</span>' : S.drv === 0 ? (S.drvAlert ? '<span class="pill crit">No status</span>' : '<span class="pill">To do</span>') : S.drv >= 4 ? '<span class="pill ok">Dropped off</span>' : '<span class="pill warn">' + ST[S.drv - 1] + '</span>';
+        if (S.loc) msgs.push('<div class="bub fade"><span class="w">Ellie · 14:36</span>Location on until the end of your shift at 23:00. Only Arun sees it.</div>');
+        if (stuck && S.loc) msgs.push('<div class="bub fade"><span class="w">Ellie · 15:56</span>Arun can see the traffic. No need to call, drive safely. Ploy is welcoming HK01 in the lounge.</div>');
+        if (stuck && !S.loc) msgs.push('<div class="bub fade"><span class="w">Ellie · 15:55</span>No status yet for HK01. Are you on your way?</div>');
+        if (S.drvAlert >= 2 && !S.loc && S.drv === 0) msgs.push('<div class="bub fade"><span class="w">Ellie · 16:00</span>Calling you now about HK01, in Thai.</div>', '<div class="bub me fade"><span class="w">Somchai · 16:01 · by voice</span>"Stuck on the expressway, ten minutes."</div>');
+        if (S.drvNight) msgs.push('<div class="bub fade"><span class="w">Ellie · 23:10</span>Six rides today, all handled, and HK01 asked for you again. Thank you. Location is off. Tomorrow: first ride 09:30, car S-01.</div>');
+        var s01Status = S.drv >= 4 ? '<span class="pill ok">Dropped off</span>' : S.drv >= 1 ? '<span class="pill warn">' + ST[S.drv - 1] + '</span>' : stuck ? (S.loc ? '<span class="pill crit">8 min late, seen on the map</span>' : (S.drvAlert >= 2 ? '<span class="pill warn">Late 10 min, told by voice</span>' : '<span class="pill crit">No status</span>')) : '<span class="pill">To do</span>';
+        var car = function (code, x, y, label, tone) {
+          return '<g class="mapcar" style="transform: translate(' + x + 'px,' + y + 'px)">' +
+            '<circle r="13" fill="' + (tone === "crit" ? "var(--crit)" : tone === "off" ? "var(--panel-3)" : "var(--gold)") + '" stroke="#fff" stroke-width="2"></circle>' +
+            '<text y="4" text-anchor="middle" font-size="9" font-weight="700" fill="' + (tone === "off" ? "var(--muted)" : "#fff") + '">' + code + '</text>' +
+            (label ? '<text y="-18" text-anchor="middle" font-size="10" fill="var(--text)">' + label + '</text>' : '') + '</g>';
+        };
+        var map = '' +
+          '<svg viewBox="0 40 600 220" role="img" aria-label="Live map of the cars between the hotels and BKK airport" style="width:100%;height:auto;display:block;border:1px solid var(--line);border-radius:10px;background:var(--panel-2)">' +
+            '<path d="M95 0 C 140 60, 70 120, 120 170 S 110 240, 150 260" fill="none" stroke="#c9d6e3" stroke-width="14"></path>' +
+            '<text x="58" y="240" font-size="10" fill="var(--muted)">Chao Phraya</text>' +
+            '<path d="M215 112 C 260 130, 300 142, 360 146 S 470 152, 530 150" fill="none" stroke="var(--line)" stroke-width="9" stroke-linecap="round"></path>' +
+            '<path d="M215 112 C 260 130, 300 142, 360 146 S 470 152, 530 150" fill="none" stroke="#fff" stroke-width="1.5" stroke-dasharray="6 6"></path>' +
+            '<text x="330" y="176" font-size="10" fill="var(--muted)">Expressway</text>' +
+            '<rect x="138" y="160" width="12" height="12" fill="var(--text)"></rect><text x="156" y="171" font-size="10" fill="var(--text)">Riverside Suites</text>' +
+            '<rect x="199" y="96" width="12" height="12" fill="var(--text)"></rect><text x="160" y="90" font-size="10" fill="var(--text)">Lumière Bangkok</text>' +
+            '<circle cx="540" cy="150" r="20" fill="none" stroke="var(--text)" stroke-width="1.5"></circle><text x="512" y="190" font-size="10" fill="var(--text)">BKK airport</text>' +
+            (stuck && S.loc ? '<rect x="380" y="132" width="60" height="34" rx="6" fill="rgba(160,61,51,.12)" stroke="var(--crit)"></rect><text x="384" y="182" font-size="10" fill="var(--crit)">Traffic, 12 min</text>' : '') +
+            car("V-02", 548, 128, "", "") + car("S-02", 150, 196, "", "") + car("V-01", 470, 172, "4 min", "") +
+            (S.loc ? car("S-01", P[0], P[1], "Somchai", stuck ? "crit" : "") : car("S-01", 300, 142, "location off", "off")) +
+          '</svg>';
+        var alert = '';
+        if (stuck && S.loc) {
+          alert = S.choice === "keep" ? '<div class="banner ok fade">S-01 keeps HK01, about 8 minutes late. Ploy holds the guests in the lounge with water and the maison\'s welcome.</div>'
+            : S.choice === "swap" ? '<div class="banner ok fade">V-01 takes HK01 in 4 minutes. Somchai is told when he stops, not while he drives.</div>'
+            : '<div class="banner crit fade">No status for HK01, but the map shows S-01 in traffic, 12 minutes from BKK: about 8 minutes late. Ploy, the airport host, has been told.</div><div class="chips"><button class="btn sm" data-choice="keep">Keep S-01</button><button class="btn sm primary" data-choice="swap">Send V-01, 4 min away</button></div>';
+        }
         return '' +
           '<div class="duo">' +
-            '<div class="phone" aria-label="Somchai\'s phone">' + msgs.join("") +
+            '<div class="phone" aria-label="Somchai\'s phone">' +
+              '<div class="row" style="background:var(--panel)"><div class="l"><span class="t" style="font-size:.82rem">Share my location during my rides</span><span class="s" style="font-size:.7rem">Off by default · only Arun sees it</span></div><button class="sw" id="locBtn" role="switch" aria-checked="' + S.loc + '" aria-label="Share my location during my rides"></button></div>' +
+              msgs.join("") +
               '<div class="stat">' + ST.map(function (x, i) { return '<button data-st="' + (i + 1) + '" aria-pressed="' + (S.drv >= i + 1) + '">' + x + '</button>'; }).join("") + '</div>' +
             '</div>' +
-            '<div class="card"><div class="label">Arun\'s board · transfers now</div>' +
-              '<div class="row"><div class="l"><span class="t"><span class="code">HK01</span> · 16:10 · S-01 · Somchai</span><span class="s">BKK → Lumière Bangkok</span></div>' + boardStatus + '</div>' +
-              '<div class="steps4">' + ST.map(function (x, i) { return '<div class="' + (S.drv >= i + 1 ? "on" : "") + '">' + x + '</div>'; }).join("") + '</div>' +
-              '<div class="row"><div class="l"><span class="t"><span class="code">TH01</span> · 16:50 · V-01 · Driver 3</span><span class="s">BKK → Riverside Suites</span></div><span class="pill ok">At arrivals</span></div>' +
+            '<div class="card"><div class="label">Arun\'s live map · cars whose drivers share their location</div>' + map + alert +
+              '<div class="row"><div class="l"><span class="t"><span class="code">HK01</span> · 16:10 · S-01 · Somchai</span><span class="s">BKK → Lumière Bangkok</span></div>' + s01Status + '</div>' +
               '<div class="row"><div class="l"><span class="t"><span class="code">KR01</span> · 16:00 · V-02 · Driver 4</span><span class="s">BKK → Lumière Bangkok</span></div><span class="pill ok">Guest met</span></div>' +
               '<div class="chips">' +
-                (S.drvAlert < 2 && S.drv === 0 ? '<button class="btn sm" id="drvAlert">' + (S.drvAlert === 0 ? "15:55, still no status" : "Five minutes later") + '</button>' : '') +
+                (S.drvAlert < (S.loc ? 1 : 2) && S.drv === 0 ? '<button class="btn sm" id="drvAlert">' + (S.drvAlert === 0 ? "15:55, still no status" : "Five minutes later") + '</button>' : '') +
                 (!S.drvNight ? '<button class="btn sm" id="drvNight">End of the day</button>' : '') +
               '</div>' +
-              '<span class="s">Tap a status on the phone: the board follows.</span>' +
+              '<span class="s">Tap a status on the phone: the board and the map follow.</span>' +
             '</div>' +
           '</div>';
       },
       wire: function () {
         $$("[data-st]").forEach(function (b) { b.onclick = function () { S.drv = +b.getAttribute("data-st"); render(); }; });
+        $$("[data-choice]").forEach(function (b) { b.onclick = function () { S.choice = b.getAttribute("data-choice"); render(); }; });
+        var l = $("#locBtn"); if (l) l.onclick = function () { S.loc = !S.loc; render(); };
         var a = $("#drvAlert"); if (a) a.onclick = function () { S.drvAlert++; render(); };
         var n = $("#drvNight"); if (n) n.onclick = function () { S.drvNight = true; render(); };
       }
@@ -630,7 +670,7 @@ tr.hl td { background: rgba(211,183,124,.1); }
       where: "Co-design · your priorities",
       notes: { say: "Let Max tick the options himself, in his order. The top three become the agenda of the first workshop.", ask: "What is missing from this list?" },
       screen: function () {
-        var OPTS = ["Live flight tracking and automatic re-timing", "Driver app with one-tap status, in Thai", "Ellie calls a driver when a status is missing", "Incident protocols for the whole team", "Subcontracted cars and partner suppliers", "Transport review after each event", "Cost recharge per market", "Assistant in Thai, Chinese and English"];
+        var OPTS = ["Live flight tracking and automatic re-timing", "Driver app with one-tap status, in Thai", "Live location of each car, shared by the driver", "Ellie calls a driver when a status is missing", "Incident protocols for the whole team", "Subcontracted cars and partner suppliers", "Transport review after each event", "Cost recharge per market", "Assistant in Thai, Chinese and English"];
         var rank = function (o) { var i = S.picks.indexOf(o); return i >= 0 ? i + 1 : 0; };
         return '' +
           '<div class="label">What would your team build first? Tap in order of priority.</div>' +
@@ -683,6 +723,7 @@ tr.hl td { background: rgba(211,183,124,.1); }
           (sc.person ? '<div class="person"><span class="av">' + sc.person[0] + '</span><span><span class="n">' + sc.person[1] + '</span><br><span class="r">' + sc.person[2] + '</span></span></div>' : '') +
           '<p class="lede">' + sc.lede() + '</p>' +
           (sc.built ? '<div class="built">' + sc.built + '</div>' : '') +
+          (sc.privacy ? '<div class="priv">' + sc.privacy + '</div>' : '') +
           (sc.before ? '<div class="ba"><div class="row2 before"><span class="t">Today</span><span>' + sc.before + '</span></div><div class="row2 after"><span class="t">With Ellie</span><span>' + sc.after + '</span></div></div>' : '') +
           (sc.impact ? '<div class="gain">' + (sc.impact.hours ? '<span><b>' + sc.impact.hours + ' h</b> given back</span>' : '') + (sc.impact.calls ? '<span><b>' + sc.impact.calls + '</b> calls not made</span>' : '') + (sc.impact.messages ? '<span><b>' + sc.impact.messages + '</b> messages not sent</span>' : '') + (sc.impact.caught ? '<span><b>' + sc.impact.caught + '</b> ' + (sc.impact.caught > 1 ? 'problems' : 'problem') + ' seen early</span>' : '') + '</div>' : '') +
           (S.notes ? '<div class="notes">' + (sc.notes.say ? '<span><b>Say.</b> ' + sc.notes.say + '</span>' : '') + (sc.notes.live ? '<span><b>Show it live in Ellie.</b> ' + sc.notes.live + '</span>' : (sc.status === "soon" ? '<span><b>Not in Ellie yet.</b> Present it as a proposal to design together.</span>' : '')) + (sc.notes.ask ? '<span><b>Ask.</b> ' + sc.notes.ask + '</span>' : '') + '</div>' : '') +
