@@ -7,9 +7,13 @@ Presents Ellie without slides: your team, looked after the way your team looks a
   notes (what to say, what to show live in Ellie, what to ask), T for the theme, F for full screen. Dark by default;
   `?theme=light` opens it in the light theme.
   The agency's name can be set for a meeting with `?dmc=Name`; the page itself names no real company.
+- **Two sides of the same event.** The first screen asks the viewer to choose: a maison (the guests, their journeys and
+  every requirement) or a DMC (everything to deliver on the ground). Each side has its own screens across Create,
+  Orchestrate and Analyse, and its own team. `?side=maison` or `?side=dmc` opens directly on one side.
 - **Back to the start**: click the ELLIE wordmark, or press Home. Every scene comes back as new.
-- **One person's day.** The first screen lets the viewer follow the whole team or one profile (Nok, Arun, Ploy,
-  Somchai, Mai): the presentation then keeps that person's screens only. `?profile=arun` opens it that way.
+- **One person's day.** The first screen lets the viewer follow the whole team or one profile (for the DMC: Nok, Arun,
+  Ploy, Somchai, Mai; for the maison: Claire, Julien, Mei): the presentation then keeps that person's screens only.
+  `?profile=arun` opens it that way.
 - **Three looks to choose from.** A banner on the first screen lets the viewer pick one: A, night blue; B, verdigris;
   C, earth and sand. Keys 1, 2, 3 switch at any time. A link with `?look=a`, `?look=b` or `?look=c` fixes the look and
   hides the banner: use that form for a meeting, for example `?dmc=Name&look=c`.
