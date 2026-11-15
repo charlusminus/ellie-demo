@@ -30,6 +30,8 @@ const NAV = [
   ["about", "about/", "About"]
 ];
 
+const LOGO = '<svg viewBox="0 0 1013 146" fill="currentColor" aria-hidden="true" focusable="false"><rect x="0" y="0" width="130.5" height="12.5"/><rect x="0" y="0" width="12.5" height="60"/><path d="M114.5 66H30A30 30 0 0 0 0 96V146H12.5V96A17.5 17.5 0 0 1 30 78.5H114.5Z"/><rect x="0" y="133.5" width="130.5" height="12.5"/><rect x="267" y="0" width="12.5" height="146"/><rect x="267" y="133.5" width="92.5" height="12.5"/><rect x="499" y="0" width="12.5" height="146"/><rect x="499" y="133.5" width="92" height="12.5"/><rect x="737.5" y="0" width="12.5" height="146"/><rect x="905" y="0" width="12.5" height="146"/><rect x="905" y="0" width="107.5" height="12.5"/><rect x="905" y="66" width="96.5" height="12.5"/><rect x="905" y="133.5" width="107.5" height="12.5"/></svg>';
+
 const esc = (s) => s.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
 
 function img(spec, root) {
@@ -66,6 +68,9 @@ function layout(meta, body, root) {
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400..600&family=Hanken+Grotesk:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="${root}assets/site.css">
+<link rel="icon" href="${root}assets/logo/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="${root}assets/logo/icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="${root}assets/logo/icon-180.png">
 <script>try{var t=new URLSearchParams(location.search).get("theme")||localStorage.getItem("ellie-site-theme");if(t==="light")document.documentElement.setAttribute("data-theme","light");}catch(e){}</script>
 ${meta.head || ""}</head>
 <body>
@@ -81,7 +86,7 @@ ${meta.head || ""}</head>
 </div>
 <header class="hdr">
   <div class="wrap">
-    <a class="brand" href="${root}" aria-label="Ellie, home">ELLIE</a>
+    <a class="brand" href="${root}" aria-label="Ellie, home">${LOGO}</a>
     <button type="button" class="menubtn" aria-expanded="false" aria-controls="nav">Menu</button>
     <nav class="nav" id="nav" aria-label="Main">
       ${nav}
@@ -95,7 +100,7 @@ ${body}
 <footer class="ftr">
   <div class="wrap">
     <div class="cols">
-      <div class="col"><span class="brand">ELLIE</span><span class="muted">Ellie looks after your team, so your team can look after the guests.</span></div>
+      <div class="col"><span class="lockup" role="img" aria-label="Ellie Experience, orchestrate the invisible"></span><span class="muted">Ellie looks after your team, so your team can look after the guests.</span></div>
       <div class="col"><b>Ellie</b><a href="${root}maisons/">For maisons</a><a href="${root}agencies/">For agencies and DMCs</a><a href="${root}how-it-works/">How it works</a><a href="${root}pilot/">Pilot</a></div>
       <div class="col"><b>Trust</b><a href="${root}security/">Privacy and security</a><a href="${root}about/">About</a><a href="${root}legal/">Legal notice</a></div>
       <div class="col"><b>See Ellie</b><a href="${root}demo/?look=a">Interactive demo</a><a href="${root}onboarding/">Onboarding tour</a><a href="${root}contact/">Request an introduction</a></div>

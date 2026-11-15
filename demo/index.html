@@ -6,6 +6,9 @@
 <meta name="robots" content="noindex">
 <meta name="description" content="Ellie for a DMC: a day of transport, from the brief to the review.">
 <title>Ellie for DMCs</title>
+<link rel="icon" href="../assets/logo/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../assets/logo/icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../assets/logo/icon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400..600&family=DM+Mono:wght@400;500&family=Hanken+Grotesk:wght@400;500;600&family=Jost:wght@400;500&family=Schibsted+Grotesk:wght@400;500;600;700&family=Spectral:wght@300;400&display=swap">
@@ -132,7 +135,9 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 
 /* header */
 .hdr { display: flex; align-items: baseline; justify-content: space-between; gap: .6rem 2rem; flex-wrap: wrap; padding-top: 1.1rem; }
-.brand { font-family: var(--brand-font); font-size: var(--brand-size); letter-spacing: var(--brand-ls); font-weight: var(--brand-w); font-variation-settings: "opsz" var(--title-opsz, 14); }
+.brand { display: inline-flex; vertical-align: middle; color: var(--text); padding: .2rem 0; }
+.brand svg { height: .95rem; width: auto; display: block; }
+:root[data-look="a"] .brand { color: var(--accent); }
 .evt { color: var(--muted); font-size: .86rem; margin-left: 1.2rem; }
 .mods { display: flex; gap: 1.8rem; }
 .mods button { padding: .25rem 0; border-bottom: 1px solid transparent; }
@@ -1005,7 +1010,7 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
       '<div class="top">' +
       (S.i === 0 && S.pickBar ? '<div class="pick" role="group" aria-label="Choose a look"><span class="q">Three looks for this demo. Which one do you prefer?</span><span class="looks">' + LOOKS.map(function (l) { return '<button data-look="' + l[0] + '" aria-pressed="' + (S.look === l[0]) + '">' + l[1] + '. ' + l[2] + '</button>'; }).join("") + '</span><span class="hint"><span>Keys 1, 2, 3 switch at any time</span><button class="link" id="pickHide">Hide</button></span></div>' : '') +
       '<header class="hdr">' +
-        '<div><button class="brand" id="homeBtn" title="Back to the start">ELLIE</button><span class="evt">Private Viewing Bangkok, ' + (S.side === "maison" ? 'Maison Aurore' : 'with ' + esc(DMC)) + '</span></div>' +
+        '<div><button class="brand" id="homeBtn" title="Back to the start" aria-label="Ellie, back to the start"><svg viewBox="0 0 1013 146" fill="currentColor" aria-hidden="true" focusable="false"><rect x="0" y="0" width="130.5" height="12.5"/><rect x="0" y="0" width="12.5" height="60"/><path d="M114.5 66H30A30 30 0 0 0 0 96V146H12.5V96A17.5 17.5 0 0 1 30 78.5H114.5Z"/><rect x="0" y="133.5" width="130.5" height="12.5"/><rect x="267" y="0" width="12.5" height="146"/><rect x="267" y="133.5" width="92.5" height="12.5"/><rect x="499" y="0" width="12.5" height="146"/><rect x="499" y="133.5" width="92" height="12.5"/><rect x="737.5" y="0" width="12.5" height="146"/><rect x="905" y="0" width="12.5" height="146"/><rect x="905" y="0" width="107.5" height="12.5"/><rect x="905" y="66" width="96.5" height="12.5"/><rect x="905" y="133.5" width="107.5" height="12.5"/></svg></button><span class="evt">Private Viewing Bangkok, ' + (S.side === "maison" ? 'Maison Aurore' : 'with ' + esc(DMC)) + '</span></div>' +
         '<nav class="mods" aria-label="Modules">' + MODS.map(function (m) {
           var first = q.filter(function (k) { return SCENES[k].mod === m[0]; })[0];
           return '<button class="label" ' + (first === undefined ? 'disabled' : 'data-mod="' + first + '"') + ' aria-current="' + (sc.mod === m[0]) + '">' + m[1] + '</button>';

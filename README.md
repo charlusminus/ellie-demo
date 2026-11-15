@@ -33,6 +33,12 @@ website and the tour from its header tools; the tour from its menu.
   are never published. Edit `_src/`, run the build, commit both.
 - Shared files: `assets/site.css`, `assets/site.js` (theme, menu, transport board, form), pictures in `assets/img/`
   (WebP at two widths, listed in `assets/img/manifest.json`).
+- **Logo**: the official Ellie Experience artwork (gold on night blue, "Orchestrate the invisible"), received on
+  15/11/2026. The wordmark is redrawn as a vector in `assets/logo/ellie-wordmark.svg` (straight strokes and the
+  rounded join of the first E, measured on the artwork and checked by overlay); it takes the theme colour (gold on
+  night blue, night blue on ivory). The full lockup with its tagline is a mask cut from the artwork
+  (`assets/logo/ellie-lockup-mask.png`), used in the footer. Tab icon: the first E, `assets/logo/favicon.svg` and two
+  PNG. The same wordmark heads the demo and the onboarding tour. Ask for the source files (vector) to replace the mask.
 - **Pictures** are generated illustrations, checked one by one: no faces, no readable text, no logos. Never a real
   guest, a real maison or a real place card.
 - Guests, cars and figures are fictional, and the footer says so. Nothing marked "In co-design" in the demo is sold

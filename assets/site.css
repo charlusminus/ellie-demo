@@ -106,8 +106,12 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 /* ---------- header */
 .hdr { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line); }
 .hdr .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem 2rem; padding-block: .85rem; }
-.brand { font-family: var(--f-display); font-size: 1.25rem; letter-spacing: .36em; font-weight: 500; text-decoration: none;
-  font-variation-settings: "opsz" var(--title-opsz); margin-right: -.36em; }
+/* The logo: the official wordmark redrawn as a vector (assets/logo/ellie-wordmark.svg), gold on night blue,
+   night blue on ivory. The full lockup with its tagline is a mask cut from the original artwork. */
+.brand { display: inline-flex; color: var(--accent); text-decoration: none; padding: .35rem 0; }
+.brand svg { height: 1rem; width: auto; display: block; }
+.lockup { display: block; width: 16rem; max-width: 100%; aspect-ratio: 1028 / 411; background: var(--accent);
+  -webkit-mask: url(logo/ellie-lockup-mask.png) center / contain no-repeat; mask: url(logo/ellie-lockup-mask.png) center / contain no-repeat; margin-bottom: .6rem; }
 .nav { display: flex; align-items: center; gap: 1.8rem; }
 .nav a:not(.btn) { font-size: var(--nav-size); letter-spacing: var(--nav-ls); text-transform: uppercase; color: var(--muted); text-decoration: none;
   padding: .3rem 0; border-bottom: 1px solid transparent; }

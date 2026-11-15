@@ -6,6 +6,9 @@
 <meta name="robots" content="noindex">
 <meta name="description" content="Interactive demo of Ellie for agencies: your team, looked after the way your team looks after your guests.">
 <title>Ellie onboarding tour</title>
+<link rel="icon" href="../assets/logo/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../assets/logo/icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../assets/logo/icon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600&display=swap">
 <style>
@@ -43,7 +46,8 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px s
   padding: 10px max(16px, env(safe-area-inset-right, 0px)) 10px max(16px, env(safe-area-inset-left, 0px)); border-bottom: 1px solid var(--line); background: var(--panel); position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; }
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--panel); }
 .hl { display: flex; align-items: center; gap: 14px; min-width: 0; flex-wrap: wrap; }
-.brand { font-family: var(--display); font-size: 22px; letter-spacing: .3em; font-weight: 600; }
+.brand { display: inline-flex; color: var(--gold); }
+.brand svg { height: 15px; width: auto; display: block; }
 .evt { display: flex; align-items: baseline; gap: 8px; min-width: 0; flex-wrap: wrap; }
 .evt b { font-family: var(--display); font-weight: 600; font-size: 18px; }
 .evt i { font-family: var(--display); color: var(--gold); font-size: 18px; }
@@ -440,7 +444,7 @@ td.num, th.num { text-align: right; }
   function render() {
     var notifCount = 3;
     var html = '<div class="app">' +
-      '<header class="hdr"><div class="hl"><span class="brand">ELLIE</span><span class="evt"><b>Maison Aurore</b><i>Private Viewing Bangkok</i><span class="live">LIVE · DAY 1</span></span></div>' +
+      '<header class="hdr"><div class="hl"><span class="brand" role="img" aria-label="Ellie"><svg viewBox="0 0 1013 146" fill="currentColor" aria-hidden="true" focusable="false"><rect x="0" y="0" width="130.5" height="12.5"/><rect x="0" y="0" width="12.5" height="60"/><path d="M114.5 66H30A30 30 0 0 0 0 96V146H12.5V96A17.5 17.5 0 0 1 30 78.5H114.5Z"/><rect x="0" y="133.5" width="130.5" height="12.5"/><rect x="267" y="0" width="12.5" height="146"/><rect x="267" y="133.5" width="92.5" height="12.5"/><rect x="499" y="0" width="12.5" height="146"/><rect x="499" y="133.5" width="92" height="12.5"/><rect x="737.5" y="0" width="12.5" height="146"/><rect x="905" y="0" width="12.5" height="146"/><rect x="905" y="0" width="107.5" height="12.5"/><rect x="905" y="66" width="96.5" height="12.5"/><rect x="905" y="133.5" width="107.5" height="12.5"/></svg></span><span class="evt"><b>Maison Aurore</b><i>Private Viewing Bangkok</i><span class="live">LIVE · DAY 1</span></span></div>' +
         '<div class="hr"><div class="seg" role="group" aria-label="View as" id="viewAs">' + [["agency", "Agency"], ["maison", "Maison"]].map(function (v) { return '<button data-as="' + v[0] + '" aria-pressed="' + (S.as === v[0]) + '">' + v[1] + '</button>'; }).join("") + '</div>' +
         '<button class="iconbtn" id="bellBtn" aria-label="Notifications">🔔<span class="dot">' + notifCount + '</span></button>' +
         '<button class="avatar" id="avatarBtn" aria-label="Menu">NK</button></div></header>' +
