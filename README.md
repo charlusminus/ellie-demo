@@ -1,24 +1,52 @@
-# Ellie, interactive demo
+# Ellie, website, demo and onboarding tour
 
-Presents Ellie without slides: your team, looked after the way your team looks after the guests.
+Published with GitHub Pages from `main`, root folder: **https://charlusminus.github.io/ellie-demo/**.
+Every page carries `noindex` until the site moves to its own domain.
 
-- **Live: https://charlusminus.github.io/ellie-demo/** · a day at a DMC, transport first, across Create, Orchestrate and
-  Analyse. Built for a projector: story on the left, a live Ellie screen on the right. Arrow keys to move, N for presenter
-  notes (what to say, what to show live in Ellie, what to ask), T for the theme, F for full screen. Dark by default;
-  `?theme=light` opens it in the light theme.
-  The agency's name can be set for a meeting with `?dmc=Name`; the page itself names no real company.
-- **Two sides of the same event.** The first screen asks the viewer to choose: a maison (the guests, their journeys and
-  every requirement) or a DMC (everything to deliver on the ground). Each side has its own screens across Create,
-  Orchestrate and Analyse, and its own team. `?side=maison` or `?side=dmc` opens directly on one side.
-- **Back to the start**: click the ELLIE wordmark, or press Home. Every scene comes back as new.
-- **One person's day.** The first screen lets the viewer follow the whole team or one profile (for the DMC: Nok, Arun,
-  Ploy, Somchai, Mai; for the maison: Claire, Julien, Mei): the presentation then keeps that person's screens only.
-  `?profile=arun` opens it that way.
-- **Three looks to choose from.** A banner on the first screen lets the viewer pick one: A, night blue; B, verdigris;
-  C, earth and sand. Keys 1, 2, 3 switch at any time. A link with `?look=a`, `?look=b` or `?look=c` fixes the look and
-  hides the banner: use that form for a meeting, for example `?dmc=Name&look=c`.
-- Earlier versions, kept for reference: https://charlusminus.github.io/ellie-demo/account/ (clickable agency account with a
-  guided tour) and https://charlusminus.github.io/ellie-demo/story/ (the same story in eight scenes).
-- One file per version, no build step, no tracking. Published with GitHub Pages from `main`, root folder.
-- Guests, hotels, cars and costs are fictional. "In Ellie today" is in the product now; "In co-design" is a proposal to
-  build with the agency.
+## What lives where
+
+| Address | What it is | Source |
+|---|---|---|
+| `/` | Website, home | `_src/pages/index.html` |
+| `/maisons/` | For maisons | `_src/pages/maisons.html` |
+| `/agencies/` | For agencies and DMCs | `_src/pages/agencies.html` |
+| `/how-it-works/` | Create, orchestrate, analyse | `_src/pages/how.html` |
+| `/security/` | Privacy and security file | `_src/pages/security.html` |
+| `/pilot/` | Start with one event | `_src/pages/pilot.html` |
+| `/about/` | Behind Ellie | `_src/pages/about.html` |
+| `/contact/` | Request an introduction (form not connected yet) | `_src/pages/contact.html` |
+| `/legal/` | Legal notice and privacy of this site | `_src/pages/legal.html` |
+| `/demo/` | The interactive demo, a day at a maison or a DMC | `demo/index.html` (edited by hand) |
+| `/onboarding/` | An agency account with a guided first visit | `onboarding/index.html` (edited by hand) |
+| `/story/` | Earlier version of the demo, kept for reference | `story/index.html` |
+| `/account/` | Old address of the onboarding tour, redirects to `/onboarding/` | `account/index.html` |
+
+The top strip of every website page holds three tabs: Website, Demo, Onboarding. The demo links back to the
+website and the tour from its header tools; the tour from its menu.
+
+## The website
+
+- **Look A of the demo**, "Maison de nuit": night blue, ivory, gold for the filled button. Dark by default; the
+  "Light theme" switch in the top strip, or `?theme=light`, opens it light (remembered in the browser).
+- **Built, not hand-copied**: `node _src/build.mjs` writes every page from `_src/pages/` with the shared header,
+  footer and includes (`_src/inc/`). No dependency. GitHub Pages runs Jekyll, which ignores `_src/`, so the sources
+  are never published. Edit `_src/`, run the build, commit both.
+- Shared files: `assets/site.css`, `assets/site.js` (theme, menu, transport board, form), pictures in `assets/img/`
+  (WebP at two widths, listed in `assets/img/manifest.json`).
+- **Pictures** are generated illustrations, checked one by one: no faces, no readable text, no logos. Never a real
+  guest, a real maison or a real place card.
+- Guests, cars and figures are fictional, and the footer says so. Nothing marked "In co-design" in the demo is sold
+  as available on the website: it is listed once, on the pilot page.
+- **Contrast** measured on the rendered pages in both themes: text at 4.5 or more, control borders at 3.0 or more.
+
+## Old links
+
+`/?dmc=…`, `/?look=…`, `/?side=…` or `/?profile=…` (links sent before the website existed) open the demo at
+`/demo/` with the same parameters. The demo still reads `?dmc=Name`, `?look=a|b|c`, `?theme=light`,
+`?side=maison|dmc` and `?profile=…`.
+
+## To settle before a public launch
+
+Marked in red on the pages ("to confirm", "to write"): the legal entity and address, the hosting region, data
+retention after an event, the sub-processors, an independent security review. Also: the founders' names on the about
+page, where the contact form sends its requests, and the move to the Ellie domain (then remove `noindex`).
