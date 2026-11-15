@@ -303,6 +303,13 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
 .opt[aria-pressed="true"] { color: var(--text); }
 .opt .rk { font-family: var(--f-num); color: var(--accent); font-weight: 600; }
 
+/* maison: challenges */
+.chl { display: grid; align-content: start; }
+.chl button { display: grid; gap: .1rem; text-align: left; padding: .55rem 0 .55rem .8rem; border-bottom: 1px solid var(--line); box-shadow: inset 2px 0 0 transparent; }
+.chl button .t { color: var(--muted); }
+.chl button[aria-pressed="true"] { box-shadow: inset 2px 0 0 var(--accent); }
+.chl button[aria-pressed="true"] .t { color: var(--text); }
+
 /* the one counter */
 .meter { display: flex; gap: .4rem 2.4rem; align-items: baseline; flex-wrap: wrap; padding: .75rem 0 1rem; border-top: 1px solid var(--line); }
 .meter b { font-family: var(--f-kpi); font-size: 1.75rem; font-weight: var(--title-w); letter-spacing: var(--title-ls); font-variation-settings: "opsz" var(--title-opsz, 14); font-variant-numeric: lining-nums tabular-nums; }
@@ -378,8 +385,8 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
     tab: "transport",
     picks: [], pickBar: true,
     // the maison's side of the same event
-    mView: "maison", mAppr: { dinner: "proposed", temple: "proposed", gift: "proposed" }, mGuest: "lau", mCourse: false,
-    mT: 0, mChange: 0, mTold: 0, mTab: "guests", mPicks: []
+    mD: 0, mAppr: { dinner: "proposed", temple: "proposed", gift: "proposed" }, mCh: "flight",
+    mT: 0, mTab: "markets", mPicks: []
   };
   // The look picker shows on the first screen unless the link already fixes a look, or the viewer hid it.
   try { if (new URLSearchParams(location.search).get("look") || sessionStorage.getItem("ellie-demo-pick-hidden")) S.pickBar = false; } catch (e) {}
@@ -388,7 +395,7 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
   // One person's day can be followed on its own: chosen on the first screen, or with ?profile=arun in the link.
   var PROFILES = {
     dmc: [["nok", "Nok", "Event manager"], ["arun", "Arun", "Transport coordinator"], ["ploy", "Ploy", "Airport host"], ["somchai", "Somchai", "Driver"], ["mai", "Mai", "Accounts"]],
-    maison: [["claire", "Claire", "Client experience director"], ["julien", "Julien", "Events coordinator"], ["mei", "Mei", "Client advisor"]]
+    maison: [["claire", "Claire", "Client experience director"], ["mei", "Mei", "Client advisor"]]
   };
   S.profile = "all";
   try {
@@ -417,13 +424,13 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
       id: "team", mod: null, status: null,
       who: function () { return S.side === "maison" ? "An event at a maison" : "A day at a DMC"; },
       title: "Ellie looks after your team, so your team can look after the guests.",
-      lede: function () { return S.side === "maison" ? "Thirty of your best clients, four days in Bangkok. Behind every invitation: a client experience director, an events coordinator, the advisors who know each guest." : "Thirty VIP guests, four days in Bangkok. Behind every perfect arrival: an event manager, a coordinator, a host, a driver."; },
+      lede: function () { return S.side === "maison" ? "Thirty of your best clients, four days in Bangkok. Behind every invitation: a client experience director, and the advisors who know each guest." : "Thirty VIP guests, four days in Bangkok. Behind every perfect arrival: an event manager, a coordinator, a host, a driver."; },
       impact: null, where: "One event, two sides. Choose yours",
       notes: { say: "Ellie has two users on the same event: the maison, who owns the guests, and the DMC, who delivers on the ground. Same three modules, different jobs. In Ellie they are the three phases of an event: Definition, Live, Close-out.", ask: "On an event like this one, who in your team carries the most?" },
       screen: function () {
-        var SIDES = [["maison", "A maison", "Your guests, their journeys, every requirement"], ["dmc", "A DMC", "Everything to deliver on the ground"]];
+        var SIDES = [["maison", "A maison", "The whole event at a glance, from the first bookings to the first arrivals"], ["dmc", "A DMC", "Everything to deliver on the ground"]];
         var MODL = {
-          maison: ["Guest journeys and every requirement", "Follow and approve, without calling", "The guest experience, reviewed"],
+          maison: ["Where the event stands, and what waits for you", "Every arrival and every surprise, without calling", "The guest experience, reviewed"],
           dmc: ["Transfers, rooms, dining and activities to prepare", "Fleet, team and every change on the ground", "Punctuality, changes, costs"]
         };
         return '' +
@@ -761,6 +768,25 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
       wire: function () { $$("[data-tab]").forEach(function (b) { b.onclick = function () { S.tab = b.getAttribute("data-tab"); render(); }; }); }
     },
     {
+      id: "asks", side: "dmc", mod: "analyse", status: null, who: "What a maison asks",
+      title: "Five questions a maison asks before choosing you.",
+      lede: "A client experience director asks every agency the same five questions before handing over her clients. Ellie gives you the proof for each.",
+      impact: null, where: "Your answer to a maison's brief",
+      notes: { say: "These are the questions a client experience director asks when she chooses an agency for her clients. Billing per market is where agencies lose maisons: one waited more than two months for the bill of a 300-guest event.", ask: "Which of these do you lose a brief on today?" },
+      screen: function () {
+        var Q = [
+          ["Similar events in the region: how many guests, how many days?", "Every event you run in Ellie stays on record: guests, days, markets, arrivals met on time.", "soon"],
+          ["How big is the team?", "Your team in Ellie, each person with a role on the event, from the event manager to the drivers.", "today"],
+          ["How do you keep us informed, before and during the event?", "The maison follows the same file: what is ready, what waits for her, every arrival and every change, without a call.", "today"],
+          ["How is billing done per market, in what form, and how fast?", "Each cost tied to a guest, a market and a service; the bill per market, with its detail, the week after.", "soon"],
+          ["What are your agency fees?", "Fees on their own line, per event, shown to the maison as they are.", "soon"]
+        ];
+        return '' +
+          '<div class="sec">' + Q.map(function (q) { return '<div class="prow wide"><span class="t">' + q[0] + '</span><span>' + q[1] + '</span>' + (q[2] === "today" ? st("ok", "In Ellie today") : st("soon", "In co-design")) + '</div>'; }).join("") + '</div>' +
+          '<p class="note ok">Ellie works for the agency in front of the maison: it shows how you run an event, not only what it costs.</p>';
+      }
+    },
+    {
       id: "together", side: "dmc", mod: null, status: null, who: "Co-design",
       title: "Start with transport. Build the rest with us.",
       lede: "On a real event in January. Pick what your team would build first.",
@@ -789,24 +815,43 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
 
     // ---------------------------------------------------------- the maison's side
     {
-      id: "file", p: "julien", mod: "create", status: "today", who: "<b>Julien</b>, events coordinator",
-      title: "Your guest file goes in as it is. The names stay with you.",
-      lede: "Tiers, companions, allergies, room and welcome preferences: Ellie reads the file and builds each guest's journey. The agency works with codes.",
-      before: "The list travels by e-mail in six versions, with names in every attachment.",
-      after: "One file, in one place. The agency never sees a name.",
-      impact: { hours: 8, messages: 30, calls: 0, caught: 3 }, where: "Guests",
-      notes: { live: "Brand side, Guest management: the list shows names. Switch to Agency at the bottom left: the same guests appear as codes.", ask: "Who holds the guest file today, and how many versions circulate before an event?" },
+      id: "rundown", p: "claire", mod: "create", status: "today", who: "<b>Claire</b>, client experience director",
+      title: "Where the event stands, from the first bookings to the eve.",
+      lede: "Your agency books and prepares. You see where each part stands, and only what waits for you. Nothing to upload, nothing to chase.",
+      before: "A status call every week, and a spreadsheet out of date the day it is sent.",
+      after: "The event at a glance, whenever you want it. What waits for you comes first.",
+      impact: { hours: 6, messages: 35, calls: 6, caught: 3 }, where: "Event · Overview",
+      notes: { live: "Brand side, the event page: each module with its progress, and Needs your attention for what waits for the maison.", ask: "Three weeks before an event, how do you know where things stand?" },
       screen: function () {
-        var m = S.mView === "maison";
+        var k = S.mD;
+        var STG = ["Three weeks before", "One week before", "The day before"];
+        var AREAS = [
+          ["Invitations", ["28 of 30 confirmed", "30 of 30 confirmed", "30 of 30 confirmed"], ["warn", "ok", "ok"]],
+          ["Flights", ["19 of 30 received", "28 of 30 received", "30 of 30, times checked"], ["warn", "warn", "ok"]],
+          ["Rooms", ["30 booked, 4 suites to confirm", "30 confirmed, rooming lists with the hotels", "30 ready, welcome gifts in place"], ["warn", "ok", "ok"]],
+          ["Cars", ["7 cars booked for the week", "11 arrivals planned, 2 without a car", "11 arrivals, each with a car and a host"], ["ok", "warn", "ok"]],
+          ["Dining", ["Welcome dinner booked, the gala table plan to approve", "Table plan approved, 1 main course to choose", "Every main course chosen, allergies with the kitchens"], ["warn", "warn", "ok"]],
+          ["Gifts", ["In production", "Delivered to the hotels", "In the suites before arrival"], ["", "ok", "ok"]]
+        ];
+        var WORD = { ok: "Ready", warn: "In progress", "": "Under way" };
+        var NEED = [["Approve the gala table plan", "Confirm two connecting suites for the Mansour family"], ["Choose Mrs Lau's main course, with her advisor"], []];
+        var READY = [62, 88, 100];
+        var MILES = [["Invitations closed", "D-21"], ["Rooming lists to the hotels", "D-10"], ["Run-through with the agency", "D-1, 18:00"], ["First arrivals", "Day 1, 09:30"]];
+        var DONE = [1, 2, 3];
         return '' +
-          '<div class="tabs">' + [["maison", "What you see"], ["agency", "What the agency sees"]].map(function (v) { return '<button data-mview="' + v[0] + '" aria-pressed="' + (S.mView === v[0]) + '">' + v[1] + '</button>'; }).join("") + '</div>' +
-          '<p class="alert"><b>30 guests, 11 parties</b><span class="s crit">3 critical allergies flagged</span></p>' +
-          '<div class="tbl"><table><thead><tr><th class="label">Guest</th><th class="label">Tier</th><th class="label">Lands</th><th class="label">Room and welcome</th><th class="label">Dietary</th></tr></thead><tbody>' +
-          MG.map(function (g) { return '<tr><td>' + (m ? '<span class="t">' + g.name + '</span>' : '<span class="code">' + g.code + '</span>') + '</td><td>' + g.tier + '</td><td class="tn">' + g.land + '</td><td>' + g.req + '</td><td' + (g.crit ? ' class="crit"' : '') + '>' + g.diet + '</td></tr>'; }).join("") +
-          '</tbody></table></div>' +
-          '<p class="note ok">' + (m ? "Names, advisors and relationship notes are visible to the maison only." : "The agency sees a code and what it needs to serve each guest. No name, no advisor, no note.") + '</p>';
+          '<div class="tabs">' + STG.map(function (s, i) { return '<button data-md="' + i + '" aria-pressed="' + (k === i) + '">' + s + '</button>'; }).join("") + '</div>' +
+          '<p class="alert"><b' + (READY[k] === 100 ? ' class="ok"' : '') + '>' + READY[k] + ' % ready</b><span class="s">30 guests, 11 parties. First arrivals on Day 1 at 09:30.</span></p>' +
+          '<div class="progress"><i style="width:' + READY[k] + '%"></i></div>' +
+          '<div class="cols2">' +
+            '<div class="sec"><div class="label">Where each part stands</div>' + AREAS.map(function (a) { return '<div class="prow"><span class="s">' + a[0] + '</span><span>' + a[1][k] + '</span>' + st(a[2][k], WORD[a[2][k]]) + '</div>'; }).join("") + '</div>' +
+            '<div class="sec"><div class="label">Waiting for you</div>' +
+              (NEED[k].length ? NEED[k].map(function (n) { return '<div class="line"><span>' + n + '</span>' + st("warn", "Your turn") + '</div>'; }).join("") : '<div class="line"><span>Nothing waits for you.</span>' + st("ok", "All set") + '</div>') +
+              '<div class="label" style="padding-top:1.1rem">Milestones</div>' +
+              MILES.map(function (m, i) { var d = i < DONE[k]; return '<div class="line"><div class="l"><span class="t">' + m[0] + '</span><span class="s">' + m[1] + '</span></div>' + st(d ? "ok" : "", d ? "Done" : "To come") + '</div>'; }).join("") +
+            '</div>' +
+          '</div>';
       },
-      wire: function () { $$("[data-mview]").forEach(function (b) { b.onclick = function () { S.mView = b.getAttribute("data-mview"); render(); }; }); }
+      wire: function () { $$("[data-md]").forEach(function (b) { b.onclick = function () { S.mD = +b.getAttribute("data-md"); render(); }; }); }
     },
     {
       id: "programme", p: "claire", mod: "create", status: "today", who: "<b>Claire</b>, client experience director",
@@ -838,38 +883,9 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
       }
     },
     {
-      id: "letter", p: "mei", mod: "create", status: "today", who: "<b>Mei</b>, client advisor",
-      title: "Every requirement, on the step where it matters.",
-      lede: "Said once in the file, shown to the hotel, the restaurant and the driver on the right step. What is missing is asked before the event, not during.",
-      before: "The advisor repeats the same preferences to three people, and hopes.",
-      after: "Said once. The journey carries it to the hotel, the dinner and the gala.",
-      impact: { hours: 3, messages: 25, calls: 6, caught: 2 }, where: "Guests · Journey",
-      notes: { live: "Brand side, Guest management: open a guest to see the room, dining and gala requirements. In Orchestration, the signal Main course missing lists what is still to ask.", ask: "Where do a client's preferences live today, and who repeats them to whom?" },
-      screen: function () {
-        var J = {
-          lau: [["Arrival, Day 1", "15:40, CX 705", "Met at the gate by a host", "ok", "Confirmed"], ["Hotel", "Lumière Bangkok", "Suite, feather pillows, green tea welcome", "ok", "Confirmed"], ["Dinner, Day 1", "Lotus Room, 19:30", "No shellfish", "ok", "Sent to the restaurant"], ["Private viewing, Day 2", "16:30", "With her advisor", "ok", "Confirmed"], ["Gala, Day 3", "19:00", null]],
-          srisuk: [["Arrival, Day 1", "14:20, TG 102", "Met at the gate, fast track", "ok", "Confirmed"], ["Hotel", "Riverside Suites", "River suite, white flowers, no lilies", "ok", "Confirmed"], ["Dinner, Day 1", "Sala River, 20:00", "No shellfish, severe allergy", "crit", "Flagged to the kitchen"], ["Gala, Day 3", "19:00", "Fish, no shellfish on the table", "ok", "Confirmed"]],
-          mansour: [["Arrival, Day 1", "19:35, EK 372", "A party of four, a V-Class", "warn", "Car to assign"], ["Hotel", "Riverside Suites", "Two connecting suites", "ok", "Confirmed"], ["Dinner, Day 2", "Saffron Terrace, 20:00", "No pork, no alcohol, a private room", "ok", "Sent to the restaurant"], ["Gala, Day 3", "19:00", "Lamb, no alcohol pairing", "ok", "Confirmed"]]
-        };
-        var missing = S.mGuest === "lau" && !S.mCourse;
-        return '' +
-          '<div class="tabs">' + MG.slice(0, 3).map(function (g) { return '<button data-mguest="' + g.k + '" aria-pressed="' + (S.mGuest === g.k) + '">' + g.name + '</button>'; }).join("") + '</div>' +
-          '<p class="alert"><b class="' + (missing ? 'crit' : 'ok') + '">' + (missing ? 'One thing is missing before the event' : 'Nothing is missing') + '</b></p>' +
-          '<div class="sec">' + J[S.mGuest].map(function (r) {
-            var req = r[2], right = r[2] ? st(r[3], r[4]) : '';
-            if (r[2] === null) { req = S.mCourse ? "Fish, chosen with her advisor" : '<span class="crit">Main course missing</span>'; right = S.mCourse ? st("ok", "Confirmed") : '<button class="link strong" id="mCourse">Choose with her advisor</button>'; }
-            return '<div class="prow wide"><span><span class="t">' + r[0] + '</span><br><span class="s">' + r[1] + '</span></span><span>' + req + '</span>' + right + '</div>';
-          }).join("") + '</div>';
-      },
-      wire: function () {
-        $$("[data-mguest]").forEach(function (b) { b.onclick = function () { S.mGuest = b.getAttribute("data-mguest"); render(); }; });
-        var c = $("#mCourse"); if (c) c.onclick = function () { S.mCourse = true; render(); };
-      }
-    },
-    {
       id: "follow", p: "claire", mod: "orchestrate", status: "today", who: "<b>Claire</b>, client experience director",
-      title: "You follow the day without calling.",
-      lede: "Who has landed, who is in their suite, what is blocked and why. The agency runs it; you see it as it happens.",
+      title: "Day 1: the event starts, and you see every arrival.",
+      lede: "Who has landed, who is in the car, who is in her suite, what is blocked and why. The agency runs the day; you see it as it happens, without calling anyone.",
       before: "The director calls the agency every hour to know where her guests are.",
       after: "She opens the day. A blocked step says why.",
       impact: { hours: 4, messages: 30, calls: 20, caught: 2 }, where: "Orchestration · Day 1",
@@ -889,58 +905,56 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
       wire: function () { var b = $("#mLater"); if (b) b.onclick = function () { S.mT++; render(); }; }
     },
     {
-      id: "change", p: "mei", mod: "orchestrate", status: "today", who: "<b>Mei</b>, client advisor",
-      title: "A change is asked once, on the step itself.",
-      lede: "Mrs Lau arrives with her sister. Her advisor asks for the change on the hotel step. It stays there until the agency answers.",
-      before: "A WhatsApp to the agency, lost between two others.",
-      after: "The request sits on the step. Everyone sees when it is answered.",
-      impact: { hours: 1, messages: 12, calls: 5, caught: 1 }, where: "Mrs W. Lau · Hotel",
-      notes: { live: "Brand side: open a guest's step, Request a change, write what needs to change. On the Agency side the card shows Change requested until it is resolved.", ask: "How does a last-minute change reach your agency today?" },
+      id: "challenges", p: "mei", mod: "orchestrate", status: "today", who: "<b>Mei</b>, client advisor",
+      title: "Six things that go wrong. What you see, what you do.",
+      lede: "A late flight, a guest who brings her sister, rain on the terrace. The agency handles it on the ground. You see it on the guest's journey, and you decide only what is yours to decide.",
+      before: "Each surprise is a phone call, a WhatsApp thread, and a director who learns it last.",
+      after: "Each surprise sits on the guest's step, with what was done, by whom and when.",
+      impact: { hours: 5, messages: 40, calls: 18, caught: 6 }, where: "Orchestration · Day 1 and Day 2",
+      notes: { say: "Let the maison pick the challenge that worries her most.", live: "Brand side: open a guest's journey. A changed step shows the new time, a blocked step says why, and Request a change sits on the step itself.", ask: "Which of these happened at your last event, and how did you hear about it?" },
       screen: function () {
-        var s = S.mChange;
+        var CH = [
+          { k: "flight", t: "A flight is two hours late", g: "Mr and Mrs Chen, CI 833", res: "Rearranged in 10 minutes",
+            rows: [["13:05", "CI 833 now lands at 16:20, not 14:20."], ["13:12", "The agency moves their car to 16:50, with the same host at the gate."], ["13:15", "Their suite is held, their dinner moves to 21:00."]],
+            you: "Nothing to do. Their journey shows the new times, before they land.", soon: "An alert on the advisor's phone is in co-design." },
+          { k: "sister", t: "A guest arrives with her sister", g: "Mrs W. Lau", res: "Answered in 35 minutes",
+            rows: [["11:05", "Mei asks for the change on Mrs Lau's hotel step: a connecting room, one more cover at the gala."], ["11:40", "The agency confirms both, on the same step."]],
+            you: "One request, on the step itself. The request and the answer stay in its history." },
+          { k: "rain", t: "Rain on the river terrace", g: "Welcome dinner, Day 1", res: "Decided in 11 minutes",
+            rows: [["16:00", "A storm is forecast at 19:00."], ["16:20", "The agency proposes the Lotus Room, indoors, with the same menu."], ["16:31", "Claire approves it on the dinner itself."], ["16:40", "Thirty journeys and the drivers' pick-up points follow."]],
+            you: "One approval. Every guest's plan follows it." },
+          { k: "suite", t: "A suite is not ready", g: "Ms R. Tan, Riverside Suites", res: "Handled before she arrived",
+            rows: [["10:05", "The hotel says her suite will be ready at 11:15, not 10:00."], ["10:10", "Her step shows Blocked, with the reason. Her host will take her to the river lounge and her luggage will go up."], ["11:20", "In her suite."]],
+            you: "You know before she asks, and why." },
+          { k: "allergy", t: "A severe allergy at the gala", g: "Mrs P. Srisuk", res: "Confirmed before service",
+            rows: [["Weeks before", "A severe shellfish allergy, noted once in her file."], ["Day 2, 17:30", "The gala kitchen confirms her plate, on the dinner step."], ["Day 2, 19:45", "Her plate is served first, prepared apart."]],
+            you: "Said once, carried to the kitchen. Nobody had to repeat it." },
+          { k: "car", t: "A car breaks down", g: "Dr A. Mansour, a party of four", res: "Replaced in 2 minutes",
+            rows: [["Day 2, 19:10", "The V-Class taking the Mansour family to dinner is out of service."], ["19:12", "The agency gives the transfer to the Sprinter; Ellie checks it is free and has the seats."], ["19:31", "On their way, six minutes later than planned."]],
+            you: "Their step says On their way, with the new time. No call." }
+        ];
+        var c = CH.filter(function (x) { return x.k === S.mCh; })[0] || CH[0];
         return '' +
-          '<div class="sec"><div class="line"><div class="l"><span class="t">Hotel, Lumière Bangkok</span><span class="s">Suite, three nights, feather pillows, green tea welcome</span></div>' + (s === 0 ? st("ok", "Confirmed") : s === 1 ? st("warn", "Change requested") : st("ok", "Confirmed again")) + '</div></div>' +
-          '<div class="sec"><div class="label">What needs to change?</div><div class="line"><span>Mrs Lau arrives with her sister. A connecting room, and one more cover at the gala.</span></div></div>' +
-          (s === 0 ? '<div><button class="btn primary" id="mChange">Request the change</button></div>' : '') +
-          (s >= 1 ? '<div class="sec fade"><div class="label">On the step</div><div class="prow"><span class="tn s">11:05</span><span>Asked by Mei. The agency sees it on the same step.</span></div>' + (s >= 2 ? '<div class="prow"><span class="tn s">11:40</span><span>Answered by the agency: the connecting room is confirmed, the gala cover is added, the car still fits three.</span></div>' : '') + '</div>' : '') +
-          (s === 1 ? '<div><button class="btn" id="mChange">Later that morning</button></div>' : '') +
-          (s >= 2 ? '<p class="note ok fade">Answered in thirty-five minutes. The request and the answer stay in the history of the step.</p>' : '');
-      },
-      wire: function () { var b = $("#mChange"); if (b) b.onclick = function () { S.mChange++; render(); }; }
-    },
-    {
-      id: "told", p: "mei", mod: "orchestrate", status: "soon", who: "<b>Mei</b>, client advisor",
-      title: "Told before the guest notices.",
-      lede: "A flight is late. The advisor learns it from Ellie, with what has already been rearranged, before her client lands.",
-      before: "The advisor hears about the delay from her client.",
-      after: "She knows first, and has something reassuring to say.",
-      impact: { hours: 1, messages: 10, calls: 6, caught: 1 }, where: "Mei's phone · Mrs P. Srisuk, Day 1",
-      notes: { ask: "How do your advisors hear about a change to their client's day?" },
-      screen: function () {
-        var s = S.mTold;
-        var msgs = ['<div class="bub"><span class="w">Ellie · 13:08</span>Mrs Srisuk\'s flight lands at <b>16:20</b>, two hours late. Her car is moved, her suite is held, her dinner moves to 21:00. Nothing for you to do.</div>'];
-        if (s >= 1) msgs.push('<div class="bub fade"><span class="w">Ellie · 16:25</span>Mrs Srisuk has landed. Her host is at the gate.</div>');
-        if (s >= 2) msgs.push('<div class="bub fade"><span class="w">Ellie · 17:50</span>She is in her suite. The white flowers are there.</div>');
-        var rows = [["Arrival", "16:20 instead of 14:20", s >= 1 ? st("ok", "Landed") : st("warn", "Delayed")], ["Transfer", "16:50, the same host at the gate", s >= 2 ? st("ok", "Done") : st("", "Rescheduled")], ["Hotel", "Check-in at 17:45, the suite held", s >= 2 ? st("ok", "In her suite") : st("", "Held")], ["Dinner", "21:00 instead of 20:00, the allergy note sent again", st("", "Moved")]];
-        return '' +
-          '<div class="duo">' +
-            '<div class="phone" aria-label="Mei\'s phone">' + msgs.join("") + '</div>' +
-            '<div class="side"><div class="sec"><div class="label">What the agency rearranged</div>' + rows.map(function (r) { return '<div class="prow"><span class="s">' + r[0] + '</span><span>' + r[1] + '</span>' + r[2] + '</div>'; }).join("") + '</div>' +
-              (s < 2 ? '<div class="acts"><button class="link" id="mTold">' + (s === 0 ? "She lands" : "An hour and a half later") + '</button></div>' : '<p class="note ok fade">Mei made no call. She welcomed her client with the right words.</p>') +
+          '<div class="cols2">' +
+            '<div class="chl" role="group" aria-label="Choose a challenge">' + CH.map(function (x) { return '<button data-ch="' + x.k + '" aria-pressed="' + (x.k === c.k) + '"><span class="t">' + x.t + '</span><span class="s">' + x.g + '</span></button>'; }).join("") + '</div>' +
+            '<div class="side fade">' +
+              '<p class="alert"><b class="ok">' + c.res + '</b><span class="s">' + c.g + '</span></p>' +
+              '<div class="sec"><div class="label">What happened, what the agency did</div>' + c.rows.map(function (r) { return '<div class="prow"><span class="tn s">' + r[0] + '</span><span>' + r[1] + '</span><span></span></div>'; }).join("") + '</div>' +
+              '<p class="note ok">' + c.you + '</p>' + (c.soon ? '<p class="s">' + c.soon + '</p>' : '') +
             '</div>' +
           '</div>';
       },
-      wire: function () { var b = $("#mTold"); if (b) b.onclick = function () { S.mTold++; render(); }; }
+      wire: function () { $$("[data-ch]").forEach(function (b) { b.onclick = function () { S.mCh = b.getAttribute("data-ch"); render(); }; }); }
     },
     {
       id: "memory", p: "claire", mod: "analyse", status: "soon", who: "<b>Claire</b>, client experience director",
-      title: "The guest experience, reviewed and remembered.",
-      lede: "What went to the letter, what changed, and the small things noticed during the event, kept for the next invitation.",
-      privacy: "Kept only if the maison chooses, under the maison's rules. The agency keeps nothing.",
-      before: "The memory of an event leaves with the people who ran it.",
-      after: "Next year, the suite is ready the way she liked it.",
-      impact: { hours: 10, messages: 10, calls: 4, caught: 0 }, where: "Analyse · Private Viewing Bangkok",
-      notes: { say: "Today the guests' data is deleted after the event. Present the memory as the maison's decision, under its own rules.", ask: "What do you keep from one event to the next today, and where?" },
+      title: "The bill per market, the week after. Not two months later.",
+      lede: "Each cost is tied to a guest, a market and a service when it happens. Each market sees what its guests cost, line by line, the week after the event, along with what went to the letter and what to keep for next time.",
+      privacy: "Guest memory is kept only if the maison chooses, under the maison's rules. The agency keeps nothing.",
+      before: "Two months after the event, the maison still waits for the bill and its detail by market.",
+      after: "The bill per market, with its detail, five days after the last guest leaves.",
+      impact: { hours: 10, messages: 25, calls: 6, caught: 0 }, where: "Analyse · Private Viewing Bangkok",
+      notes: { say: "A maison chooses its agency on this: how billing is done per market, in what form, and how fast. Today the costs per market are not in Ellie: this is what we build with the agency.", ask: "How long did you wait for the bill of your last event, and in what form did it come?" },
       screen: function () {
         var body = "";
         if (S.mTab === "guests") {
@@ -954,13 +968,14 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
           [["Mrs W. Lau", "12 of 12", "Her sister joined", "Her towels on the left of the basin"], ["Mrs P. Srisuk", "11 of 12", "Flight delay, dinner moved", "Loved the river terrace"], ["Dr A. Mansour", "13 of 13", "Nothing", "A family breakfast in the suite"]].map(function (r) { return '<tr><td><span class="t">' + r[0] + '</span></td><td class="tn">' + r[1] + '</td><td>' + r[2] + '</td><td>' + r[3] + '</td></tr>'; }).join("") +
           '</tbody></table></div>';
         } else if (S.mTab === "markets") {
-          body = '<div class="tbl"><table><thead><tr><th class="label">Market</th><th class="label num">Guests</th><th class="label num">Cost per guest, USD</th><th class="label num">Total USD</th></tr></thead><tbody>' +
-            [["Thailand", 8, 12900], ["Hong Kong", 6, 10200], ["China", 7, 11300], ["UAE", 4, 7800], ["Others", 5, 4800]].map(function (m) { return '<tr><td>' + m[0] + '</td><td class="num">' + m[1] + '</td><td class="num">' + Math.round(m[2] / m[1]).toLocaleString("en-US") + '</td><td class="num">' + m[2].toLocaleString("en-US") + '</td></tr>'; }).join("") +
-            '</tbody></table></div><p class="note ok">Each market sees what its guests cost, by service.</p>';
+          body = '<p class="alert"><b class="ok">Ready on Day 9</b><span class="s">The event ended on Day 4. Every line is tied to a guest and a service.</span></p>' +
+            '<div class="tbl"><table><thead><tr><th class="label">Market</th><th class="label num">Guests</th><th class="label num">Cost per guest, USD</th><th class="label num">Total USD</th></tr></thead><tbody>' +
+            [["Thailand", 8, 129000], ["Hong Kong", 6, 102000], ["China", 7, 113000], ["UAE", 4, 78000], ["Others", 5, 48000]].map(function (m) { return '<tr><td>' + m[0] + '</td><td class="num">' + m[1] + '</td><td class="num">' + Math.round(m[2] / m[1]).toLocaleString("en-US") + '</td><td class="num">' + m[2].toLocaleString("en-US") + '</td></tr>'; }).join("") +
+            '</tbody></table></div><p class="note ok">Each market receives its bill with the detail by guest and by service, in the same form every time.</p>';
         } else {
           body = '<div class="sec"><div class="line"><span>Ask the gala main course with the invitation.</span></div><div class="line"><span>Hold two connecting suites for every family of four.</span></div><div class="line"><span>A second host at the airport when three parties land within the hour.</span></div></div>';
         }
-        return '<div class="tabs">' + [["guests", "Guests"], ["markets", "Markets"], ["next", "Next time"]].map(function (t) { return '<button data-mtab="' + t[0] + '" aria-pressed="' + (S.mTab === t[0]) + '">' + t[1] + '</button>'; }).join("") + '</div>' + body;
+        return '<div class="tabs">' + [["markets", "Bill per market"], ["guests", "Guest experience"], ["next", "Next time"]].map(function (t) { return '<button data-mtab="' + t[0] + '" aria-pressed="' + (S.mTab === t[0]) + '">' + t[1] + '</button>'; }).join("") + '</div>' + body;
       },
       wire: function () { $$("[data-mtab]").forEach(function (b) { b.onclick = function () { S.mTab = b.getAttribute("data-mtab"); render(); }; }); }
     },
@@ -971,7 +986,7 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
       impact: null, where: "Your priorities",
       notes: { say: "Let the maison tick the options itself, in its order. The top three become the agenda of the first workshop.", ask: "What is missing from this list?" },
       screen: function () {
-        var OPTS = ["Guest memory from one event to the next", "The advisor's view of her clients, on her phone", "Told when a VIP's plan changes", "Preferences collected with the invitation", "Approvals from the phone", "A review of the guest experience after each event", "Costs per guest and per market", "The assistant in your language"];
+        var OPTS = ["The bill per market, the week after the event", "Guest memory from one event to the next", "The advisor's view of her clients, on her phone", "Told when a VIP's plan changes", "Preferences collected with the invitation", "Approvals from the phone", "A review of the guest experience after each event", "Costs per guest and per market", "The assistant in your language"];
         return '' +
           '<div class="sec"><div class="label">Tap in order of priority</div><div class="opts">' + OPTS.map(function (o) { var r = S.mPicks.indexOf(o) + 1; return '<button class="opt" data-mopt="' + esc(o) + '" aria-pressed="' + (r > 0) + '"><span class="rk">' + (r || "") + '</span><span>' + esc(o) + '</span></button>'; }).join("") + '</div></div>' +
           '<div class="cols2">' +
@@ -1027,7 +1042,7 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
           (sc.privacy ? '<p class="priv">' + sc.privacy + '</p>' : '') +
           (sc.before ? '<dl class="ba"><div><dt class="label">Today</dt><dd>' + sc.before + '</dd></div><div class="after"><dt class="label">With Ellie</dt><dd>' + sc.after + '</dd></div></dl>' : '') +
           (S.notes ? '<div class="notes">' + (sc.notes.say ? '<span><b>Say.</b> ' + sc.notes.say + '</span>' : '') + (sc.notes.live ? '<span><b>Show it live in Ellie.</b> ' + sc.notes.live + '</span>' : (sc.status === "soon" ? '<span><b>Not in Ellie yet.</b> Present it as a proposal to design together.</span>' : '')) + (sc.notes.ask ? '<span><b>Ask.</b> ' + sc.notes.ask + '</span>' : '') + '<span>Keys: arrows to move, N notes, T theme, 1 2 3 looks, F full screen. Click ELLIE to start over.</span></div>' : '') +
-          '<div class="nav">' + (pos > 0 ? '<button class="btn" id="prev">Back</button>' : '') + (pos < q.length - 1 ? '<button class="btn primary" id="next">' + (S.i === 0 ? (who ? "Follow " + who[1] : S.side === "maison" ? "Start with the guest file" : "Start with the brief") : "Next") + '</button>' : '') + '</div>' +
+          '<div class="nav">' + (pos > 0 ? '<button class="btn" id="prev">Back</button>' : '') + (pos < q.length - 1 ? '<button class="btn primary" id="next">' + (S.i === 0 ? (who ? "Follow " + who[1] : S.side === "maison" ? "Start three weeks before" : "Start with the brief") : "Next") + '</button>' : '') + '</div>' +
         '</section>' +
         '<section class="screen" aria-label="Ellie screen">' +
           '<div class="bar"><span class="label">' + sc.where + '</span>' + (sc.status === "today" ? '<span class="state st ok">In Ellie today</span>' : sc.status === "soon" ? '<span class="state st soon">In co-design</span>' : '') + '</div>' +
@@ -1064,8 +1079,8 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
     S.owner = "all"; S.tasksDone = {}; S.signal = "all"; S.reasons = {}; S.blocking = null;
     S.cards = { AU01: "confirmed", ES01: "confirmed", CN01: "confirmed", SG01: "confirmed", JP01: "confirmed", TH01: "progress", HK01: "progress", KR01: "todo", AE01: "todo" };
     S.delay = 0; S.drv = 0; S.drvAlert = 0; S.drvNight = false; S.loc = false; S.choice = null; S.tab = "transport";
-    S.mView = "maison"; S.mAppr = { dinner: "proposed", temple: "proposed", gift: "proposed" }; S.mGuest = "lau"; S.mCourse = false;
-    S.mT = 0; S.mChange = 0; S.mTold = 0; S.mTab = "guests";
+    S.mD = 0; S.mAppr = { dinner: "proposed", temple: "proposed", gift: "proposed" }; S.mCh = "flight";
+    S.mT = 0; S.mTab = "markets";
     go(0);
   }
   function go(i) {

@@ -21,8 +21,13 @@ Published with GitHub Pages from `main`, root folder. One file per version, no b
 - **Two sides of the same event.** The first screen asks the viewer to choose: a maison (the guests, their journeys and
   every requirement) or a DMC (everything to deliver on the ground). `?side=maison` or `?side=dmc` opens directly on
   one side.
+- **The maison side** (reworked on 15/11/2026 after the maison's feedback: concrete, no upload, visibility on the
+  run-down): where the event stands three weeks, one week and one day before; the programme to approve; the first
+  arrivals; six things that go wrong and what the maison sees and does; the bill per market the week after.
+- **The DMC side** ends with the five questions a maison asks before choosing an agency, and what Ellie gives the
+  agency to answer each.
 - **One person's day.** The first screen lets the viewer follow the whole team or one profile (for the DMC: Nok, Arun,
-  Ploy, Somchai, Mai; for the maison: Claire, Julien, Mei). `?profile=arun` opens it that way.
+  Ploy, Somchai, Mai; for the maison: Claire, Mei). `?profile=arun` opens it that way.
 - **Three looks.** A banner on the first screen lets the viewer pick one: A, night blue; B, verdigris; C, earth and
   sand. Keys 1, 2, 3 switch at any time. `?look=a` (the look of the website) fixes the look and hides the banner: use
   that form for a meeting, for example `?dmc=Name&look=a`.
