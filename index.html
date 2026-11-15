@@ -653,7 +653,7 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
       notes: { ask: "How do you hear about a flight change today? Who calls whom, and how long until everyone knows?" },
       screen: function () {
         var s = S.delay, conf = s === 0 ? 0 : s === 1 ? 6 : 9;
-        var prop = [["Transport", "Pick-up moves to 16:50", "30 minutes after landing"], ["Fleet", "V-01 takes the new pick-up", "Free at 16:50, six seats, Kiet at the wheel"], ["Hotel", "Late check-in at 17:45", "Room and welcome kept"], ["Concierge", "Dinner moves to 21:00", "Allergy note sent again"]];
+        var prop = [["Transport", "Pick-up moves to 16:50", "30 minutes after landing"], ["Fleet", "V-01 takes the new pick-up", "Free at 16:50, six seats, Kiet at the wheel"], ["Hotel", "Late check-in at 17:45", "Room and welcome kept"], ["Concierge", "Dinner moves to 21:00", "Allergy note sent again"], ["Cost", "One more hour of V-01, USD 45", "On TH01's line, Thailand market. In co-design"]];
         var told = [["Kiet, V-01", "New pick-up 16:50", true], ["Niran, S-02", "TH01 removed, back on the 21:00 dinner run", true], ["Ploy, airport host", "Meet TH01 at 16:20", true], ["Riverside Suites", "Late check-in 17:45", s > 1], ["Restaurant", "Dinner 21:00, allergy note", s > 1], ["The maison", "New times for TH01", true]];
         return '' +
           '<p class="note crit">13:05. TG 102 now lands at 16:20 instead of 14:20, with party TH01, VVIP.</p>' +
@@ -911,27 +911,33 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
       before: "Each surprise is a phone call, a WhatsApp thread, and a director who learns it last.",
       after: "Each surprise sits on the guest's step, with what was done, by whom and when.",
       impact: { hours: 5, messages: 40, calls: 18, caught: 6 }, where: "Orchestration · Day 1 and Day 2",
-      notes: { say: "Let the maison pick the challenge that worries her most.", live: "Brand side: open a guest's journey. A changed step shows the new time, a blocked step says why, and Request a change sits on the step itself.", ask: "Which of these happened at your last event, and how did you hear about it?" },
+      notes: { say: "Let the maison pick the challenge that worries her most. Costs are followed here, during the event, and analysed after it, by market: today this is done by hand in Excel.", live: "Brand side: open a guest's journey. A changed step shows the new time, a blocked step says why, and Request a change sits on the step itself.", ask: "Which of these happened at your last event, and how did you hear about it?" },
       screen: function () {
         var CH = [
           { k: "flight", t: "A flight is two hours late", g: "Mr and Mrs Chen, CI 833", res: "Rearranged in 10 minutes",
             rows: [["13:05", "CI 833 now lands at 16:20, not 14:20."], ["13:12", "The agency moves their car to 16:50, with the same host at the gate."], ["13:15", "Their suite is held, their dinner moves to 21:00."]],
-            you: "Nothing to do. Their journey shows the new times, before they land.", soon: "An alert on the advisor's phone is in co-design." },
+            you: "Nothing to do. Their journey shows the new times, before they land.", soon: "An alert on the advisor's phone is in co-design.",
+            cost: "No extra cost: the same car and host, a later hour in the agency's package." },
           { k: "sister", t: "A guest arrives with her sister", g: "Mrs W. Lau", res: "Answered in 35 minutes",
             rows: [["11:05", "Mei asks for the change on Mrs Lau's hotel step: a connecting room, one more cover at the gala."], ["11:40", "The agency confirms both, on the same step."]],
-            you: "One request, on the step itself. The request and the answer stay in its history." },
+            you: "One request, on the step itself. The request and the answer stay in its history.",
+            cost: "USD 1,850 added to the Hong Kong market: a connecting room for three nights and one gala cover." },
           { k: "rain", t: "Rain on the river terrace", g: "Welcome dinner, Day 1", res: "Decided in 11 minutes",
             rows: [["16:00", "A storm is forecast at 19:00."], ["16:20", "The agency proposes the Lotus Room, indoors, with the same menu."], ["16:31", "Claire approves it on the dinner itself."], ["16:40", "Thirty journeys and the drivers' pick-up points follow."]],
-            you: "One approval. Every guest's plan follows it." },
+            you: "One approval. Every guest's plan follows it.",
+            cost: "USD 2,400 added to the event budget: the Lotus Room hire. You saw it before approving." },
           { k: "suite", t: "A suite is not ready", g: "Ms R. Tan, Riverside Suites", res: "Handled before she arrived",
             rows: [["10:05", "The hotel says her suite will be ready at 11:15, not 10:00."], ["10:10", "Her step shows Blocked, with the reason. Her host will take her to the river lounge and her luggage will go up."], ["11:20", "In her suite."]],
-            you: "You know before she asks, and why." },
+            you: "You know before she asks, and why.",
+            cost: "No cost to the maison: the hotel offers the lounge and the late room." },
           { k: "allergy", t: "A severe allergy at the gala", g: "Mrs P. Srisuk", res: "Confirmed before service",
             rows: [["Weeks before", "A severe shellfish allergy, noted once in her file."], ["Day 2, 17:30", "The gala kitchen confirms her plate, on the dinner step."], ["Day 2, 19:45", "Her plate is served first, prepared apart."]],
-            you: "Said once, carried to the kitchen. Nobody had to repeat it." },
+            you: "Said once, carried to the kitchen. Nobody had to repeat it.",
+            cost: "No extra cost." },
           { k: "car", t: "A car breaks down", g: "Dr A. Mansour, a party of four", res: "Replaced in 2 minutes",
             rows: [["Day 2, 19:10", "The V-Class taking the Mansour family to dinner is out of service."], ["19:12", "The agency gives the transfer to the Sprinter; Ellie checks it is free and has the seats."], ["19:31", "On their way, six minutes later than planned."]],
-            you: "Their step says On their way, with the new time. No call." }
+            you: "Their step says On their way, with the new time. No call.",
+            cost: "No cost to the maison: the replacement car is the agency's." }
         ];
         var c = CH.filter(function (x) { return x.k === S.mCh; })[0] || CH[0];
         return '' +
@@ -941,6 +947,8 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
               '<p class="alert"><b class="ok">' + c.res + '</b><span class="s">' + c.g + '</span></p>' +
               '<div class="sec"><div class="label">What happened, what the agency did</div>' + c.rows.map(function (r) { return '<div class="prow"><span class="tn s">' + r[0] + '</span><span>' + r[1] + '</span><span></span></div>'; }).join("") + '</div>' +
               '<p class="note ok">' + c.you + '</p>' + (c.soon ? '<p class="s">' + c.soon + '</p>' : '') +
+              '<div class="sec"><div class="label">Cost, followed during the event</div><div class="prow"><span class="s">This change</span><span>' + c.cost + '</span>' + st("soon", "In co-design") + '</div>' +
+                '<div class="prow"><span class="s">Event so far</span><span>USD 562,400 of USD 580,000 budgeted, by market. The bill per market follows in Analyse.</span><span></span></div></div>' +
             '</div>' +
           '</div>';
       },
