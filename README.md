@@ -15,8 +15,9 @@ Published with GitHub Pages from `main`, root folder. One file per version, no b
 ## The demo
 
 - Built for a projector: story on the left, a live Ellie screen on the right. Arrow keys to move, N for presenter
-  notes (what to say, what to show live in Ellie, what to ask), T for the theme, F for full screen. Dark by default;
-  `?theme=light` opens it in the light theme.
+  notes (what to say, what to show live in Ellie, what to ask), F for full screen. No tools on screen.
+- **One look, dark only**: the Ellie charter, night blue and gold, with the official logo (decision of 15/11/2026; the
+  two other looks, the light theme and the header links to the website and the tour were removed).
 - The agency's name can be set for a meeting with `?dmc=Name`; the page itself names no real company.
 - **Two sides of the same event.** The first screen asks the viewer to choose: a maison (the guests, their journeys and
   every requirement) or a DMC (everything to deliver on the ground). `?side=maison` or `?side=dmc` opens directly on
@@ -28,11 +29,7 @@ Published with GitHub Pages from `main`, root folder. One file per version, no b
   agency to answer each.
 - **One person's day.** The first screen lets the viewer follow the whole team or one profile (for the DMC: Nok, Arun,
   Ploy, Somchai, Mai; for the maison: Claire, Mei). `?profile=arun` opens it that way.
-- **Three looks.** A banner on the first screen lets the viewer pick one: A, night blue; B, verdigris; C, earth and
-  sand. Keys 1, 2, 3 switch at any time. `?look=a` (the look of the website) fixes the look and hides the banner: use
-  that form for a meeting, for example `?dmc=Name&look=a`.
 - **Back to the start**: click the Ellie logo, or press Home.
-- Header tools (on hover): links to the website and to the onboarding tour.
 
 ## Shared
 

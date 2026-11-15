@@ -11,15 +11,14 @@
 <link rel="apple-touch-icon" href="assets/logo/icon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400..600&family=DM+Mono:wght@400;500&family=Hanken+Grotesk:wght@400;500;600&family=Jost:wght@400;500&family=Schibsted+Grotesk:wght@400;500;600;700&family=Spectral:wght@300;400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400..600&family=Hanken+Grotesk:wght@400;500;600&display=swap">
 <style>
-/* Three looks for the same demo, each with a dark and a light theme. A banner on the first screen lets the viewer pick one;
-   ?look=a|b|c fixes the look and hides the banner (the link to use in a meeting).
+/* One look, dark only: the Ellie charter, night blue and gold (decision of 15/11/2026; the two other looks and the light
+   theme were dropped). No tools in the header: N shows the presenter notes, F goes full screen.
    Layout: built for a projector. The story on the left, a live Ellie screen on the right, one counter at the bottom.
    No cards inside the screen: sections are separated by space and hairlines. One status marker per scene, in the screen bar. */
 
-/* ---------- Look A, "Maison de nuit": night blue, ivory, gold kept for the one filled button. Didone titles.
-   The light theme never darkens the gold (it turns brown): it writes in night blue and keeps the bright gold as a fill. */
+/* ---------- "Maison de nuit": night blue, ivory, gold kept for the one filled button. Didone titles. */
 :root[data-look="a"] {
   --f-display: "Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
   --f-body: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -35,63 +34,13 @@
   --accent: #cfab63; --btn-bg: #cfab63; --btn-ink: #0a0f1a;
   --ok: #86c7a0; --warn: #e0b25a; --crit: #e89482; --soon: #a3b6ea;
 }
-:root[data-look="a"][data-theme="light"] {
-  --bg: #f6f3ec; --surface: #ffffff; --raised: #f1ede4;
-  --text: #0b1930; --muted: #586478; --line: rgba(11, 25, 48, .12); --line-strong: #848d9e;
-  --accent: #0b1930; --btn-bg: #cfab63; --btn-ink: #0b1930;
-  --ok: #2e6b4f; --warn: #a84d06; --crit: #b3261e; --soon: #3d5a96;
-}
 
-/* ---------- Look B, "Vert-de-gris": warm black, the patina of bronze, ivory. One grotesque, mono figures, square corners. */
-:root[data-look="b"] {
-  --f-display: "Schibsted Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --f-body: "Schibsted Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --f-num: "DM Mono", ui-monospace, "SF Mono", Menlo, monospace; --f-kpi: var(--f-num);
-  --title-w: 600; --title-ls: -0.035em; --title-lh: 1.02; --title-1: 3.4rem; --title-2: 3rem;
-  --nav-tt: none; --nav-ls: 0; --nav-size: .86rem;
-  --radius: 0px; --radius-lg: 0px;
-  --brand-font: var(--f-body); --brand-ls: .26em; --brand-w: 700; --brand-size: 1rem;
-}
-:root[data-look="b"][data-theme="dark"] {
-  --bg: #0c0e0d; --surface: #131715; --raised: #1c2320;
-  --text: #e9e7e0; --muted: #9ba49e; --line: rgba(233, 231, 224, .12); --line-strong: #66716b;
-  --accent: #8ecbb5; --btn-bg: #8ecbb5; --btn-ink: #08110e;
-  --ok: #8ecbb5; --warn: #e2b35c; --crit: #ee9683; --soon: #adb7ee;
-}
-:root[data-look="b"][data-theme="light"] {
-  --bg: #f3f3ef; --surface: #ffffff; --raised: #ecece6;
-  --text: #111614; --muted: #57605a; --line: rgba(17, 22, 20, .12); --line-strong: #808983;
-  --accent: #1d6a56; --btn-bg: #111614; --btn-ink: #f3f3ef;
-  --ok: #1d6a56; --warn: #8a6212; --crit: #a8412f; --soon: #4353a6;
-}
 
-/* ---------- Look C, "Terre et bronze": espresso and sand, no accent colour, only the statuses carry colour. Light serif titles. */
-:root[data-look="c"] {
-  --f-display: "Spectral", Georgia, "Times New Roman", serif;
-  --f-body: "Jost", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --f-num: var(--f-body); --f-kpi: var(--f-display);
-  --title-w: 300; --title-ls: -0.02em; --title-lh: 1.08; --title-1: 3.5rem; --title-2: 3.1rem;
-  --nav-tt: none; --nav-ls: .01em; --nav-size: .9rem;
-  --radius: 4px; --radius-lg: 6px;
-  --brand-font: var(--f-display); --brand-ls: .42em; --brand-w: 300; --brand-size: 1.25rem;
-}
-:root[data-look="c"][data-theme="dark"] {
-  --bg: #15120f; --surface: #1d1915; --raised: #2a241d;
-  --text: #ede5d7; --muted: #aba293; --line: rgba(237, 229, 215, .12); --line-strong: #766c60;
-  --accent: #ede5d7; --btn-bg: #ede5d7; --btn-ink: #15120f;
-  --ok: #a9c492; --warn: #e0b560; --crit: #ec9785; --soon: #a9bbdb;
-}
-:root[data-look="c"][data-theme="light"] {
-  --bg: #f2ede4; --surface: #fbf8f2; --raised: #ebe4d8;
-  --text: #1e1914; --muted: #675e53; --line: rgba(30, 25, 20, .12); --line-strong: #8e8477;
-  --accent: #1e1914; --btn-bg: #1e1914; --btn-ink: #f6f1e8;
-  --ok: #3f6634; --warn: #7f5a0c; --crit: #a2402f; --soon: #3f5c8f;
-}
 
-/* Contrast, measured on the worst ground of each look and theme (design/contrast.py): text and statuses at 4.5 or more,
+/* Contrast, measured on the worst ground (design/contrast.py): text and statuses at 4.5 or more,
    control borders (--line-strong) at 3.0 or more. Exception: --line is a decorative hairline between rows, about 1.3 to 1,
    never the only cue for a control or a state. */
-/* Derived tints: the same recipe for every look and theme. */
+/* Derived tints. */
 :root {
   --wash: color-mix(in srgb, var(--accent) 9%, transparent);
   --grid: color-mix(in srgb, var(--text) 6%, transparent);
@@ -102,7 +51,6 @@
   --river: color-mix(in srgb, var(--soon) 26%, var(--surface));
 }
 :root[data-theme="dark"] { color-scheme: dark; }
-:root[data-theme="light"] { color-scheme: light; }
 
 * { box-sizing: border-box; }
 html { font-size: clamp(14px, 0.55vw + 8.5px, 21px); }
@@ -125,13 +73,6 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 .code { font-family: var(--f-num); font-weight: 500; color: var(--accent); font-variant-numeric: tabular-nums; }
 .tn { font-family: var(--f-num); font-variant-numeric: tabular-nums; }
 
-/* look picker, first screen only */
-.pick { display: flex; align-items: baseline; gap: .4rem 1.8rem; flex-wrap: wrap; padding: .75rem 0 .7rem; border-bottom: 1px solid var(--line); font-size: .9rem; }
-.pick .q { font-weight: 500; }
-.pick .looks { display: flex; gap: .3rem 1.6rem; flex-wrap: wrap; }
-.pick .looks button { padding: .1rem 0 .2rem; color: var(--muted); border-bottom: 2px solid transparent; }
-.pick .looks button[aria-pressed="true"] { color: var(--text); border-bottom-color: var(--accent); }
-.pick .hint { margin-left: auto; color: var(--muted); font-size: .8rem; display: flex; gap: 1.2rem; }
 
 /* header */
 .hdr { display: flex; align-items: baseline; justify-content: space-between; gap: .6rem 2rem; flex-wrap: wrap; padding-top: 1.1rem; }
@@ -142,11 +83,6 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 .mods { display: flex; gap: 1.8rem; }
 .mods button { padding: .25rem 0; border-bottom: 1px solid transparent; }
 .mods button[aria-current="true"] { color: var(--text); border-bottom-color: var(--accent); }
-.tools { display: flex; gap: 1.1rem; opacity: 0; transition: opacity .2s; }
-.hdr:hover .tools, .tools:focus-within { opacity: 1; }
-@media (hover: none) { .tools { opacity: 1; } }
-.tools button, .tools a { font-size: .76rem; color: var(--muted); text-decoration: none; }
-.tools button:hover, .tools button[aria-pressed="true"], .tools a:hover { color: var(--text); }
 
 /* stage */
 .stage { display: grid; grid-template-columns: minmax(0, 34fr) minmax(0, 66fr); gap: 2.6rem; min-height: 0; }
@@ -323,7 +259,7 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
 </style>
 </head>
 <body>
-<script>try{var q=new URLSearchParams(location.search),t=q.get("theme")||localStorage.getItem("ellie-demo-theme"),k=q.get("look")||localStorage.getItem("ellie-demo-look"),r=document.documentElement;r.setAttribute("data-theme",t==="light"?"light":"dark");r.setAttribute("data-look",k==="b"||k==="c"?k:"a");}catch(e){document.documentElement.setAttribute("data-theme","dark");document.documentElement.setAttribute("data-look","a");}</script>
+<script>document.documentElement.setAttribute("data-theme","dark");document.documentElement.setAttribute("data-look","a");</script>
 <div class="app" id="app"></div>
 <script>
 (function () {
@@ -375,7 +311,7 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
   // ------------------------------------------------------------ state
   var S = {
     i: 0, notes: false, side: "dmc",
-    theme: root.getAttribute("data-theme") || "dark", look: root.getAttribute("data-look") || "a",
+    theme: "dark", look: "a",
     imp: 0,
     transfers: JSON.parse(JSON.stringify(TRANSFERS0)), pick: null, lastAssign: null, freeAt: "16:00",
     owner: "all", tasksDone: {},
@@ -383,14 +319,11 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
     delay: 0,
     drv: 0, drvAlert: 0, drvNight: false, loc: false, choice: null,
     tab: "transport",
-    picks: [], pickBar: true,
+    picks: [],
     // the maison's side of the same event
     mD: 0, mAppr: { dinner: "proposed", temple: "proposed", gift: "proposed" }, mCh: "flight",
     mT: 0, mTab: "markets", mPicks: []
   };
-  // The look picker shows on the first screen unless the link already fixes a look, or the viewer hid it.
-  try { if (new URLSearchParams(location.search).get("look") || sessionStorage.getItem("ellie-demo-pick-hidden")) S.pickBar = false; } catch (e) {}
-  var LOOKS = [["a", "A", "Night blue"], ["b", "B", "Verdigris"], ["c", "C", "Earth and sand"]];
   // Two sides of the same event, the maison and the DMC: chosen on the first screen, or with ?side=maison in the link.
   // One person's day can be followed on its own: chosen on the first screen, or with ?profile=arun in the link.
   var PROFILES = {
@@ -1031,16 +964,12 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
     var who = PROFILES[S.side].filter(function (p) { return p[0] === S.profile; })[0];
     var html = '' +
       '<div class="top">' +
-      (S.i === 0 && S.pickBar ? '<div class="pick" role="group" aria-label="Choose a look"><span class="q">Three looks for this demo. Which one do you prefer?</span><span class="looks">' + LOOKS.map(function (l) { return '<button data-look="' + l[0] + '" aria-pressed="' + (S.look === l[0]) + '">' + l[1] + '. ' + l[2] + '</button>'; }).join("") + '</span><span class="hint"><span>Keys 1, 2, 3 switch at any time</span><button class="link" id="pickHide">Hide</button></span></div>' : '') +
       '<header class="hdr">' +
         '<div><button class="brand" id="homeBtn" title="Back to the start" aria-label="Ellie, back to the start"><svg viewBox="0 0 1013 146" fill="currentColor" aria-hidden="true" focusable="false"><rect x="0" y="0" width="130.5" height="12.5"/><rect x="0" y="0" width="12.5" height="60"/><path d="M114.5 66H30A30 30 0 0 0 0 96V146H12.5V96A17.5 17.5 0 0 1 30 78.5H114.5Z"/><rect x="0" y="133.5" width="130.5" height="12.5"/><rect x="267" y="0" width="12.5" height="146"/><rect x="267" y="133.5" width="92.5" height="12.5"/><rect x="499" y="0" width="12.5" height="146"/><rect x="499" y="133.5" width="92" height="12.5"/><rect x="737.5" y="0" width="12.5" height="146"/><rect x="905" y="0" width="12.5" height="146"/><rect x="905" y="0" width="107.5" height="12.5"/><rect x="905" y="66" width="96.5" height="12.5"/><rect x="905" y="133.5" width="107.5" height="12.5"/></svg></button><span class="evt">Private Viewing Bangkok, ' + (S.side === "maison" ? 'Maison Aurore' : 'with ' + esc(DMC)) + '</span></div>' +
         '<nav class="mods" aria-label="Modules">' + MODS.map(function (m) {
           var first = q.filter(function (k) { return SCENES[k].mod === m[0]; })[0];
           return '<button class="label" ' + (first === undefined ? 'disabled' : 'data-mod="' + first + '"') + ' aria-current="' + (sc.mod === m[0]) + '">' + m[1] + '</button>';
         }).join("") + '</nav>' +
-        '<div class="tools">' +
-          '<a href="https://charlusminus.github.io/ellie-site/">Website</a><a href="onboarding/">Onboarding</a>' +
-          '<button id="themeBtn" title="Switch theme (T)">' + (S.theme === "dark" ? "Light" : "Dark") + '</button><button id="notesBtn" aria-pressed="' + S.notes + '" title="Presenter notes (N)">Notes</button><button id="fsBtn" title="Full screen (F)">Full screen</button></div>' +
       '</header></div>' +
       '<div class="stage">' +
         '<section class="story" aria-live="polite">' +
@@ -1069,19 +998,12 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
     on("prev", function () { step(-1); });
     on("next", function () { step(1); });
     on("homeBtn", restart);
-    on("notesBtn", function () { S.notes = !S.notes; render(); });
-    on("themeBtn", toggleTheme);
-    on("fsBtn", toggleFs);
     $$("[data-mod]").forEach(function (b) { b.onclick = function () { go(+b.getAttribute("data-mod")); }; });
-    $$("[data-look]").forEach(function (b) { b.onclick = function () { setLook(b.getAttribute("data-look")); }; });
-    on("pickHide", function () { S.pickBar = false; try { sessionStorage.setItem("ellie-demo-pick-hidden", "1"); } catch (e) {} render(); });
     if (sc.wire) sc.wire();
   }
-  function setLook(l) { S.look = l; root.setAttribute("data-look", l); try { localStorage.setItem("ellie-demo-look", l); } catch (e) {} render(); }
-  function toggleTheme() { S.theme = S.theme === "dark" ? "light" : "dark"; root.setAttribute("data-theme", S.theme); try { localStorage.setItem("ellie-demo-theme", S.theme); } catch (e) {} render(); }
   function toggleFs() { try { if (!document.fullscreenElement) root.requestFullscreen(); else document.exitFullscreen(); } catch (e) {} }
   function step(d) { var q = seq(), k = Math.max(0, q.indexOf(S.i)); go(q[Math.max(0, Math.min(q.length - 1, k + d))]); }
-  // Back to the first screen with every scene as new. The look, the theme, the side, the profile and the priorities are kept.
+  // Back to the first screen with every scene as new. The side, the profile and the priorities are kept.
   function restart() {
     S.imp = 0; S.transfers = JSON.parse(JSON.stringify(TRANSFERS0)); S.pick = null; S.lastAssign = null; S.freeAt = "16:00";
     S.owner = "all"; S.tasksDone = {}; S.signal = "all"; S.reasons = {}; S.blocking = null;
@@ -1113,8 +1035,6 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
     else if (e.key === "ArrowLeft" || e.key === "PageUp") step(-1);
     else if (e.key === "n" || e.key === "N") { S.notes = !S.notes; render(); }
     else if (e.key === "f" || e.key === "F") toggleFs();
-    else if (e.key === "t" || e.key === "T") toggleTheme();
-    else if (e.key === "1" || e.key === "2" || e.key === "3") setLook(["a", "b", "c"][+e.key - 1]);
     else if (e.key === "Home") restart();
   });
   window.addEventListener("hashchange", fromHash);
