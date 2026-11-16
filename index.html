@@ -93,15 +93,45 @@ h1, h2 { font-family: var(--f-display); font-weight: var(--title-w); letter-spac
 h1 { font-size: var(--title-1); }
 h2 { font-size: var(--title-2); }
 .lede { color: var(--muted); font-size: 1.15rem; max-width: 40ch; margin: 0; }
-.ba { margin: .3rem 0 0; }
-.ba > div { display: grid; grid-template-columns: 6.2rem minmax(0, 1fr); gap: 1rem; padding: .75rem 0; border-top: 1px solid var(--line); }
-.ba dt { padding-top: .22rem; }
-.ba dd { margin: 0; color: var(--muted); font-size: 1.05rem; }
+.ba { margin: .9rem 0 0; }
+.ba > div { display: grid; grid-template-columns: 6.2rem minmax(0, 1fr); gap: 1rem; padding: .65rem 0; border-top: 1px solid var(--line); }
+.ba dt { padding-top: .12rem; }
+.ba dd { margin: 0; color: var(--muted); font-size: .95rem; }
 .ba .after dd { color: var(--text); }
 .priv { margin: 0; font-size: .84rem; color: var(--muted); }
 .notes { border-top: 1px dashed var(--line-strong); padding-top: .8rem; display: grid; gap: .4rem; font-size: .84rem; color: var(--muted); }
 .notes b { color: var(--text); font-weight: 500; }
-.nav { display: flex; gap: .6rem; margin-top: auto; padding-top: .4rem; }
+.nav { display: flex; align-items: center; gap: .6rem; margin-top: auto; padding-top: .4rem; }
+.nav .pos { font-size: .8rem; color: var(--muted); margin-left: .6rem; }
+.nav .notes-btn { margin-left: auto; }
+@media (hover: none), (max-width: 1099px) { .nav .notes-btn { display: none; } }
+
+/* Small screens (Alex, 16/11): the reading order is title, text, the Ellie screen, then Today and With Ellie;
+   Back and Next live in a bar fixed at the bottom, so they never cut the content. */
+@media (max-width: 1099px) {
+  .stage { display: flex; flex-direction: column; gap: 1.1rem; }
+  .story { display: contents; }
+  .story > .who { order: 1; }
+  .story > h1, .story > h2 { order: 2; }
+  .story > .lede { order: 3; }
+  .story > .priv { order: 4; }
+  .screen { order: 5; margin-top: .6rem; }
+  .story > .ba { order: 6; }
+  .story > .notes { order: 7; }
+  .story > .nav { order: 8; position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; margin: 0; background: var(--bg); border-top: 1px solid var(--line);
+    padding: .7rem max(16px, env(safe-area-inset-right, 0px)) calc(.7rem + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+  .story > .nav .pos { margin-left: auto; }
+  .app { padding-bottom: calc(4.6rem + env(safe-area-inset-bottom, 0px)); }
+}
+@media (max-width: 700px) {
+  h1 { font-size: 2.35rem; }
+  h2 { font-size: 2.05rem; }
+  .lede { font-size: 1.02rem; }
+  .stage { gap: 1rem; }
+  .screen .tabs { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  .screen .tabs button { white-space: nowrap; }
+  .app .meter { display: none; }
+}
 
 .btn { border-radius: var(--radius); padding: .55rem 1.2rem; border: 1px solid var(--line-strong); font-size: .9rem; }
 .btn.primary { background: var(--btn-bg); color: var(--btn-ink); border-color: var(--btn-bg); font-weight: 600; }
@@ -757,7 +787,7 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
       notes: { live: "Brand side, the event page: each module with its progress, and Needs your attention for what waits for the maison.", ask: "Three weeks before an event, how do you know where things stand?" },
       screen: function () {
         var k = S.mD;
-        var STG = ["Three weeks before", "One week before", "The day before"];
+        var STG = ["3 weeks before", "1 week before", "The eve"];
         var AREAS = [
           ["Invitations", ["28 of 30 confirmed", "30 of 30 confirmed", "30 of 30 confirmed"], ["warn", "ok", "ok"]],
           ["Flights", ["19 of 30 received", "28 of 30 received", "30 of 30, times checked"], ["warn", "warn", "ok"]],
@@ -767,6 +797,7 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
           ["Gifts", ["In production", "Delivered to the hotels", "In the suites before arrival"], ["", "ok", "ok"]]
         ];
         var WORD = { ok: "Ready", warn: "In progress", "": "Under way" };
+        var TONE = { ok: "ok", warn: "", "": "" };
         var NEED = [["Approve the gala table plan", "Confirm two connecting suites for the Mansour family"], ["Choose Mrs Lau's main course, with her advisor"], []];
         var READY = [62, 88, 100];
         var MILES = [["Invitations closed", "D-21"], ["Rooming lists to the hotels", "D-10"], ["Run-through with the agency", "D-1, 18:00"], ["First arrivals", "Day 1, 09:30"]];
@@ -776,7 +807,7 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
           '<p class="alert"><b' + (READY[k] === 100 ? ' class="ok"' : '') + '>' + READY[k] + ' % ready</b><span class="s">30 guests, 11 parties. First arrivals on Day 1 at 09:30.</span></p>' +
           '<div class="progress"><i style="width:' + READY[k] + '%"></i></div>' +
           '<div class="cols2">' +
-            '<div class="sec"><div class="label">Where each part stands</div>' + AREAS.map(function (a) { return '<div class="prow"><span class="s">' + a[0] + '</span><span>' + a[1][k] + '</span>' + st(a[2][k], WORD[a[2][k]]) + '</div>'; }).join("") + '</div>' +
+            '<div class="sec"><div class="label">Where each part stands</div>' + AREAS.map(function (a) { return '<div class="prow"><span class="s">' + a[0] + '</span><span>' + a[1][k] + '</span>' + st(TONE[a[2][k]], WORD[a[2][k]]) + '</div>'; }).join("") + '</div>' +
             '<div class="sec"><div class="label">Waiting for you</div>' +
               (NEED[k].length ? NEED[k].map(function (n) { return '<div class="line"><span>' + n + '</span>' + st("warn", "Your turn") + '</div>'; }).join("") : '<div class="line"><span>Nothing waits for you.</span>' + st("ok", "All set") + '</div>') +
               '<div class="label" style="padding-top:1.1rem">Milestones</div>' +
@@ -979,7 +1010,9 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
           (sc.privacy ? '<p class="priv">' + sc.privacy + '</p>' : '') +
           (sc.before ? '<dl class="ba"><div><dt class="label">Today</dt><dd>' + sc.before + '</dd></div><div class="after"><dt class="label">With Ellie</dt><dd>' + sc.after + '</dd></div></dl>' : '') +
           (S.notes ? '<div class="notes">' + (sc.notes.say ? '<span><b>Say.</b> ' + sc.notes.say + '</span>' : '') + (sc.notes.live ? '<span><b>Show it live in Ellie.</b> ' + sc.notes.live + '</span>' : (sc.status === "soon" ? '<span><b>Not in Ellie yet.</b> Present it as a proposal to design together.</span>' : '')) + (sc.notes.ask ? '<span><b>Ask.</b> ' + sc.notes.ask + '</span>' : '') + '<span>Keys: arrows to move, N notes, T theme, 1 2 3 looks, F full screen. Click ELLIE to start over.</span></div>' : '') +
-          '<div class="nav">' + (pos > 0 ? '<button class="btn" id="prev">Back</button>' : '') + (pos < q.length - 1 ? '<button class="btn primary" id="next">' + (S.i === 0 ? (who ? "Follow " + who[1] : S.side === "maison" ? "Start three weeks before" : "Start with the brief") : "Next") + '</button>' : '') + '</div>' +
+          '<div class="nav">' + (pos > 0 ? '<button class="btn" id="prev">Back</button>' : '') + (pos < q.length - 1 ? '<button class="btn primary" id="next">' + (S.i === 0 ? (who ? "Follow " + who[1] : S.side === "maison" ? "Start three weeks before" : "Start with the brief") : "Next") + '</button>' : '') +
+            '<span class="pos tn" aria-label="Screen ' + (pos + 1) + ' of ' + q.length + '">' + (pos + 1) + ' / ' + q.length + '</span>' +
+            '<button class="link notes-btn" id="notesBtn" aria-pressed="' + S.notes + '" title="Presenter notes (N)">' + (S.notes ? "Hide notes" : "Notes") + '</button></div>' +
         '</section>' +
         '<section class="screen" aria-label="Ellie screen">' +
           '<div class="bar"><span class="label">' + sc.where + '</span>' + (sc.status === "today" ? '<span class="state st ok">In Ellie today</span>' : sc.status === "soon" ? '<span class="state st soon">In co-design</span>' : '') + '</div>' +
@@ -999,6 +1032,7 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
     on("next", function () { step(1); });
     on("homeBtn", restart);
     $$("[data-mod]").forEach(function (b) { b.onclick = function () { go(+b.getAttribute("data-mod")); }; });
+    on("notesBtn", function () { S.notes = !S.notes; render(); });
     if (sc.wire) sc.wire();
   }
   function toggleFs() { try { if (!document.fullscreenElement) root.requestFullscreen(); else document.exitFullscreen(); } catch (e) {} }
