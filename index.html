@@ -296,8 +296,8 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
 .map { width: 100%; height: auto; display: block; }
 .side { display: grid; gap: .9rem; align-content: start; min-width: 0; }
 /* The drivers' live map: a night map, cars that drive, labels in HTML so they keep the type scale. */
-.mapbox { position: relative; aspect-ratio: 600 / 300; border: 1px solid var(--line); border-radius: var(--radius-lg); overflow: hidden; }
-.mapbox .map { position: absolute; inset: 0; width: 100%; height: 100%; }
+.mapbox { position: relative; width: 100%; max-width: calc(var(--ar, 2) * 32vh); border: 1px solid var(--line); border-radius: var(--radius-lg); overflow: hidden; }
+.mapbox .map { display: block; width: 100%; height: auto; }
 .mcar .halo { transform-box: fill-box; transform-origin: center; opacity: .35; animation: halo 1.8s ease-out infinite; }
 @keyframes halo { from { transform: scale(.5); opacity: .45; } to { transform: scale(1.5); opacity: 0; } }
 .mlab { position: absolute; pointer-events: none; white-space: nowrap; font-size: var(--fs-s); line-height: 1.25; }
@@ -316,7 +316,10 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
 .live i { width: .5rem; height: .5rem; border-radius: 50%; background: var(--ok); animation: blink 1.6s ease-in-out infinite; }
 @keyframes blink { 50% { opacity: .35; } }
 .mchip { position: absolute; bottom: .55rem; right: .55rem; background: var(--surface); border: 1px solid var(--line-strong); border-radius: 999px; padding: .1rem .65rem; font-size: var(--fs-s); color: var(--soon); }
-@media (min-width: 701px) { .sec.two { grid-template-columns: 1fr 1fr; column-gap: 2rem; } }
+@media (min-width: 701px) and (max-width: 1599px) { .sec.two { grid-template-columns: 1fr 1fr; column-gap: 2rem; } }
+/* the maison's Day 1: the map beside the guests on a computer */
+.mapside { display: grid; gap: 1rem; }
+@media (min-width: 1600px) { .mapside { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 1.6rem; align-items: start; } }
 @media (max-width: 700px) {
   /* on a phone the Live badge and the chip hang under the map, so they never cover a car */
   .mapbox { overflow: visible; margin-bottom: 2.1rem; }
@@ -954,31 +957,34 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
     {
       id: "follow", p: "claire", mod: "orchestrate", status: "today", who: "<b>Claire</b>, client experience director",
       title: "Day 1: the event starts, and you see every arrival.",
-      lede: "Who has landed, who is in the car, who is in her suite, what is blocked and why. The agency runs the day; you see it as it happens, without calling anyone.",
+      lede: "Who has landed, who is in the car, what is blocked and why. The agency runs the day; you see it as it happens, without calling anyone.",
+      privacy: "The map shows cars, from the driver's app, during the ride only. A guest is never located.",
       before: "The director calls the agency every hour to know where her guests are.",
       after: "She opens the day. A blocked step says why.",
       impact: { hours: 4, messages: 30, calls: 20, caught: 2 }, where: "Orchestration · Day 1",
       notes: { live: "Brand side, Orchestration: the day tabs and the lanes, with the note that the lanes are run by the agency. The Points of attention filter the list.", ask: "During an event, how do you know where each guest is?" },
       screen: function () {
         var T = [
-          [["Ms R. Tan", "In her room since 11:20", "ok", "Settled"], ["Mrs P. Srisuk", "Landed at 14:20, in the car", "warn", "On her way"], ["Mrs W. Lau", "Lands at 15:40, a host at the gate", "", "To come"], ["Dr A. Mansour", "Transfer at 20:30", "crit", "Blocked: no car for a party of four yet"]],
-          [["Ms R. Tan", "In her room since 11:20", "ok", "Settled"], ["Mrs P. Srisuk", "In her suite since 15:35, the white flowers in place", "ok", "Settled"], ["Mrs W. Lau", "Met at the gate at 15:52, in the car", "warn", "On her way"], ["Dr A. Mansour", "Transfer at 20:30, a V-Class assigned at 15:10", "ok", "Unblocked"]],
-          [["Ms R. Tan", "At dinner", "ok", "Settled"], ["Mrs P. Srisuk", "At dinner, the allergy note with the kitchen", "ok", "Settled"], ["Mrs W. Lau", "In her suite since 17:05", "ok", "Settled"], ["Dr A. Mansour", "Met at the gate at 19:50, in the car", "warn", "On their way"]]
+          [["Ms R. Tan", "Checked in at 11:20", "ok", "Settled"], ["Mrs P. Srisuk", "Landed at 14:20, in the car", "warn", "On her way"], ["Mrs W. Lau", "Lands at 15:40, a host at the gate", "", "To come"], ["Dr A. Mansour", "Transfer at 20:30", "crit", "Blocked: no car for a party of four yet"]],
+          [["Ms R. Tan", "Checked in at 11:20", "ok", "Settled"], ["Mrs P. Srisuk", "Checked in at 15:35, the white flowers in place", "ok", "Settled"], ["Mrs W. Lau", "Met at the gate at 15:52, in the car", "warn", "On her way"], ["Dr A. Mansour", "Transfer at 20:30, a V-Class assigned at 15:10", "ok", "Unblocked"]],
+          [["Ms R. Tan", "At dinner", "ok", "Settled"], ["Mrs P. Srisuk", "At dinner, the allergy note with the kitchen", "ok", "Settled"], ["Mrs W. Lau", "Checked in at 17:05", "ok", "Settled"], ["Dr A. Mansour", "Met at the gate at 19:50, in the car", "warn", "On their way"]]
         ][S.mT];
         var blocked = T.filter(function (r) { return r[2] === "crit"; }).length;
-        var G = [["Mrs P. Srisuk", "In her suite at 15:35"], ["Mrs W. Lau", "At Lumière Bangkok at 17:05"], ["Dr A. Mansour, party of four", "At Riverside Suites at 21:00"]][S.mT];
+        var G = [["S-02", "Mrs P. Srisuk", "at Riverside Suites 15:35"], ["S-01", "Mrs W. Lau", "at Lumière Bangkok 17:05"], ["V-02", "Dr A. Mansour", "at Riverside Suites 21:00"]][S.mT];
         return '' +
           '<p class="alert"><b class="' + (blocked ? 'crit' : 'ok') + '">' + (blocked ? blocked + ' step blocked' : 'Nothing is blocked') + '</b><span class="s">Day 1, ' + ["14:30", "16:30", "20:45"][S.mT] + '</span></p>' +
-          mapView({ vb: [100, 55, 500, 205], time: ["14:30", "16:30", "20:45"][S.mT], route: ["rRS", "rExp", "rRS"][S.mT], chip: "Live map: in co-design",
-            aria: "Live map of your guests on their way from the airport to the hotels",
-            cars: [{ id: "cS02" }, { id: "cV01" }, { id: "g" + S.mT, main: true, fill: "var(--accent)", halo: true, lab: '<b>' + G[0] + '</b><span class="eta">' + G[1] + '</span>' }] }) +
+          '<div class="mapside">' +
+          mapView({ vb: [80, 55, 520, 205], time: ["14:30", "16:30", "20:45"][S.mT], route: ["rRS", "rExp", "rRS"][S.mT], chip: "Cars during rides only · in co-design",
+            aria: "Live map of the cars bringing your guests from the airport, during the ride only",
+            cars: [{ id: "cE01" }, { id: "cM01" }, { id: "g" + S.mT, main: true, fill: "var(--accent)", halo: true, lab: '<b>' + G[0] + '</b> ' + G[1] + '<span class="eta">' + G[2] + '</span>' }] }) +
           '<div class="sec two">' + T.map(function (r) { return '<div class="line"><div class="l"><span class="t">' + r[0] + '</span><span class="s">' + r[1] + '</span></div>' + st(r[2], r[3]) + '</div>'; }).join("") + '</div>' +
+          '</div>' +
           '<p class="sum">Run by the agency. You see it, they set it.' + (S.mT < 2 ? ' <button class="link" id="mLater">' + (S.mT === 0 ? "Two hours later" : "This evening") + '</button>' : '') + '</p>';
       },
       wire: function () {
         var b = $("#mLater"); if (b) b.onclick = function () { S.mT++; render(); };
-        liveMap({ vb: [100, 55, 500, 205],
-          amb: [{ id: "cS02", path: "rRiv", f: .6, v: 1 / 70 }, { id: "cV01", path: "rV01", f: .3, v: 1 / 80 }],
+        liveMap({ vb: [80, 55, 520, 205],
+          amb: [{ id: "cE01", path: "rRiv", f: .6, v: 1 / 70 }, { id: "cM01", path: "rV01", f: .3, v: 1 / 80 }],
           main: [{ id: "g0", path: "rRS", to: .9, drift: -.2, flip: true, route: "behind" }, { id: "g1", path: "rExp", to: .75, drift: -.2, flip: true, route: "behind" }, { id: "g2", path: "rRS", to: .5, drift: -.2, flip: true, route: "behind" }][S.mT] });
       }
     },
@@ -1207,7 +1213,7 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
         '<rect x="-8" y="-4.6" width="3" height="9.2" rx="1.2" fill="var(--bg)" opacity=".55"></rect></g>';
     };
     var bg = 'x="' + vb[0] + '" y="' + vb[1] + '" width="' + vb[2] + '" height="' + vb[3] + '"';
-    return '<div class="mapbox" style="aspect-ratio:' + vb[2] + ' / ' + vb[3] + '">' +
+    return '<div class="mapbox" style="--ar:' + (vb[2] / vb[3]).toFixed(3) + '">' +
       '<svg class="map" viewBox="' + vb.join(" ") + '" role="img" aria-label="' + o.aria + '">' +
         '<defs><pattern id="mStreets" width="21" height="21" patternUnits="userSpaceOnUse" patternTransform="rotate(-12)"><path d="M0 .5H21M.5 0V21" fill="none" stroke="var(--map-street)" stroke-width="1"></path></pattern></defs>' +
         '<rect ' + bg + ' fill="var(--map-bg)"></rect><rect ' + bg + ' fill="url(#mStreets)"></rect>' +
