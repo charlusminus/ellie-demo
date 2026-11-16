@@ -1087,14 +1087,14 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
       before: "The guest list lives on in the agency's inbox, the drivers' WhatsApp and a shared drive, long after the event.",
       after: "One export, access closed the day after, deletion on the date you set, with a certificate.",
       impact: { hours: 3, messages: 8, calls: 2, caught: 1 }, where: "Close-out · Guest data",
-      notes: { say: "The guests belong to the maison. Ellie gives the file back, then forgets it, and proves it.", live: "Field-by-field encryption of guest data is a rule of Ellie today. The export, the closing of outside access and the scheduled deletion are to build with the pilot maison.", ask: "Today, who decides when a guest list is deleted after an event, and how do you check that it was?" },
+      notes: { say: "The guests belong to the maison. Ellie gives the file back, then forgets it, and proves it.", live: "Field-by-field encryption and the deletion of guest data after the event are in Ellie today. The export to the maison and the closing of outside access are to build with the pilot maison.", ask: "Today, who decides when a guest list is deleted after an event, and how do you check that it was?" },
       screen: function () {
         var c = S.mClose;
         var R = [
           ["During", "Encrypted, field by field", "Names, passports, allergies: unreadable outside Ellie.", "today", false],
           ["Day after", "Outside access closed", "The agency, its hosts and drivers: 21 accounts lose access to your guests.", "soon", c >= 1],
           ["Day after", "The file comes back to you", "Every guest with what was learned: preferences, allergies, feedback. In your format, by an encrypted link.", "soon", c >= 1],
-          ["Day 30", "Deleted, with a certificate", "On the date you set. Only anonymous figures stay: costs per market, punctuality.", "soon", c >= 2]
+          ["Day 30", "Deleted, with a certificate", "On the date you set. Only anonymous figures stay: costs per market, punctuality.", "today", c >= 2]
         ];
         return '' +
           '<div class="sec">' + R.map(function (r) {
