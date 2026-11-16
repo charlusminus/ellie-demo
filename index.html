@@ -113,10 +113,15 @@ h1 { font-size: var(--title-1); }
 h2 { font-size: var(--title-2); }
 .lede { color: var(--muted); font-size: var(--fs-l); max-width: 40ch; margin: 0; }
 .ba { margin: .9rem 0 0; }
-.ba > div { display: grid; grid-template-columns: 6.2rem minmax(0, 1fr); gap: 1rem; padding: .65rem 0; border-top: 1px solid var(--line); }
+.ba > div { display: grid; grid-template-columns: 7rem minmax(0, 1fr); gap: 1rem; padding: .65rem 0; border-top: 1px solid var(--line); }
 .ba dt { padding-top: .12rem; }
 .ba dd { margin: 0; color: var(--muted); font-size: var(--fs-b); }
+/* With Ellie: the logo in gold instead of the word, the line in full colour and one step larger (Charles, 16/11) */
 .ba .after dd { color: var(--text); }
+@media (min-height: 700px) { .ba .after dd { font-size: var(--fs-l); } }
+.ba dt.with { display: flex; align-items: center; align-self: start; gap: .45rem; padding-top: .3rem; color: var(--accent); }
+.ba dt.with .mark { height: .74em; width: auto; flex: none; }
+.ba .after { border-top-color: color-mix(in srgb, var(--accent) 55%, transparent); }
 .priv { margin: 0; font-size: var(--fs-s); color: var(--muted); }
 .notes { border-top: 1px dashed var(--line-strong); padding-top: .8rem; display: grid; gap: .4rem; font-size: var(--fs-s); color: var(--muted); }
 .notes b { color: var(--text); }
@@ -446,6 +451,7 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
   // Two sides of the same event, the maison and the DMC: chosen on the first screen, or with ?side=maison in the link.
   // One person's day can be followed on its own: chosen on the first screen, or with ?profile=arun in the link.
   // AI portraits of the fictional team (assets/img/team), in place of person icons (Charles, 16/11)
+  var MARK = '<svg class="mark" viewBox="0 0 1013 146" fill="currentColor" aria-hidden="true" focusable="false"><rect x="0" y="0" width="130.5" height="12.5"/><rect x="0" y="0" width="12.5" height="60"/><path d="M114.5 66H30A30 30 0 0 0 0 96V146H12.5V96A17.5 17.5 0 0 1 30 78.5H114.5Z"/><rect x="0" y="133.5" width="130.5" height="12.5"/><rect x="267" y="0" width="12.5" height="146"/><rect x="267" y="133.5" width="92.5" height="12.5"/><rect x="499" y="0" width="12.5" height="146"/><rect x="499" y="133.5" width="92" height="12.5"/><rect x="737.5" y="0" width="12.5" height="146"/><rect x="905" y="0" width="12.5" height="146"/><rect x="905" y="0" width="107.5" height="12.5"/><rect x="905" y="66" width="96.5" height="12.5"/><rect x="905" y="133.5" width="107.5" height="12.5"/></svg>';
   var face = function (id) { return '<img src="assets/img/team/' + id + '.webp" alt="" width="96" height="96" loading="lazy" decoding="async">'; };
   var PROFILES = {
     dmc: [["nok", "Nok", "Event manager"], ["arun", "Arun", "Transport coordinator"], ["ploy", "Ploy", "Airport host"], ["somchai", "Somchai", "Driver"], ["mai", "Mai", "Accounts"]],
@@ -1160,7 +1166,7 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
           (S.i === 0 ? '<h1>' + sc.title + '</h1>' : '<h2>' + sc.title + '</h2>') +
           '<p class="lede">' + val(sc.lede) + '</p>' +
           (sc.privacy ? '<p class="priv">' + sc.privacy + '</p>' : '') +
-          (sc.before ? '<dl class="ba"><div><dt class="label">Today</dt><dd>' + sc.before + '</dd></div><div class="after"><dt class="label">With Ellie</dt><dd>' + sc.after + '</dd></div></dl>' : '') +
+          (sc.before ? '<dl class="ba"><div><dt class="label">Today</dt><dd>' + sc.before + '</dd></div><div class="after"><dt class="label with" aria-label="With Ellie"><span aria-hidden="true">With</span>' + MARK + '</dt><dd>' + sc.after + '</dd></div></dl>' : '') +
           (S.notes ? '<div class="notes"><button class="link notes-close" id="notesClose">Hide notes</button>' + (sc.notes.say ? '<span><b>Say.</b> ' + sc.notes.say + '</span>' : '') + (sc.notes.live ? '<span><b>Show it live in Ellie.</b> ' + sc.notes.live + '</span>' : (sc.status === "soon" ? '<span><b>Not in Ellie yet.</b> Present it as a proposal to design together.</span>' : '')) + (sc.notes.ask ? '<span><b>Ask.</b> ' + sc.notes.ask + '</span>' : '') + '<span>Keys: arrows to move, N to show or hide the notes, Esc to hide them, F for full screen. Click the logo to start over.</span></div>' : '') +
           '<div class="nav">' + (pos > 0 ? '<button class="btn" id="prev">Back</button>' : '') + (pos < q.length - 1 ? '<button class="btn primary" id="next">' + (S.i === 0 ? (who ? "Follow " + who[1] : S.side === "maison" ? "Start three weeks before" : "Start with the brief") : "Next") + '</button>' : '') +
             '<span class="pos tn" aria-label="Screen ' + (pos + 1) + ' of ' + q.length + '">' + (pos + 1) + ' / ' + q.length + '</span>' +
