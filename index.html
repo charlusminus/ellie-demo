@@ -50,6 +50,9 @@
   --other: color-mix(in srgb, var(--crit) 45%, transparent);
   --bad-bg: color-mix(in srgb, var(--crit) 16%, var(--surface));
   --river: color-mix(in srgb, var(--soon) 26%, var(--surface));
+  --map-bg: var(--bg); --map-street: color-mix(in srgb, var(--text) 6%, transparent);
+  --map-road: color-mix(in srgb, var(--text) 13%, var(--bg)); --map-exp: color-mix(in srgb, var(--text) 24%, var(--bg));
+  --map-park: color-mix(in srgb, var(--ok) 10%, var(--bg));
 }
 :root[data-theme="dark"] { color-scheme: dark; }
 
@@ -255,7 +258,9 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
 .stepper b { font-family: var(--f-num); font-size: var(--fs-l); font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums; }
 .stepper button { width: 1.5rem; color: var(--muted); font-size: var(--fs-l); }
 .stepper button:hover { color: var(--text); }
-.link.strong { color: var(--text); }
+/* A priority action in a list (Assign, Approve): a small gold-outlined button, not a link. */
+.link.strong { color: var(--accent); text-decoration: none; border: 1px solid var(--accent); border-radius: var(--radius); padding: .3rem .85rem; white-space: nowrap; transition: background-color .15s, color .15s; }
+.link.strong:hover { background: var(--btn-bg); color: var(--btn-ink); }
 
 /* board */
 .kan { display: grid; grid-template-columns: repeat(4, minmax(8.5rem, 1fr)); gap: 1.6rem; overflow-x: auto; }
@@ -286,7 +291,25 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
 .sw[aria-checked="true"]::after { left: 1.25rem; background: var(--surface); }
 .map { width: 100%; height: auto; display: block; }
 .side { display: grid; gap: .9rem; align-content: start; min-width: 0; }
-.mapcar { transition: transform .8s ease; }
+/* The drivers' live map: a night map, cars that drive, labels in HTML so they keep the type scale. */
+.mapbox { position: relative; aspect-ratio: 600 / 300; border: 1px solid var(--line); border-radius: var(--radius-lg); overflow: hidden; }
+.mapbox .map { position: absolute; inset: 0; width: 100%; height: 100%; }
+.mcar .halo { transform-box: fill-box; transform-origin: center; opacity: .35; animation: halo 1.8s ease-out infinite; }
+@keyframes halo { from { transform: scale(.5); opacity: .45; } to { transform: scale(1.5); opacity: 0; } }
+.mlab { position: absolute; pointer-events: none; white-space: nowrap; font-size: var(--fs-s); line-height: 1.25; }
+.mlab.place { color: var(--muted); }
+.mlab.place.t { transform: translate(-50%, calc(-100% - 10px)); }
+.mlab.place.r { transform: translate(14px, -50%); }
+.mlab.place.b { transform: translate(-50%, 12px); }
+.mlab.car { transform: translate(var(--ax, -50%), calc(-100% - 13px)); background: var(--surface); border: 1px solid var(--line-strong); border-radius: 999px; padding: .1rem .6rem; color: var(--text); }
+.mlab.car.amb { color: var(--muted); padding: 0 .45rem; transform: translate(var(--ax, -50%), 15px); }
+@media (max-width: 700px) { .mlab.place:not(.b), .mlab.car.amb { display: none; } }
+.mlab.car .eta { margin-left: .5rem; padding-left: .5rem; border-left: 1px solid var(--line-strong); color: var(--muted); }
+.mlab.car .eta.crit { color: var(--crit); } .mlab.car .eta.ok { color: var(--ok); }
+.live { position: absolute; top: .55rem; left: .55rem; display: flex; align-items: center; gap: .45rem; background: var(--surface); border: 1px solid var(--line-strong); border-radius: 999px; padding: .1rem .65rem; font-size: var(--fs-s); }
+.live i { width: .5rem; height: .5rem; border-radius: 50%; background: var(--ok); animation: blink 1.6s ease-in-out infinite; }
+@keyframes blink { 50% { opacity: .35; } }
+@media (prefers-reduced-motion: reduce) { .mcar .halo, .live i { animation: none; } }
 
 /* review */
 .bars { display: grid; gap: .4rem; }
@@ -491,6 +514,49 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
       wire: function () { var b = $("#impBtn"); if (b) b.onclick = function () { S.imp = 1; render(); }; }
     },
     {
+      id: "checklist", p: "ploy", mod: "create", status: "today", who: "<b>Ploy</b>, airport host",
+      title: "Each person sees what they have to do today, and nothing else.",
+      lede: "The itinerary writes the check-list, with an owner and a time for every task.",
+      before: "The run sheet lives in the event manager's head and in forty WhatsApp groups.",
+      after: "Tomorrow is ready tonight. A new person knows what to do in five minutes.",
+      impact: { hours: 5, messages: 30, calls: 10, caught: 2 }, where: "Orchestration · To do · Day 1",
+      notes: { live: "Orchestration, To do view: filter Transport, Hotel or Concierge, tick a task.", ask: "Who writes tomorrow's run sheet today, and at what time of night?" },
+      screen: function () {
+        var TASKS = [
+          ["m1", "morning", "Transport", "Check the flight status", "TH01, TG 102", "11:00", true],
+          ["m2", "morning", "Transport", "Meet & greet agent in place", "SG01, lands 09:10", "08:40", true],
+          ["m3", "morning", "Hotel", "Confirm the room with the hotel", "HK01, Lumière Bangkok", "11:30"],
+          ["m4", "morning", "Concierge", "Send the dietary requirements to the restaurant", "TH01, dinner 20:00", "12:00"],
+          ["a1", "afternoon", "Transport", "Print the signage", "HK01, KR01", "14:00"],
+          ["a2", "afternoon", "Transport", "Brief the driver", "S-01, HK01 16:10", "15:00"],
+          ["a3", "afternoon", "Hotel", "Prepare the room and the welcome", "TH01, Riverside Suites", "15:30"],
+          ["a4", "afternoon", "Concierge", "Reconfirm the booking", "Dinner 20:00, 6 covers", "16:00"],
+          ["e1", "evening", "Transport", "Assign a vehicle", "Day 2, temple visit 09:30", "19:00"],
+          ["e2", "evening", "Concierge", "Confirm the guide and the language", "Day 2, Mandarin guide", "19:00"],
+          ["e3", "evening", "Concierge", "Collect the main-course choice", "Gala, Day 3, 4 missing", "20:00"]
+        ];
+        var shown = TASKS.filter(function (t) { return S.owner === "all" || t[2] === S.owner; });
+        var done = shown.filter(function (t) { return S.tasksDone[t[0]]; }).length;
+        var late = shown.filter(function (t) { return t[6] && !S.tasksDone[t[0]]; }).length;
+        var block = function (k, label) {
+          var list = shown.filter(function (t) { return t[1] === k; });
+          if (!list.length) return "";
+          return '<div class="sec"><div class="label">' + label + '</div>' + list.map(function (t) {
+            var d = !!S.tasksDone[t[0]];
+            return '<label class="task' + (d ? " done" : "") + '"><input type="checkbox" data-task="' + t[0] + '"' + (d ? " checked" : "") + '><span><span class="tt">' + t[3] + '</span><br><span class="s">' + t[4] + '</span></span><span class="meta">' + (S.owner === "all" ? t[2] + ', ' : '') + (t[6] && !d ? '<span class="crit">late, due ' + t[5] + '</span>' : '<span class="tn">' + t[5] + '</span>') + '</span></label>';
+          }).join("") + '</div>';
+        };
+        return '' +
+          '<div class="tabs">' + ["all", "Transport", "Hotel", "Concierge"].map(function (o) { var n = TASKS.filter(function (t) { return o === "all" || t[2] === o; }).length; return '<button data-owner="' + o + '" aria-pressed="' + (S.owner === o) + '">' + (o === "all" ? "Everyone" : o) + '<span class="c">' + n + '</span></button>'; }).join("") + '</div>' +
+          '<p class="sum">' + done + ' of ' + shown.length + ' done · ' + (late ? '<span class="crit">' + late + ' late</span>' : '<span class="ok">nothing late</span>') + '</p>' +
+          block("morning", "This morning") + block("afternoon", "This afternoon") + block("evening", "Before you leave");
+      },
+      wire: function () {
+        $$("[data-owner]").forEach(function (b) { b.onclick = function () { S.owner = b.getAttribute("data-owner"); render(); }; });
+        $$("[data-task]").forEach(function (c) { c.onchange = function () { S.tasksDone[c.getAttribute("data-task")] = c.checked; render(); }; });
+      }
+    },
+    {
       id: "fleet", p: "arun", mod: "create", status: "today", who: "<b>Arun</b>, transport coordinator",
       title: "Every car, every transfer, every conflict, before the day.",
       lede: "Each transfer finds its car. Ellie warns on an overlap, a car too small, or a car already promised elsewhere. It warns, it never blocks.",
@@ -569,46 +635,86 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
       }
     },
     {
-      id: "checklist", p: "ploy", mod: "create", status: "today", who: "<b>Ploy</b>, airport host",
-      title: "Each person sees what they have to do today, and nothing else.",
-      lede: "The itinerary writes the check-list, with an owner and a time for every task.",
-      before: "The run sheet lives in the event manager's head and in forty WhatsApp groups.",
-      after: "Tomorrow is ready tonight. A new person knows what to do in five minutes.",
-      impact: { hours: 5, messages: 30, calls: 10, caught: 2 }, where: "Orchestration · To do · Day 1",
-      notes: { live: "Orchestration, To do view: filter Transport, Hotel or Concierge, tick a task.", ask: "Who writes tomorrow's run sheet today, and at what time of night?" },
+      id: "driver", p: "somchai", mod: "orchestrate", status: "soon", who: "<b>Somchai</b>, driver, S-01",
+      title: "Your drivers get their ride. Arun sees every car.",
+      lede: "A status is one tap. With location on, a late car is seen before anyone has to call.",
+      privacy: "Location is the driver's choice, during rides only, seen by the coordinator only, deleted after the event.",
+      before: "The coordinator calls every driver, often while they drive.",
+      after: "Every car on one map. Nobody calls a driver at the wheel.",
+      impact: { hours: 2, messages: 25, calls: 40, caught: 2 }, where: "Somchai's phone · Arun's live map",
+      notes: { say: "Turn on location on Somchai's phone first, then press the 15:55 button: Ellie sees the traffic jam on the map, warns Arun and the airport host, and nobody calls the driver.", ask: "Do your drivers share their location today, with which app? Would they accept it during their rides only?" },
       screen: function () {
-        var TASKS = [
-          ["m1", "morning", "Transport", "Check the flight status", "TH01, TG 102", "11:00", true],
-          ["m2", "morning", "Transport", "Meet & greet agent in place", "SG01, lands 09:10", "08:40", true],
-          ["m3", "morning", "Hotel", "Confirm the room with the hotel", "HK01, Lumière Bangkok", "11:30"],
-          ["m4", "morning", "Concierge", "Send the dietary requirements to the restaurant", "TH01, dinner 20:00", "12:00"],
-          ["a1", "afternoon", "Transport", "Print the signage", "HK01, KR01", "14:00"],
-          ["a2", "afternoon", "Transport", "Brief the driver", "S-01, HK01 16:10", "15:00"],
-          ["a3", "afternoon", "Hotel", "Prepare the room and the welcome", "TH01, Riverside Suites", "15:30"],
-          ["a4", "afternoon", "Concierge", "Reconfirm the booking", "Dinner 20:00, 6 covers", "16:00"],
-          ["e1", "evening", "Transport", "Assign a vehicle", "Day 2, temple visit 09:30", "19:00"],
-          ["e2", "evening", "Concierge", "Confirm the guide and the language", "Day 2, Mandarin guide", "19:00"],
-          ["e3", "evening", "Concierge", "Collect the main-course choice", "Gala, Day 3, 4 missing", "20:00"]
-        ];
-        var shown = TASKS.filter(function (t) { return S.owner === "all" || t[2] === S.owner; });
-        var done = shown.filter(function (t) { return S.tasksDone[t[0]]; }).length;
-        var late = shown.filter(function (t) { return t[6] && !S.tasksDone[t[0]]; }).length;
-        var block = function (k, label) {
-          var list = shown.filter(function (t) { return t[1] === k; });
-          if (!list.length) return "";
-          return '<div class="sec"><div class="label">' + label + '</div>' + list.map(function (t) {
-            var d = !!S.tasksDone[t[0]];
-            return '<label class="task' + (d ? " done" : "") + '"><input type="checkbox" data-task="' + t[0] + '"' + (d ? " checked" : "") + '><span><span class="tt">' + t[3] + '</span><br><span class="s">' + t[4] + '</span></span><span class="meta">' + (S.owner === "all" ? t[2] + ', ' : '') + (t[6] && !d ? '<span class="crit">late, due ' + t[5] + '</span>' : '<span class="tn">' + t[5] + '</span>') + '</span></label>';
-          }).join("") + '</div>';
+        var ST = ["On my way", "At arrivals", "Guest met", "Dropped off"];
+        var stuck = S.drvAlert >= 1 && S.drv === 0;
+        var msgs = ['<div class="bub"><span class="w">Ellie · 14:35 · in Thai</span>Next ride <b>16:10</b>, BKK arrivals, party <b>HK01</b>, sign <b>ELLIE 12</b>.</div>'];
+        if (S.loc) msgs.push('<div class="bub fade"><span class="w">Ellie · 14:36</span>Location on until 23:00. Only Arun sees it.</div>');
+        if (stuck && S.loc) msgs.push('<div class="bub fade"><span class="w">Ellie · 15:56</span>Arun can see the traffic. No need to call, drive safely.</div>');
+        if (stuck && !S.loc) msgs.push('<div class="bub fade"><span class="w">Ellie · 15:55</span>No status yet for HK01. Are you on your way?</div>');
+        if (S.drvAlert >= 2 && !S.loc && S.drv === 0) msgs.push('<div class="bub fade"><span class="w">Ellie · 16:00</span>Calling you now, in Thai.</div>', '<div class="bub me fade"><span class="w">Somchai · by voice</span>"Stuck on the expressway, ten minutes."</div>');
+        if (S.drvNight) msgs.push('<div class="bub fade"><span class="w">Ellie · 23:10</span>Six rides today, and HK01 asked for you again. Thank you. Location is off. Tomorrow, 09:30.</div>');
+        var s01 = S.drv >= 4 ? st("ok", "Dropped off") : S.drv >= 1 ? st("warn", ST[S.drv - 1]) : stuck ? (S.loc ? st("crit", "8 min late, seen on the map") : (S.drvAlert >= 2 ? st("warn", "10 min late, told by voice") : st("crit", "No status"))) : st("", "To do");
+        var TIME = S.drvNight ? "23:10" : S.drv >= 4 ? "17:05" : S.drv === 3 ? "16:25" : S.drv === 2 ? "16:12" : S.drv === 1 ? "16:02" : stuck ? (S.drvAlert >= 2 ? "16:00" : "15:56") : S.loc ? "14:36" : "14:35";
+        var ETA = !S.loc ? ["", "location off"] : S.drv >= 4 ? ["ok", "Dropped off"] : S.drv === 3 ? ["", "HK01 aboard, 40 min"] : S.drv === 2 ? ["", "At arrivals"] : S.drv === 1 ? ["", "At BKK in 3 min"] : stuck ? ["crit", "8 min late, traffic"] : ["", "At BKK 15:58"];
+        var lab = function (x, y, txt, cls) { return '<span class="mlab ' + cls + '" style="left:' + (x / 6) + '%;top:' + ((y + 15) / 3) + '%">' + txt + '</span>'; };
+        var car = function (id, fill) {
+          return '<g id="' + id + '" class="mcar" transform="translate(-50 -50)">' + (id === "cS01" && S.loc ? '<circle class="halo" r="16" fill="' + fill + '"></circle>' : '') +
+            '<rect x="-11" y="-6.5" width="22" height="13" rx="4.5" fill="' + fill + '" stroke="var(--bg)" stroke-width="1.5"></rect>' +
+            '<rect x="2.5" y="-4.6" width="4.6" height="9.2" rx="1.6" fill="var(--bg)" opacity=".75"></rect>' +
+            '<rect x="-8" y="-4.6" width="3" height="9.2" rx="1.2" fill="var(--bg)" opacity=".55"></rect></g>';
         };
+        var EXP = "M165 95 C 215 102, 245 126, 305 130 S 430 126, 470 138 S 520 150, 548 150";
+        var road = function (d, id) { return '<path' + (id ? ' id="' + id + '"' : '') + ' d="' + d + '" fill="none" stroke="var(--map-road)" stroke-width="4" stroke-linecap="round"></path>'; };
+        var map = '<div class="mapbox">' +
+          '<svg class="map" viewBox="0 -15 600 300" role="img" aria-label="Live map of the cars between the hotels and BKK airport">' +
+            '<defs><pattern id="mStreets" width="21" height="21" patternUnits="userSpaceOnUse" patternTransform="rotate(-12)"><path d="M0 .5H21M.5 0V21" fill="none" stroke="var(--map-street)" stroke-width="1"></path></pattern></defs>' +
+            '<rect y="-15" width="600" height="300" fill="var(--map-bg)"></rect><rect y="-15" width="600" height="300" fill="url(#mStreets)"></rect>' +
+            '<rect x="292" y="176" width="64" height="40" rx="8" fill="var(--map-park)"></rect><rect x="436" y="58" width="48" height="30" rx="8" fill="var(--map-park)"></rect>' +
+            '<path d="M60 -15 C 115 50, 30 110, 88 165 S 80 240, 120 290" fill="none" stroke="var(--river)" stroke-width="24" stroke-linecap="round"></path>' +
+            road("M0 58 C 160 70, 330 52, 600 40") + road("M262 -5 C 255 90, 272 180, 262 280") + road("M410 -5 C 420 100, 402 190, 412 280") +
+            road("M120 -10 C 168 55, 110 120, 158 178 S 170 240, 188 290", "rRiv") + road("M140 222 C 175 195, 196 150, 214 116") + road("M230 262 C 330 244, 450 224, 540 166", "rV01") +
+            '<path id="rExp" d="' + EXP + '" fill="none" stroke="var(--map-exp)" stroke-width="8" stroke-linecap="round"></path>' +
+            (stuck && S.loc ? '<path id="rJam" d="' + EXP + '" fill="none" stroke="var(--crit)" stroke-width="8" stroke-linecap="round"></path>' : '') +
+            '<path id="rRoute" d="' + EXP + '" fill="none" stroke="var(--accent)" stroke-width="4" stroke-linecap="round" stroke-dasharray="0 2000"></path>' +
+            '<g transform="translate(566 150) rotate(-18)"><rect x="-34" y="-17" width="68" height="6" rx="2" fill="var(--map-exp)"></rect><rect x="-34" y="11" width="68" height="6" rx="2" fill="var(--map-exp)"></rect><rect x="-14" y="-6" width="28" height="12" rx="3" fill="var(--text)"></rect></g>' +
+            '<rect x="159" y="89" width="12" height="12" rx="2" fill="var(--text)"></rect><rect x="129" y="216" width="12" height="12" rx="2" fill="var(--text)"></rect>' +
+            car("cS02", "var(--text)") + car("cV01", "var(--text)") + car("cV02", "var(--text)") +
+            car("cS01", !S.loc ? "var(--muted)" : stuck ? "var(--crit)" : "var(--accent)") +
+          '</svg>' +
+          lab(165, 95, "Lumière Bangkok", "place t") + lab(135, 222, "Riverside Suites", "place b") + lab(566, 160, "BKK", "place b") +
+          '<span class="mlab car amb" id="cS02L">S-02</span><span class="mlab car amb" id="cV01L">V-01</span><span class="mlab car amb" id="cV02L">V-02</span>' +
+          '<span class="mlab car" id="cS01L"><b>S-01</b> Somchai<span class="eta ' + ETA[0] + '">' + ETA[1] + '</span></span>' +
+          '<span class="live"><i></i>Live · ' + TIME + '</span>' +
+        '</div>';
+        var alert = '';
+        if (stuck && S.loc) {
+          alert = S.choice === "keep" ? '<p class="note ok fade">S-01 keeps HK01, about 8 minutes late. Ploy holds the guests in the lounge.</p>'
+            : S.choice === "swap" ? '<p class="note ok fade">V-01 takes HK01 in 4 minutes. Somchai is told when he stops, not while he drives.</p>'
+            : '<p class="note crit fade">No status for HK01, but the map shows S-01 in traffic: about 8 minutes late. Ploy, the airport host, has been told.</p><div class="acts"><button class="btn sm" data-choice="keep">Keep S-01</button><button class="btn sm primary" data-choice="swap">Send V-01, 4 min away</button></div>';
+        }
         return '' +
-          '<div class="tabs">' + ["all", "Transport", "Hotel", "Concierge"].map(function (o) { var n = TASKS.filter(function (t) { return o === "all" || t[2] === o; }).length; return '<button data-owner="' + o + '" aria-pressed="' + (S.owner === o) + '">' + (o === "all" ? "Everyone" : o) + '<span class="c">' + n + '</span></button>'; }).join("") + '</div>' +
-          '<p class="sum">' + done + ' of ' + shown.length + ' done · ' + (late ? '<span class="crit">' + late + ' late</span>' : '<span class="ok">nothing late</span>') + '</p>' +
-          block("morning", "This morning") + block("afternoon", "This afternoon") + block("evening", "Before you leave");
+          '<div class="duo">' +
+            '<div class="phone" aria-label="Somchai\'s phone">' +
+              '<div class="share"><span>Share my location during my rides</span><button class="sw" id="locBtn" role="switch" aria-checked="' + S.loc + '" aria-label="Share my location during my rides"></button></div>' +
+              msgs.join("") +
+              '<div class="stat">' + ST.map(function (x, i) { return '<button data-st="' + (i + 1) + '" aria-pressed="' + (S.drv >= i + 1) + '">' + x + '</button>'; }).join("") + '</div>' +
+            '</div>' +
+            '<div class="side">' + map + alert +
+              '<div class="sec"><div class="line"><div class="l"><span class="t"><span class="code">HK01</span><span class="tn">16:10</span><span>S-01, Somchai</span></span><span class="s">BKK → Lumière Bangkok</span></div>' + s01 + '</div>' +
+              '<div class="line"><div class="l"><span class="t"><span class="code">KR01</span><span class="tn">16:00</span><span>V-02, Anan</span></span><span class="s">BKK → Lumière Bangkok</span></div>' + st("ok", "Guest met") + '</div></div>' +
+              '<div class="acts">' +
+                (S.drvAlert < (S.loc ? 1 : 2) && S.drv === 0 ? '<button class="link" id="drvAlert">' + (S.drvAlert === 0 ? "15:55, still no status" : "Five minutes later") + '</button>' : '') +
+                (!S.drvNight ? '<button class="link" id="drvNight">End of the day</button>' : '') +
+              '</div>' +
+            '</div>' +
+          '</div>';
       },
       wire: function () {
-        $$("[data-owner]").forEach(function (b) { b.onclick = function () { S.owner = b.getAttribute("data-owner"); render(); }; });
-        $$("[data-task]").forEach(function (c) { c.onchange = function () { S.tasksDone[c.getAttribute("data-task")] = c.checked; render(); }; });
+        $$("[data-st]").forEach(function (b) { b.onclick = function () { S.drv = +b.getAttribute("data-st"); render(); }; });
+        $$("[data-choice]").forEach(function (b) { b.onclick = function () { S.choice = b.getAttribute("data-choice"); render(); }; });
+        var l = $("#locBtn"); if (l) l.onclick = function () { S.loc = !S.loc; render(); };
+        var a = $("#drvAlert"); if (a) a.onclick = function () { S.drvAlert++; render(); };
+        var n = $("#drvNight"); if (n) n.onclick = function () { S.drvNight = true; render(); };
+        liveMap();
       }
     },
     {
@@ -676,74 +782,6 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
             (s === 1 ? '<div><button class="btn" id="delayBtn">Ten minutes later</button></div>' : '<p class="note ok fade">Everyone confirmed in twelve minutes. Arun made no call.</p>'));
       },
       wire: function () { var b = $("#delayBtn"); if (b) b.onclick = function () { S.delay++; render(); }; }
-    },
-    {
-      id: "driver", p: "somchai", mod: "orchestrate", status: "soon", who: "<b>Somchai</b>, driver, S-01",
-      title: "Your drivers get their ride. Arun sees every car.",
-      lede: "A status is one tap. With location on, a late car is seen before anyone has to call.",
-      privacy: "Location is the driver's choice, during rides only, seen by the coordinator only, deleted after the event.",
-      before: "The coordinator calls every driver, often while they drive.",
-      after: "Every car on one map. Nobody calls a driver at the wheel.",
-      impact: { hours: 2, messages: 25, calls: 40, caught: 2 }, where: "Somchai's phone · Arun's live map",
-      notes: { say: "Turn on location on Somchai's phone first, then press the 15:55 button: Ellie sees the traffic jam on the map, warns Arun and the airport host, and nobody calls the driver.", ask: "Do your drivers share their location today, with which app? Would they accept it during their rides only?" },
-      screen: function () {
-        var ST = ["On my way", "At arrivals", "Guest met", "Dropped off"];
-        var stuck = S.drvAlert >= 1 && S.drv === 0;
-        var P = S.drv >= 4 ? [205, 112] : S.drv >= 2 ? [528, 150] : S.drv === 1 ? [492, 152] : stuck ? [410, 150] : [300, 142];
-        var msgs = ['<div class="bub"><span class="w">Ellie · 14:35 · in Thai</span>Next ride <b>16:10</b>, BKK arrivals, party <b>HK01</b>, sign <b>ELLIE 12</b>.</div>'];
-        if (S.loc) msgs.push('<div class="bub fade"><span class="w">Ellie · 14:36</span>Location on until 23:00. Only Arun sees it.</div>');
-        if (stuck && S.loc) msgs.push('<div class="bub fade"><span class="w">Ellie · 15:56</span>Arun can see the traffic. No need to call, drive safely.</div>');
-        if (stuck && !S.loc) msgs.push('<div class="bub fade"><span class="w">Ellie · 15:55</span>No status yet for HK01. Are you on your way?</div>');
-        if (S.drvAlert >= 2 && !S.loc && S.drv === 0) msgs.push('<div class="bub fade"><span class="w">Ellie · 16:00</span>Calling you now, in Thai.</div>', '<div class="bub me fade"><span class="w">Somchai · by voice</span>"Stuck on the expressway, ten minutes."</div>');
-        if (S.drvNight) msgs.push('<div class="bub fade"><span class="w">Ellie · 23:10</span>Six rides today, and HK01 asked for you again. Thank you. Location is off. Tomorrow, 09:30.</div>');
-        var s01 = S.drv >= 4 ? st("ok", "Dropped off") : S.drv >= 1 ? st("warn", ST[S.drv - 1]) : stuck ? (S.loc ? st("crit", "8 min late, seen on the map") : (S.drvAlert >= 2 ? st("warn", "10 min late, told by voice") : st("crit", "No status"))) : st("", "To do");
-        var car = function (code, x, y, label, tone) {
-          return '<g class="mapcar" style="transform: translate(' + x + 'px,' + y + 'px)">' +
-            '<circle r="13" fill="' + (tone === "crit" ? "var(--crit)" : tone === "off" ? "var(--raised)" : "var(--text)") + '" stroke="var(--surface)" stroke-width="2"></circle>' +
-            '<text y="3.5" text-anchor="middle" font-size="8.5" font-weight="600" fill="' + (tone === "off" ? "var(--muted)" : "var(--surface)") + '">' + code + '</text>' +
-            (label ? '<text y="-19" text-anchor="middle" font-size="10" fill="var(--text)">' + label + '</text>' : '') + '</g>';
-        };
-        var map = '' +
-          '<svg class="map" viewBox="0 40 600 200" role="img" aria-label="Live map of the cars between the hotels and BKK airport">' +
-            '<path d="M95 0 C 140 60, 70 120, 120 170 S 110 240, 150 260" fill="none" stroke="var(--river)" stroke-width="14"></path>' +
-            '<path d="M215 112 C 260 130, 300 142, 360 146 S 470 152, 530 150" fill="none" stroke="var(--line-strong)" stroke-width="2"></path>' +
-            '<rect x="138" y="160" width="9" height="9" fill="var(--text)"></rect><text x="154" y="169" font-size="10" fill="var(--muted)">Riverside Suites</text>' +
-            '<rect x="201" y="98" width="9" height="9" fill="var(--text)"></rect><text x="166" y="90" font-size="10" fill="var(--muted)">Lumière Bangkok</text>' +
-            '<circle cx="540" cy="150" r="20" fill="none" stroke="var(--line-strong)" stroke-width="1.5"></circle><text x="522" y="190" font-size="10" fill="var(--muted)">BKK</text>' +
-            (stuck && S.loc ? '<text x="384" y="184" font-size="10" fill="var(--crit)">Traffic, 12 min</text>' : '') +
-            car("V-02", 548, 128, "", "") + car("S-02", 150, 196, "", "") + car("V-01", 470, 172, "", "") +
-            (S.loc ? car("S-01", P[0], P[1], "Somchai", stuck ? "crit" : "") : car("S-01", 300, 142, "location off", "off")) +
-          '</svg>';
-        var alert = '';
-        if (stuck && S.loc) {
-          alert = S.choice === "keep" ? '<p class="note ok fade">S-01 keeps HK01, about 8 minutes late. Ploy holds the guests in the lounge.</p>'
-            : S.choice === "swap" ? '<p class="note ok fade">V-01 takes HK01 in 4 minutes. Somchai is told when he stops, not while he drives.</p>'
-            : '<p class="note crit fade">No status for HK01, but the map shows S-01 in traffic: about 8 minutes late. Ploy, the airport host, has been told.</p><div class="acts"><button class="btn sm" data-choice="keep">Keep S-01</button><button class="btn sm primary" data-choice="swap">Send V-01, 4 min away</button></div>';
-        }
-        return '' +
-          '<div class="duo">' +
-            '<div class="phone" aria-label="Somchai\'s phone">' +
-              '<div class="share"><span>Share my location during my rides</span><button class="sw" id="locBtn" role="switch" aria-checked="' + S.loc + '" aria-label="Share my location during my rides"></button></div>' +
-              msgs.join("") +
-              '<div class="stat">' + ST.map(function (x, i) { return '<button data-st="' + (i + 1) + '" aria-pressed="' + (S.drv >= i + 1) + '">' + x + '</button>'; }).join("") + '</div>' +
-            '</div>' +
-            '<div class="side">' + map + alert +
-              '<div class="sec"><div class="line"><div class="l"><span class="t"><span class="code">HK01</span><span class="tn">16:10</span><span>S-01, Somchai</span></span><span class="s">BKK → Lumière Bangkok</span></div>' + s01 + '</div>' +
-              '<div class="line"><div class="l"><span class="t"><span class="code">KR01</span><span class="tn">16:00</span><span>V-02, Anan</span></span><span class="s">BKK → Lumière Bangkok</span></div>' + st("ok", "Guest met") + '</div></div>' +
-              '<div class="acts">' +
-                (S.drvAlert < (S.loc ? 1 : 2) && S.drv === 0 ? '<button class="link" id="drvAlert">' + (S.drvAlert === 0 ? "15:55, still no status" : "Five minutes later") + '</button>' : '') +
-                (!S.drvNight ? '<button class="link" id="drvNight">End of the day</button>' : '') +
-              '</div>' +
-            '</div>' +
-          '</div>';
-      },
-      wire: function () {
-        $$("[data-st]").forEach(function (b) { b.onclick = function () { S.drv = +b.getAttribute("data-st"); render(); }; });
-        $$("[data-choice]").forEach(function (b) { b.onclick = function () { S.choice = b.getAttribute("data-choice"); render(); }; });
-        var l = $("#locBtn"); if (l) l.onclick = function () { S.loc = !S.loc; render(); };
-        var a = $("#drvAlert"); if (a) a.onclick = function () { S.drvAlert++; render(); };
-        var n = $("#drvNight"); if (n) n.onclick = function () { S.drvNight = true; render(); };
-      }
     },
     {
       id: "review", p: "mai", mod: "analyse", status: "soon", who: "<b>Mai</b>, accounts",
@@ -1094,6 +1132,58 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
     el.classList.remove("in"); void el.offsetWidth; el.classList.add("in");
   }
 
+  // ------------------------------------------------------------ the drivers' live map: cars that drive
+  function liveMap() {
+    var svg = $(".map"); if (!svg || !document.getElementById("rExp")) return;
+    if (S._mapRaf) cancelAnimationFrame(S._mapRaf);
+    var reduce = false; try { reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) {}
+    var path = function (id) { var el = document.getElementById(id); return { p: el, L: el.getTotalLength() }; };
+    var exp = path("rExp");
+    var at = function (r, f, flip) {
+      f = Math.max(0, Math.min(1, f));
+      var d = f * r.L, a = r.p.getPointAtLength(Math.max(0, d - 1)), b = r.p.getPointAtLength(Math.min(r.L, d + 1)), c = r.p.getPointAtLength(d);
+      return { x: c.x, y: c.y, a: Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI + (flip ? 180 : 0) };
+    };
+    var put = function (id, pt, op) {
+      var g = document.getElementById(id), l = document.getElementById(id + "L");
+      if (g) { g.setAttribute("transform", "translate(" + pt.x.toFixed(1) + " " + pt.y.toFixed(1) + ") rotate(" + pt.a.toFixed(1) + ") scale(" + (id === "cS01" ? 1.5 : 1.3) + ")"); g.style.opacity = op; }
+      if (l) { l.style.left = (pt.x / 6) + "%"; l.style.top = ((pt.y + 15) / 3) + "%"; l.style.setProperty("--ax", "-" + (8 + pt.x / 600 * 84).toFixed(1) + "%"); l.style.opacity = op; }
+    };
+    S._amb = S._amb || { cV02: .9, cS02: .55, cV01: .35 };
+    var AMB = [{ id: "cV02", r: exp, v: -1 / 90, flip: true }, { id: "cS02", r: path("rRiv"), v: 1 / 70 }, { id: "cV01", r: path("rV01"), v: 1 / 80 }];
+    var stuck = S.drvAlert >= 1 && S.drv === 0;
+    var plan = !S.loc ? { to: .35, drift: 0, route: "none", off: true }
+      : S.drv >= 4 ? { to: 0, drift: 0, flip: true, route: "none" }
+      : S.drv === 3 ? { to: .97, drift: -.25, flip: true, route: "behind" }
+      : S.drv === 2 ? { to: 1, drift: 0, route: "none" }
+      : S.drv === 1 ? { to: .86, drift: .1, route: "ahead" }
+      : stuck ? { to: .6, drift: .025, route: "ahead" }
+      : { to: .33, drift: .12, route: "ahead" };
+    var from = plan.off || S.s01f === undefined || Math.abs(S.s01f - plan.to) < .005 ? undefined : S.s01f;
+    if (plan.off) S.s01f = undefined;
+    var jam = document.getElementById("rJam"), route = document.getElementById("rRoute"), L = exp.L;
+    if (jam) jam.style.strokeDasharray = "0 " + (.5 * L) + " " + (.18 * L) + " " + L;
+    var t0 = performance.now(), last = t0;
+    function frame(now) {
+      if (!svg.isConnected) return;
+      var dt = Math.min(.1, (now - last) / 1000); last = now;
+      AMB.forEach(function (c) {
+        var f = S._amb[c.id];
+        if (!reduce) { f += c.v * dt; if (f > 1) f -= 1; if (f < 0) f += 1; S._amb[c.id] = f; }
+        put(c.id, at(c.r, f, c.flip), Math.max(0, Math.min(1, f / .04, (1 - f) / .04)));
+      });
+      var e = (now - t0) / 1000, f;
+      if (reduce) f = plan.to;
+      else if (from !== undefined && e < 1.2) { var k = e / 1.2; k = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2; f = from + (plan.to - from) * k; }
+      else f = plan.to + plan.drift * Math.min(1, Math.max(0, e - (from !== undefined ? 1.2 : 0)) / 45);
+      if (!plan.off) S.s01f = f;
+      put("cS01", at(exp, f, plan.flip), 1);
+      if (route) route.style.strokeDasharray = plan.route === "ahead" ? "0 " + (f * L) + " " + ((1 - f) * L) + " " + L : plan.route === "behind" ? (f * L) + " " + L : "0 " + L;
+      if (!reduce) S._mapRaf = requestAnimationFrame(frame);
+    }
+    frame(t0);
+  }
+
   function wire(sc) {
     var on = function (id, fn) { var e = document.getElementById(id); if (e) e.onclick = fn; };
     on("prev", function () { step(-1); });
@@ -1111,7 +1201,7 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
     S.imp = 0; S.transfers = JSON.parse(JSON.stringify(TRANSFERS0)); S.pick = null; S.lastAssign = null; S.freeAt = "16:00";
     S.owner = "all"; S.tasksDone = {}; S.signal = "all"; S.reasons = {}; S.blocking = null;
     S.cards = { AU01: "confirmed", ES01: "confirmed", CN01: "confirmed", SG01: "confirmed", JP01: "confirmed", TH01: "progress", HK01: "progress", KR01: "todo", AE01: "todo" };
-    S.delay = 0; S.drv = 0; S.drvAlert = 0; S.drvNight = false; S.loc = false; S.choice = null; S.tab = "transport";
+    S.delay = 0; S.drv = 0; S.drvAlert = 0; S.drvNight = false; S.loc = false; S.choice = null; S.s01f = undefined; S.tab = "transport";
     S.mD = 0; S.mAppr = { dinner: "proposed", temple: "proposed", gift: "proposed" }; S.mCh = "flight";
     S.mT = 0; S.mTab = "markets";
     go(0);
