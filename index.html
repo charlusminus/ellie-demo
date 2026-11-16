@@ -104,7 +104,9 @@ h2 { font-size: var(--title-2); }
 .nav { display: flex; align-items: center; gap: .6rem; margin-top: auto; padding-top: .4rem; }
 .nav .pos { font-size: .8rem; color: var(--muted); margin-left: .6rem; }
 .nav .notes-btn { margin-left: auto; }
-@media (hover: none), (max-width: 1099px) { .nav .notes-btn { display: none; } }
+@media (hover: none) { .nav .notes-btn { display: none; } }
+.notes { position: relative; }
+.notes .notes-close { justify-self: end; }
 
 /* Small screens (Alex, 16/11): the reading order is title, text, the Ellie screen, then Today and With Ellie;
    Back and Next live in a bar fixed at the bottom, so they never cut the content. */
@@ -1009,7 +1011,7 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
           '<p class="lede">' + val(sc.lede) + '</p>' +
           (sc.privacy ? '<p class="priv">' + sc.privacy + '</p>' : '') +
           (sc.before ? '<dl class="ba"><div><dt class="label">Today</dt><dd>' + sc.before + '</dd></div><div class="after"><dt class="label">With Ellie</dt><dd>' + sc.after + '</dd></div></dl>' : '') +
-          (S.notes ? '<div class="notes">' + (sc.notes.say ? '<span><b>Say.</b> ' + sc.notes.say + '</span>' : '') + (sc.notes.live ? '<span><b>Show it live in Ellie.</b> ' + sc.notes.live + '</span>' : (sc.status === "soon" ? '<span><b>Not in Ellie yet.</b> Present it as a proposal to design together.</span>' : '')) + (sc.notes.ask ? '<span><b>Ask.</b> ' + sc.notes.ask + '</span>' : '') + '<span>Keys: arrows to move, N notes, T theme, 1 2 3 looks, F full screen. Click ELLIE to start over.</span></div>' : '') +
+          (S.notes ? '<div class="notes"><button class="link notes-close" id="notesClose">Hide notes</button>' + (sc.notes.say ? '<span><b>Say.</b> ' + sc.notes.say + '</span>' : '') + (sc.notes.live ? '<span><b>Show it live in Ellie.</b> ' + sc.notes.live + '</span>' : (sc.status === "soon" ? '<span><b>Not in Ellie yet.</b> Present it as a proposal to design together.</span>' : '')) + (sc.notes.ask ? '<span><b>Ask.</b> ' + sc.notes.ask + '</span>' : '') + '<span>Keys: arrows to move, N to show or hide the notes, Esc to hide them, F for full screen. Click the logo to start over.</span></div>' : '') +
           '<div class="nav">' + (pos > 0 ? '<button class="btn" id="prev">Back</button>' : '') + (pos < q.length - 1 ? '<button class="btn primary" id="next">' + (S.i === 0 ? (who ? "Follow " + who[1] : S.side === "maison" ? "Start three weeks before" : "Start with the brief") : "Next") + '</button>' : '') +
             '<span class="pos tn" aria-label="Screen ' + (pos + 1) + ' of ' + q.length + '">' + (pos + 1) + ' / ' + q.length + '</span>' +
             '<button class="link notes-btn" id="notesBtn" aria-pressed="' + S.notes + '" title="Presenter notes (N)">' + (S.notes ? "Hide notes" : "Notes") + '</button></div>' +
@@ -1033,6 +1035,7 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
     on("homeBtn", restart);
     $$("[data-mod]").forEach(function (b) { b.onclick = function () { go(+b.getAttribute("data-mod")); }; });
     on("notesBtn", function () { S.notes = !S.notes; render(); });
+    on("notesClose", function () { S.notes = false; render(); });
     if (sc.wire) sc.wire();
   }
   function toggleFs() { try { if (!document.fullscreenElement) root.requestFullscreen(); else document.exitFullscreen(); } catch (e) {} }
@@ -1068,6 +1071,7 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
     if (e.key === "ArrowRight" || e.key === "PageDown") step(1);
     else if (e.key === "ArrowLeft" || e.key === "PageUp") step(-1);
     else if (e.key === "n" || e.key === "N") { S.notes = !S.notes; render(); }
+    else if (e.key === "Escape" && S.notes) { S.notes = false; render(); }
     else if (e.key === "f" || e.key === "F") toggleFs();
     else if (e.key === "Home") restart();
   });
