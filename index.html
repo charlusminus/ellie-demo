@@ -180,9 +180,13 @@ h2 { font-size: var(--title-2); }
 .st.ok { color: var(--ok); } .st.warn { color: var(--warn); } .st.crit { color: var(--crit); } .st.soon { color: var(--soon); }
 .crit { color: var(--crit); } .ok { color: var(--ok); } .warn { color: var(--warn); }
 
-.tabs { display: flex; gap: 1.5rem; flex-wrap: wrap; border-bottom: 1px solid var(--line); }
-.tabs button { padding: .3rem 0 .45rem; font-size: var(--fs-b); color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -1px; }
-.tabs button[aria-pressed="true"] { color: var(--text); border-bottom-color: var(--accent); }
+/* Tabs read as buttons: a framed pill each, the chosen one in gold. */
+.tabs { display: flex; gap: .5rem; flex-wrap: wrap; }
+.tabs button { padding: .35rem .95rem; font-size: var(--fs-b); color: var(--muted); border: 1px solid var(--line-strong); border-radius: 999px; transition: border-color .15s, color .15s, background-color .15s; }
+.tabs button:hover { border-color: var(--text); color: var(--text); }
+.tabs button[aria-pressed="true"] { color: var(--text); border-color: var(--accent); background: var(--wash); }
+.tabs .nx { margin-left: .45rem; font-size: var(--fs-s); color: var(--soon); }
+.note.soon { border-color: var(--soon); color: var(--soon); }
 .tabs .c { font-family: var(--f-num); font-size: var(--fs-s); margin-left: .4rem; }
 
 .note { margin: 0; border-left: 2px solid var(--line-strong); padding: .15rem 0 .15rem .85rem; font-size: var(--fs-b); }
@@ -303,12 +307,23 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
 .mlab.place.b { transform: translate(-50%, 12px); }
 .mlab.car { transform: translate(var(--ax, -50%), calc(-100% - 13px)); background: var(--surface); border: 1px solid var(--line-strong); border-radius: 999px; padding: .1rem .6rem; color: var(--text); }
 .mlab.car.amb { color: var(--muted); padding: 0 .45rem; transform: translate(var(--ax, -50%), 15px); }
-@media (max-width: 700px) { .mlab.place:not(.b), .mlab.car.amb { display: none; } }
+@media (max-width: 700px) {
+  .mlab.place:not(.keep), .mlab.car.amb { display: none; }
+}
 .mlab.car .eta { margin-left: .5rem; padding-left: .5rem; border-left: 1px solid var(--line-strong); color: var(--muted); }
 .mlab.car .eta.crit { color: var(--crit); } .mlab.car .eta.ok { color: var(--ok); }
-.live { position: absolute; top: .55rem; left: .55rem; display: flex; align-items: center; gap: .45rem; background: var(--surface); border: 1px solid var(--line-strong); border-radius: 999px; padding: .1rem .65rem; font-size: var(--fs-s); }
+.live { position: absolute; top: .55rem; right: .55rem; display: flex; align-items: center; gap: .45rem; background: var(--surface); border: 1px solid var(--line-strong); border-radius: 999px; padding: .1rem .65rem; font-size: var(--fs-s); }
 .live i { width: .5rem; height: .5rem; border-radius: 50%; background: var(--ok); animation: blink 1.6s ease-in-out infinite; }
 @keyframes blink { 50% { opacity: .35; } }
+.mchip { position: absolute; bottom: .55rem; right: .55rem; background: var(--surface); border: 1px solid var(--line-strong); border-radius: 999px; padding: .1rem .65rem; font-size: var(--fs-s); color: var(--soon); }
+@media (min-width: 701px) { .sec.two { grid-template-columns: 1fr 1fr; column-gap: 2rem; } }
+@media (max-width: 700px) {
+  /* on a phone the Live badge and the chip hang under the map, so they never cover a car */
+  .mapbox { overflow: visible; margin-bottom: 2.1rem; }
+  .mapbox .map { border-radius: var(--radius-lg); }
+  .live { top: auto; bottom: -2.05rem; right: auto; left: 0; }
+  .mchip { bottom: -2.05rem; }
+}
 @media (prefers-reduced-motion: reduce) { .mcar .halo, .live i { animation: none; } }
 
 /* review */
@@ -416,11 +431,11 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
     signal: "all", cards: { AU01: "confirmed", ES01: "confirmed", CN01: "confirmed", SG01: "confirmed", JP01: "confirmed", TH01: "progress", HK01: "progress", KR01: "todo", AE01: "todo" }, reasons: {}, blocking: null,
     delay: 0,
     drv: 0, drvAlert: 0, drvNight: false, loc: false, choice: null,
-    tab: "transport",
+    tab: "costs",
     picks: [],
     // the maison's side of the same event
     mD: 0, mAppr: { dinner: "proposed", temple: "proposed", gift: "proposed" }, mCh: "flight",
-    mT: 0, mTab: "markets", mPicks: []
+    mT: 0, mTab: "markets", mPicks: [], mClose: 0
   };
   // Two sides of the same event, the maison and the DMC: chosen on the first screen, or with ?side=maison in the link.
   // One person's day can be followed on its own: chosen on the first screen, or with ?profile=arun in the link.
@@ -655,36 +670,13 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
         var s01 = S.drv >= 4 ? st("ok", "Dropped off") : S.drv >= 1 ? st("warn", ST[S.drv - 1]) : stuck ? (S.loc ? st("crit", "8 min late, seen on the map") : (S.drvAlert >= 2 ? st("warn", "10 min late, told by voice") : st("crit", "No status"))) : st("", "To do");
         var TIME = S.drvNight ? "23:10" : S.drv >= 4 ? "17:05" : S.drv === 3 ? "16:25" : S.drv === 2 ? "16:12" : S.drv === 1 ? "16:02" : stuck ? (S.drvAlert >= 2 ? "16:00" : "15:56") : S.loc ? "14:36" : "14:35";
         var ETA = !S.loc ? ["", "location off"] : S.drv >= 4 ? ["ok", "Dropped off"] : S.drv === 3 ? ["", "HK01 aboard, 40 min"] : S.drv === 2 ? ["", "At arrivals"] : S.drv === 1 ? ["", "At BKK in 3 min"] : stuck ? ["crit", "8 min late, traffic"] : ["", "At BKK 15:58"];
-        var lab = function (x, y, txt, cls) { return '<span class="mlab ' + cls + '" style="left:' + (x / 6) + '%;top:' + ((y + 15) / 3) + '%">' + txt + '</span>'; };
-        var car = function (id, fill) {
-          return '<g id="' + id + '" class="mcar" transform="translate(-50 -50)">' + (id === "cS01" && S.loc ? '<circle class="halo" r="16" fill="' + fill + '"></circle>' : '') +
-            '<rect x="-11" y="-6.5" width="22" height="13" rx="4.5" fill="' + fill + '" stroke="var(--bg)" stroke-width="1.5"></rect>' +
-            '<rect x="2.5" y="-4.6" width="4.6" height="9.2" rx="1.6" fill="var(--bg)" opacity=".75"></rect>' +
-            '<rect x="-8" y="-4.6" width="3" height="9.2" rx="1.2" fill="var(--bg)" opacity=".55"></rect></g>';
-        };
-        var EXP = "M165 95 C 215 102, 245 126, 305 130 S 430 126, 470 138 S 520 150, 548 150";
-        var road = function (d, id) { return '<path' + (id ? ' id="' + id + '"' : '') + ' d="' + d + '" fill="none" stroke="var(--map-road)" stroke-width="4" stroke-linecap="round"></path>'; };
-        var map = '<div class="mapbox">' +
-          '<svg class="map" viewBox="0 -15 600 300" role="img" aria-label="Live map of the cars between the hotels and BKK airport">' +
-            '<defs><pattern id="mStreets" width="21" height="21" patternUnits="userSpaceOnUse" patternTransform="rotate(-12)"><path d="M0 .5H21M.5 0V21" fill="none" stroke="var(--map-street)" stroke-width="1"></path></pattern></defs>' +
-            '<rect y="-15" width="600" height="300" fill="var(--map-bg)"></rect><rect y="-15" width="600" height="300" fill="url(#mStreets)"></rect>' +
-            '<rect x="292" y="176" width="64" height="40" rx="8" fill="var(--map-park)"></rect><rect x="436" y="58" width="48" height="30" rx="8" fill="var(--map-park)"></rect>' +
-            '<path d="M60 -15 C 115 50, 30 110, 88 165 S 80 240, 120 290" fill="none" stroke="var(--river)" stroke-width="24" stroke-linecap="round"></path>' +
-            road("M0 58 C 160 70, 330 52, 600 40") + road("M262 -5 C 255 90, 272 180, 262 280") + road("M410 -5 C 420 100, 402 190, 412 280") +
-            road("M120 -10 C 168 55, 110 120, 158 178 S 170 240, 188 290", "rRiv") + road("M140 222 C 175 195, 196 150, 214 116") + road("M230 262 C 330 244, 450 224, 540 166", "rV01") +
-            '<path id="rExp" d="' + EXP + '" fill="none" stroke="var(--map-exp)" stroke-width="8" stroke-linecap="round"></path>' +
-            (stuck && S.loc ? '<path id="rJam" d="' + EXP + '" fill="none" stroke="var(--crit)" stroke-width="8" stroke-linecap="round"></path>' : '') +
-            '<path id="rRoute" d="' + EXP + '" fill="none" stroke="var(--accent)" stroke-width="4" stroke-linecap="round" stroke-dasharray="0 2000"></path>' +
-            '<g transform="translate(566 150) rotate(-18)"><rect x="-34" y="-17" width="68" height="6" rx="2" fill="var(--map-exp)"></rect><rect x="-34" y="11" width="68" height="6" rx="2" fill="var(--map-exp)"></rect><rect x="-14" y="-6" width="28" height="12" rx="3" fill="var(--text)"></rect></g>' +
-            '<rect x="159" y="89" width="12" height="12" rx="2" fill="var(--text)"></rect><rect x="129" y="216" width="12" height="12" rx="2" fill="var(--text)"></rect>' +
-            car("cS02", "var(--text)") + car("cV01", "var(--text)") + car("cV02", "var(--text)") +
-            car("cS01", !S.loc ? "var(--muted)" : stuck ? "var(--crit)" : "var(--accent)") +
-          '</svg>' +
-          lab(165, 95, "Lumière Bangkok", "place t") + lab(135, 222, "Riverside Suites", "place b") + lab(566, 160, "BKK", "place b") +
-          '<span class="mlab car amb" id="cS02L">S-02</span><span class="mlab car amb" id="cV01L">V-01</span><span class="mlab car amb" id="cV02L">V-02</span>' +
-          '<span class="mlab car" id="cS01L"><b>S-01</b> Somchai<span class="eta ' + ETA[0] + '">' + ETA[1] + '</span></span>' +
-          '<span class="live"><i></i>Live · ' + TIME + '</span>' +
-        '</div>';
+        var map = mapView({
+          vb: [0, -15, 600, 300], time: TIME, route: "rExp", jam: stuck && S.loc,
+          aria: "Live map of the cars between the hotels and BKK airport",
+          cars: [{ id: "cS02", lab: "S-02" }, { id: "cV01", lab: "V-01" }, { id: "cV02", lab: "V-02" },
+            { id: "cS01", main: true, fill: !S.loc ? "var(--muted)" : stuck ? "var(--crit)" : "var(--accent)", halo: S.loc,
+              lab: '<b>S-01</b> Somchai<span class="eta ' + ETA[0] + '">' + ETA[1] + '</span>' }]
+        });
         var alert = '';
         if (stuck && S.loc) {
           alert = S.choice === "keep" ? '<p class="note ok fade">S-01 keeps HK01, about 8 minutes late. Ploy holds the guests in the lounge.</p>'
@@ -714,7 +706,19 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
         var l = $("#locBtn"); if (l) l.onclick = function () { S.loc = !S.loc; render(); };
         var a = $("#drvAlert"); if (a) a.onclick = function () { S.drvAlert++; render(); };
         var n = $("#drvNight"); if (n) n.onclick = function () { S.drvNight = true; render(); };
-        liveMap();
+        var stuck = S.drvAlert >= 1 && S.drv === 0;
+        liveMap({
+          vb: [0, -15, 600, 300],
+          amb: [{ id: "cV02", path: "rExp", f: .9, v: -1 / 90, flip: true }, { id: "cS02", path: "rRiv", f: .55, v: 1 / 70 }, { id: "cV01", path: "rV01", f: .35, v: 1 / 80 }],
+          main: !S.loc ? { id: "cS01", path: "rExp", to: .35, drift: 0, route: "none", off: true }
+            : S.drv >= 4 ? { id: "cS01", path: "rExp", to: 0, drift: 0, flip: true, route: "none" }
+            : S.drv === 3 ? { id: "cS01", path: "rExp", to: .97, drift: -.25, flip: true, route: "behind" }
+            : S.drv === 2 ? { id: "cS01", path: "rExp", to: 1, drift: 0, route: "none" }
+            : S.drv === 1 ? { id: "cS01", path: "rExp", to: .86, drift: .1, route: "ahead" }
+            : stuck ? { id: "cS01", path: "rExp", to: .6, drift: .025, route: "ahead" }
+            : { id: "cS01", path: "rExp", to: .33, drift: .12, route: "ahead" },
+          jam: [.5, .68]
+        });
       }
     },
     {
@@ -792,7 +796,7 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
       impact: { hours: 16, messages: 10, calls: 5, caught: 0 }, where: "Analyse · Private Viewing Bangkok",
       notes: { ask: "What does the maison ask you after an event? How long does the recharge take today?" },
       screen: function () {
-        var tabs = [["transport", "Transport"], ["team", "Team"], ["costs", "Costs"]];
+        var tabs = [["costs", "Costs"], ["transport", "Transport"], ["team", "Team"], ["feedback", 'Client feedback<span class="nx">later</span>']];
         var body = "";
         if (S.tab === "transport") {
           var arr = [["06", 2], ["08", 1], ["09", 3], ["11", 1], ["14", 2], ["15", 5], ["19", 4]];
@@ -804,6 +808,19 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
           '</div>' +
           '<div class="sec"><div class="label">Guests landing per hour, Day 1</div><div class="bars" style="padding-top:.7rem">' + arr.map(function (r) { return '<div class="bl"><span class="tn">' + r[0] + ':00</span><span class="tr"><span class="f' + (r[1] >= 5 ? " hot" : "") + '" style="width:' + (r[1] / 5 * 100) + '%"></span></span><span class="v tn">' + r[1] + ' pax</span></div>'; }).join("") + '</div></div>' +
           '<div class="sec"><div class="label">Next time</div><div class="line"><span>A second host at BKK between 14:00 and 16:00.</span></div><div class="line"><span>A V-Class for any party of four with luggage.</span></div></div>';
+        } else if (S.tab === "feedback") {
+          body = '<div class="kpis">' +
+            '<div class="kpi"><b>4.7</b><span class="s">out of 5, from 24 of 30 guests, asked by their advisor</span></div>' +
+            '<div class="kpi"><b>3</b><span class="s">points raised by the maison</span></div>' +
+            '<div class="kpi"><b>2</b><span class="s">to change next time</span></div>' +
+          '</div>' +
+          '<div class="sec"><div class="label">What came back</div>' + [
+            ["Arrivals", "A guest from Hong Kong: \u201cThe driver already knew which water I drink.\u201d", "ok", "Praise"],
+            ["Hotel", "A guest from Thailand: the white flowers in her suite, as asked.", "ok", "Praise"],
+            ["Gala", "The maison: the seating changed late, the advisors heard at 18:00.", "warn", "To improve"],
+            ["Transport", "A party from the UAE: twelve minutes at the hotel before the temple visit.", "warn", "To improve"]
+          ].map(function (r) { return '<div class="prow"><span class="s">' + r[0] + '</span><span>' + r[1] + '</span>' + st(r[2], r[3]) + '</div>'; }).join("") + '</div>' +
+          '<p class="note soon">Later: each answer is tied to the guest, the service and the person on duty, and goes back to the maison only.</p>';
         } else if (S.tab === "team") {
           body = '<div class="tbl"><table><thead><tr><th class="label">Driver</th><th class="label num">Rides</th><th class="label num">Hours</th><th class="label num">Status on time</th></tr></thead><tbody>' +
             [["Somchai, S-01", 21, 38, "100 %"], ["Niran, S-02", 18, 36, "94 %"], ["Kiet, V-01", 26, 44, "96 %"], ["Anan, V-02", 15, 29, "100 %"], ["Chai, E-01", 17, 31, "88 %"], ["Preecha, M-01", 12, 22, "100 %"]].map(function (r) { return '<tr><td>' + r[0] + '</td><td class="num">' + r[1] + '</td><td class="num">' + r[2] + '</td><td class="num">' + r[3] + '</td></tr>'; }).join("") +
@@ -949,12 +966,21 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
           [["Ms R. Tan", "At dinner", "ok", "Settled"], ["Mrs P. Srisuk", "At dinner, the allergy note with the kitchen", "ok", "Settled"], ["Mrs W. Lau", "In her suite since 17:05", "ok", "Settled"], ["Dr A. Mansour", "Met at the gate at 19:50, in the car", "warn", "On their way"]]
         ][S.mT];
         var blocked = T.filter(function (r) { return r[2] === "crit"; }).length;
+        var G = [["Mrs P. Srisuk", "In her suite at 15:35"], ["Mrs W. Lau", "At Lumière Bangkok at 17:05"], ["Dr A. Mansour, party of four", "At Riverside Suites at 21:00"]][S.mT];
         return '' +
           '<p class="alert"><b class="' + (blocked ? 'crit' : 'ok') + '">' + (blocked ? blocked + ' step blocked' : 'Nothing is blocked') + '</b><span class="s">Day 1, ' + ["14:30", "16:30", "20:45"][S.mT] + '</span></p>' +
-          '<div class="sec">' + T.map(function (r) { return '<div class="line"><div class="l"><span class="t">' + r[0] + '</span><span class="s">' + r[1] + '</span></div>' + st(r[2], r[3]) + '</div>'; }).join("") + '</div>' +
+          mapView({ vb: [100, 55, 500, 205], time: ["14:30", "16:30", "20:45"][S.mT], route: ["rRS", "rExp", "rRS"][S.mT], chip: "Live map: in co-design",
+            aria: "Live map of your guests on their way from the airport to the hotels",
+            cars: [{ id: "cS02" }, { id: "cV01" }, { id: "g" + S.mT, main: true, fill: "var(--accent)", halo: true, lab: '<b>' + G[0] + '</b><span class="eta">' + G[1] + '</span>' }] }) +
+          '<div class="sec two">' + T.map(function (r) { return '<div class="line"><div class="l"><span class="t">' + r[0] + '</span><span class="s">' + r[1] + '</span></div>' + st(r[2], r[3]) + '</div>'; }).join("") + '</div>' +
           '<p class="sum">Run by the agency. You see it, they set it.' + (S.mT < 2 ? ' <button class="link" id="mLater">' + (S.mT === 0 ? "Two hours later" : "This evening") + '</button>' : '') + '</p>';
       },
-      wire: function () { var b = $("#mLater"); if (b) b.onclick = function () { S.mT++; render(); }; }
+      wire: function () {
+        var b = $("#mLater"); if (b) b.onclick = function () { S.mT++; render(); };
+        liveMap({ vb: [100, 55, 500, 205],
+          amb: [{ id: "cS02", path: "rRiv", f: .6, v: 1 / 70 }, { id: "cV01", path: "rV01", f: .3, v: 1 / 80 }],
+          main: [{ id: "g0", path: "rRS", to: .9, drift: -.2, flip: true, route: "behind" }, { id: "g1", path: "rExp", to: .75, drift: -.2, flip: true, route: "behind" }, { id: "g2", path: "rRS", to: .5, drift: -.2, flip: true, route: "behind" }][S.mT] });
+      }
     },
     {
       id: "challenges", p: "mei", mod: "orchestrate", status: "today", who: "<b>Mei</b>, client advisor",
@@ -1040,6 +1066,35 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
       wire: function () { $$("[data-mtab]").forEach(function (b) { b.onclick = function () { S.mTab = b.getAttribute("data-mtab"); render(); }; }); }
     },
     {
+      id: "close", p: "claire", mod: "analyse", status: "soon", who: "<b>Claire</b>, client experience director",
+      title: "Your guests' data comes back to you, then it is deleted.",
+      lede: "At close-out the maison takes back its guest file, every outside access closes, and Ellie deletes what it held. Only anonymous figures stay.",
+      before: "The guest list lives on in the agency's inbox, the drivers' WhatsApp and a shared drive, long after the event.",
+      after: "One export, access closed the day after, deletion on the date you set, with a certificate.",
+      impact: { hours: 3, messages: 8, calls: 2, caught: 1 }, where: "Close-out · Guest data",
+      notes: { say: "The guests belong to the maison. Ellie gives the file back, then forgets it, and proves it.", live: "Field-by-field encryption of guest data is a rule of Ellie today. The export, the closing of outside access and the scheduled deletion are to build with the pilot maison.", ask: "Today, who decides when a guest list is deleted after an event, and how do you check that it was?" },
+      screen: function () {
+        var c = S.mClose;
+        var R = [
+          ["During", "Encrypted, field by field", "Names, passports, allergies: unreadable outside Ellie.", "today", false],
+          ["Day after", "Outside access closed", "The agency, its hosts and drivers: 21 accounts lose access to your guests.", "soon", c >= 1],
+          ["Day after", "The file comes back to you", "Every guest with what was learned: preferences, allergies, feedback. In your format, by an encrypted link.", "soon", c >= 1],
+          ["Day 30", "Deleted, with a certificate", "On the date you set. Only anonymous figures stay: costs per market, punctuality.", "soon", c >= 2]
+        ];
+        return '' +
+          '<div class="sec">' + R.map(function (r) {
+            return '<div class="prow"><span class="s">' + r[0] + '</span><span class="l"><span class="t">' + r[1] + '</span><br><span class="s">' + r[2] + '</span></span>' + (r[4] ? st("ok", "Done") : r[3] === "today" ? st("ok", "In Ellie today") : st("soon", "In co-design")) + '</div>';
+          }).join("") + '</div>' +
+          (c === 0 ? '<div><button class="btn primary" id="closeBtn">Close the event and export the guest file</button></div>'
+            : c === 1 ? '<p class="note ok fade">Guest file sent to Claire by an encrypted link, valid seven days: 30 guests, 11 parties. 21 outside accounts closed.</p>' +
+              '<div class="acts"><button class="btn sm primary" id="closeBtn">Delete the guest data now</button><span class="s">or automatically, 30 days after the event</span></div>'
+            : '<div class="sec fade"><div class="label">Deletion certificate</div>' +
+              '<div class="line"><span>30 guests, 412 fields and 64 documents deleted, today at 10:12.</span>' + st("ok", "Certified") + '</div>' +
+              '<div class="line"><span class="s">Kept, without a name: costs per market, punctuality, the number of changes.</span></div></div>');
+      },
+      wire: function () { var b = $("#closeBtn"); if (b) b.onclick = function () { S.mClose++; render(); }; }
+    },
+    {
       id: "pilot", side: "maison", mod: null, status: null, who: "A pilot",
       title: "Start with your next event.",
       lede: "With your agency on the same page. Pick what matters most to your team.",
@@ -1120,7 +1175,7 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
     team: "hero-car", brief: "agency-desk", fleet: "arrival-cars", checklist: "hero-car", arrivals: "arrival-cars",
     delay: "river-night", driver: "hero-car", review: "agency-desk", asks: "maison-viewing", together: "dinner-table",
     rundown: "maison-viewing", programme: "dinner-table", follow: "river-night", challenges: "arrival-cars",
-    memory: "discretion-folder", pilot: "dinner-table"
+    memory: "discretion-folder", close: "discretion-folder", pilot: "dinner-table"
   };
   var BIG = { "hero-car": 928, "maison-viewing": 1024 };
   function backdrop(id) {
@@ -1132,53 +1187,86 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
     el.classList.remove("in"); void el.offsetWidth; el.classList.add("in");
   }
 
-  // ------------------------------------------------------------ the drivers' live map: cars that drive
-  function liveMap() {
+  // ------------------------------------------------------------ the live map: a night map, cars that drive
+  // One drawing, two uses: Arun's map of his cars (DMC) and Claire's map of her guests on their way (maison).
+  var MAP_PATHS = {
+    rExp: "M165 95 C 215 102, 245 126, 305 130 S 430 126, 470 138 S 520 150, 548 150",
+    rRS: "M141 222 C 180 196, 200 150, 230 117 C 255 126, 280 130, 305 130 S 430 126, 470 138 S 520 150, 548 150",
+    rRiv: "M120 -10 C 168 55, 110 120, 158 178 S 170 240, 188 290",
+    rV01: "M230 262 C 330 244, 450 224, 540 166"
+  };
+  function mapView(o) {
+    var vb = o.vb, px = function (x) { return ((x - vb[0]) / vb[2] * 100).toFixed(2); }, py = function (y) { return ((y - vb[1]) / vb[3] * 100).toFixed(2); };
+    var lab = function (x, y, txt, cls) { return '<span class="mlab ' + cls + '" style="left:' + px(x) + '%;top:' + py(y) + '%">' + txt + '</span>'; };
+    var road = function (d, id) { return '<path' + (id ? ' id="' + id + '"' : '') + ' d="' + d + '" fill="none" stroke="var(--map-road)" stroke-width="4" stroke-linecap="round"></path>'; };
+    var car = function (c) {
+      var fill = c.fill || "var(--text)";
+      return '<g id="' + c.id + '" class="mcar" transform="translate(-99 -99)">' + (c.halo ? '<circle class="halo" r="16" fill="' + fill + '"></circle>' : '') +
+        '<rect x="-11" y="-6.5" width="22" height="13" rx="4.5" fill="' + fill + '" stroke="var(--bg)" stroke-width="1.5"></rect>' +
+        '<rect x="2.5" y="-4.6" width="4.6" height="9.2" rx="1.6" fill="var(--bg)" opacity=".75"></rect>' +
+        '<rect x="-8" y="-4.6" width="3" height="9.2" rx="1.2" fill="var(--bg)" opacity=".55"></rect></g>';
+    };
+    var bg = 'x="' + vb[0] + '" y="' + vb[1] + '" width="' + vb[2] + '" height="' + vb[3] + '"';
+    return '<div class="mapbox" style="aspect-ratio:' + vb[2] + ' / ' + vb[3] + '">' +
+      '<svg class="map" viewBox="' + vb.join(" ") + '" role="img" aria-label="' + o.aria + '">' +
+        '<defs><pattern id="mStreets" width="21" height="21" patternUnits="userSpaceOnUse" patternTransform="rotate(-12)"><path d="M0 .5H21M.5 0V21" fill="none" stroke="var(--map-street)" stroke-width="1"></path></pattern></defs>' +
+        '<rect ' + bg + ' fill="var(--map-bg)"></rect><rect ' + bg + ' fill="url(#mStreets)"></rect>' +
+        '<rect x="292" y="176" width="64" height="40" rx="8" fill="var(--map-park)"></rect><rect x="436" y="58" width="48" height="30" rx="8" fill="var(--map-park)"></rect>' +
+        '<path d="M60 -15 C 115 50, 30 110, 88 165 S 80 240, 120 290" fill="none" stroke="var(--river)" stroke-width="24" stroke-linecap="round"></path>' +
+        road("M0 58 C 160 70, 330 52, 600 40") + road("M262 -5 C 255 90, 272 180, 262 280") + road("M410 -5 C 420 100, 402 190, 412 280") +
+        road(MAP_PATHS.rRiv, "rRiv") + road(MAP_PATHS.rV01, "rV01") +
+        '<path id="rRS" d="' + MAP_PATHS.rRS + '" fill="none" stroke="var(--map-road)" stroke-width="4" stroke-linecap="round"></path>' +
+        '<path id="rExp" d="' + MAP_PATHS.rExp + '" fill="none" stroke="var(--map-exp)" stroke-width="8" stroke-linecap="round"></path>' +
+        (o.jam ? '<path id="rJam" d="' + MAP_PATHS.rExp + '" fill="none" stroke="var(--crit)" stroke-width="8" stroke-linecap="round"></path>' : '') +
+        '<path id="rRoute" d="' + MAP_PATHS[o.route] + '" fill="none" stroke="var(--accent)" stroke-width="4" stroke-linecap="round" stroke-dasharray="0 3000"></path>' +
+        '<g transform="translate(566 150) rotate(-18)"><rect x="-34" y="-17" width="68" height="6" rx="2" fill="var(--map-exp)"></rect><rect x="-34" y="11" width="68" height="6" rx="2" fill="var(--map-exp)"></rect><rect x="-14" y="-6" width="28" height="12" rx="3" fill="var(--text)"></rect></g>' +
+        '<rect x="159" y="89" width="12" height="12" rx="2" fill="var(--text)"></rect><rect x="129" y="216" width="12" height="12" rx="2" fill="var(--text)"></rect>' +
+        o.cars.filter(function (c) { return !c.main; }).map(car).join("") + o.cars.filter(function (c) { return c.main; }).map(car).join("") +
+      '</svg>' +
+      lab(165, 95, "Lumière Bangkok", "place t") + lab(135, 222, "Riverside Suites", "place b") + lab(566, 160, "BKK", "place b keep") +
+      o.cars.filter(function (c) { return c.lab; }).map(function (c) { return '<span class="mlab car' + (c.main ? '' : ' amb') + '" id="' + c.id + 'L">' + c.lab + '</span>'; }).join("") +
+      '<span class="live"><i></i>Live · ' + o.time + '</span>' + (o.chip ? '<span class="mchip">' + o.chip + '</span>' : '') +
+    '</div>';
+  }
+  function liveMap(o) {
     var svg = $(".map"); if (!svg || !document.getElementById("rExp")) return;
     if (S._mapRaf) cancelAnimationFrame(S._mapRaf);
     var reduce = false; try { reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) {}
-    var path = function (id) { var el = document.getElementById(id); return { p: el, L: el.getTotalLength() }; };
-    var exp = path("rExp");
+    var vb = o.vb, P = {};
+    var path = function (id) { if (!P[id]) { var el = document.getElementById(id); P[id] = { p: el, L: el.getTotalLength() }; } return P[id]; };
     var at = function (r, f, flip) {
       f = Math.max(0, Math.min(1, f));
       var d = f * r.L, a = r.p.getPointAtLength(Math.max(0, d - 1)), b = r.p.getPointAtLength(Math.min(r.L, d + 1)), c = r.p.getPointAtLength(d);
       return { x: c.x, y: c.y, a: Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI + (flip ? 180 : 0) };
     };
-    var put = function (id, pt, op) {
-      var g = document.getElementById(id), l = document.getElementById(id + "L");
-      if (g) { g.setAttribute("transform", "translate(" + pt.x.toFixed(1) + " " + pt.y.toFixed(1) + ") rotate(" + pt.a.toFixed(1) + ") scale(" + (id === "cS01" ? 1.5 : 1.3) + ")"); g.style.opacity = op; }
-      if (l) { l.style.left = (pt.x / 6) + "%"; l.style.top = ((pt.y + 15) / 3) + "%"; l.style.setProperty("--ax", "-" + (8 + pt.x / 600 * 84).toFixed(1) + "%"); l.style.opacity = op; }
+    var put = function (id, pt, op, big) {
+      var g = document.getElementById(id), l = document.getElementById(id + "L"), fx = (pt.x - vb[0]) / vb[2];
+      if (g) { g.setAttribute("transform", "translate(" + pt.x.toFixed(1) + " " + pt.y.toFixed(1) + ") rotate(" + pt.a.toFixed(1) + ") scale(" + (big ? 1.5 : 1.3) + ")"); g.style.opacity = op; }
+      if (l) { l.style.left = (fx * 100) + "%"; l.style.top = ((pt.y - vb[1]) / vb[3] * 100) + "%"; l.style.opacity = op; l.style.setProperty("--ax", "-" + (8 + Math.max(0, Math.min(1, fx)) * 84).toFixed(1) + "%"); }
     };
-    S._amb = S._amb || { cV02: .9, cS02: .55, cV01: .35 };
-    var AMB = [{ id: "cV02", r: exp, v: -1 / 90, flip: true }, { id: "cS02", r: path("rRiv"), v: 1 / 70 }, { id: "cV01", r: path("rV01"), v: 1 / 80 }];
-    var stuck = S.drvAlert >= 1 && S.drv === 0;
-    var plan = !S.loc ? { to: .35, drift: 0, route: "none", off: true }
-      : S.drv >= 4 ? { to: 0, drift: 0, flip: true, route: "none" }
-      : S.drv === 3 ? { to: .97, drift: -.25, flip: true, route: "behind" }
-      : S.drv === 2 ? { to: 1, drift: 0, route: "none" }
-      : S.drv === 1 ? { to: .86, drift: .1, route: "ahead" }
-      : stuck ? { to: .6, drift: .025, route: "ahead" }
-      : { to: .33, drift: .12, route: "ahead" };
-    var from = plan.off || S.s01f === undefined || Math.abs(S.s01f - plan.to) < .005 ? undefined : S.s01f;
-    if (plan.off) S.s01f = undefined;
-    var jam = document.getElementById("rJam"), route = document.getElementById("rRoute"), L = exp.L;
-    if (jam) jam.style.strokeDasharray = "0 " + (.5 * L) + " " + (.18 * L) + " " + L;
+    S._amb = S._amb || {}; S._mf = S._mf || {};
+    var m = o.main, mr = path(m.path), L = mr.L;
+    var from = m.off || S._mf[m.id] === undefined || Math.abs(S._mf[m.id] - m.to) < .005 ? undefined : S._mf[m.id];
+    if (m.off) delete S._mf[m.id];
+    var jam = document.getElementById("rJam"), route = document.getElementById("rRoute");
+    if (jam && o.jam) { var J = path("rExp").L; jam.style.strokeDasharray = "0 " + (o.jam[0] * J) + " " + ((o.jam[1] - o.jam[0]) * J) + " " + J; }
     var t0 = performance.now(), last = t0;
     function frame(now) {
       if (!svg.isConnected) return;
       var dt = Math.min(.1, (now - last) / 1000); last = now;
-      AMB.forEach(function (c) {
-        var f = S._amb[c.id];
-        if (!reduce) { f += c.v * dt; if (f > 1) f -= 1; if (f < 0) f += 1; S._amb[c.id] = f; }
-        put(c.id, at(c.r, f, c.flip), Math.max(0, Math.min(1, f / .04, (1 - f) / .04)));
+      (o.amb || []).forEach(function (c) {
+        var f = S._amb[c.id] === undefined ? c.f : S._amb[c.id];
+        if (!reduce) { f += c.v * dt; if (f > 1) f -= 1; if (f < 0) f += 1; }
+        S._amb[c.id] = f;
+        put(c.id, at(path(c.path), f, c.flip), Math.max(0, Math.min(1, f / .04, (1 - f) / .04)), false);
       });
       var e = (now - t0) / 1000, f;
-      if (reduce) f = plan.to;
-      else if (from !== undefined && e < 1.2) { var k = e / 1.2; k = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2; f = from + (plan.to - from) * k; }
-      else f = plan.to + plan.drift * Math.min(1, Math.max(0, e - (from !== undefined ? 1.2 : 0)) / 45);
-      if (!plan.off) S.s01f = f;
-      put("cS01", at(exp, f, plan.flip), 1);
-      if (route) route.style.strokeDasharray = plan.route === "ahead" ? "0 " + (f * L) + " " + ((1 - f) * L) + " " + L : plan.route === "behind" ? (f * L) + " " + L : "0 " + L;
+      if (reduce) f = m.to;
+      else if (from !== undefined && e < 1.2) { var k = e / 1.2; k = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2; f = from + (m.to - from) * k; }
+      else f = m.to + m.drift * Math.min(1, Math.max(0, e - (from !== undefined ? 1.2 : 0)) / 45);
+      if (!m.off) S._mf[m.id] = f;
+      put(m.id, at(mr, f, m.flip), 1, true);
+      if (route) route.style.strokeDasharray = m.route === "ahead" ? "0 " + (f * L) + " " + ((1 - f) * L) + " " + L : m.route === "behind" ? (f * L) + " " + L : "0 " + L;
       if (!reduce) S._mapRaf = requestAnimationFrame(frame);
     }
     frame(t0);
@@ -1201,9 +1289,9 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
     S.imp = 0; S.transfers = JSON.parse(JSON.stringify(TRANSFERS0)); S.pick = null; S.lastAssign = null; S.freeAt = "16:00";
     S.owner = "all"; S.tasksDone = {}; S.signal = "all"; S.reasons = {}; S.blocking = null;
     S.cards = { AU01: "confirmed", ES01: "confirmed", CN01: "confirmed", SG01: "confirmed", JP01: "confirmed", TH01: "progress", HK01: "progress", KR01: "todo", AE01: "todo" };
-    S.delay = 0; S.drv = 0; S.drvAlert = 0; S.drvNight = false; S.loc = false; S.choice = null; S.s01f = undefined; S.tab = "transport";
+    S.delay = 0; S.drv = 0; S.drvAlert = 0; S.drvNight = false; S.loc = false; S.choice = null; S._mf = {}; S.tab = "costs";
     S.mD = 0; S.mAppr = { dinner: "proposed", temple: "proposed", gift: "proposed" }; S.mCh = "flight";
-    S.mT = 0; S.mTab = "markets";
+    S.mT = 0; S.mTab = "markets"; S.mClose = 0;
     go(0);
   }
   function go(i) {

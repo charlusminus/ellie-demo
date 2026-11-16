@@ -24,9 +24,14 @@ Published with GitHub Pages from `main`, root folder. One file per version, no b
   one side.
 - **The maison side** (reworked on 15/11/2026 after the maison's feedback: concrete, no upload, visibility on the
   run-down): where the event stands three weeks, one week and one day before; the programme to approve; the first
-  arrivals; six things that go wrong and what the maison sees and does; the bill per market the week after.
-- **The DMC side** ends with the five questions a maison asks before choosing an agency, and what Ellie gives the
-  agency to answer each.
+  arrivals, with each guest's car live on a map; six things that go wrong and what the maison sees and does; the bill
+  per market the week after; the guests' data after the event (encrypted, outside access closed, file returned to the
+  maison, deleted with a certificate).
+- **The DMC side** opens on what changed in the maison's latest guest list, follows the fleet with the drivers and
+  their live map, reviews costs first (client feedback marked as later), and ends with the five questions a maison
+  asks before choosing an agency, and what Ellie gives the agency to answer each.
+- **The live map** is one drawing shared by both sides: a night map, cars that drive, the route ahead in gold,
+  traffic in red. Motion stops when the viewer asks for reduced motion.
 - **One person's day.** The first screen lets the viewer follow the whole team or one profile (for the DMC: Nok, Arun,
   Ploy, Somchai, Mai; for the maison: Claire, Mei). `?profile=arun` opens it that way.
 - **Pictures**: a faded picture behind the story, one per scene, the same generated pictures as the website
