@@ -228,14 +228,17 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
 .team.sides button[aria-pressed="true"] { border-color: var(--accent); background: var(--wash); }
 .team.sides button[aria-pressed="true"]::before { border-color: var(--accent); background: radial-gradient(circle, var(--accent) 0 38%, transparent 44%); }
 .team.sides .s { font-size: var(--fs-b); }
-.team.who-pick { grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr)); gap: .8rem; }
-.team.who-pick button, .team.who-pick button[aria-pressed="true"] { grid-template-columns: 2.2rem minmax(0, 1fr); column-gap: .75rem; row-gap: .05rem; align-items: center;
+.team.who-pick { grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr)); gap: .6rem; }
+.team.who-pick button, .team.who-pick button[aria-pressed="true"] { grid-template-columns: auto minmax(0, 1fr); column-gap: .75rem; row-gap: .05rem; align-items: center;
   border: 1px solid var(--line-strong); border-radius: var(--radius-lg); padding: .65rem .85rem; transition: border-color .15s, background-color .15s; }
-.team.who-pick .ic { grid-row: 1 / span 2; width: 2.2rem; height: 2.2rem; border-radius: 50%; border: 1px solid var(--line-strong); display: grid; place-items: center; color: var(--muted); }
-.team.who-pick .ic svg { width: 1.2rem; height: 1.2rem; }
+.team.who-pick .ic { grid-row: 1 / span 2; display: flex; align-items: center; }
+.team.who-pick .ic img { width: 2.6rem; height: 2.6rem; border-radius: 50%; object-fit: cover; border: 2px solid var(--line-strong); background: var(--raised); }
+.team.who-pick .ic.stack img { width: 2.2rem; height: 2.2rem; border-color: var(--surface); }
+.team.who-pick .ic.stack img + img { margin-left: -.8rem; }
+.team.who-pick button[data-profile="all"] { grid-column: 1 / -1; }
 .team.who-pick button:hover { border-color: var(--text); }
 .team.who-pick button[aria-pressed="true"] { border-color: var(--accent); background: var(--wash); }
-.team.who-pick button[aria-pressed="true"] .ic { border-color: var(--accent); color: var(--accent); }
+.team.who-pick button[aria-pressed="true"] .ic:not(.stack) img { border-color: var(--accent); }
 .mods button[disabled] { opacity: .35; cursor: default; }
 
 /* transport plan */
@@ -442,8 +445,8 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
   };
   // Two sides of the same event, the maison and the DMC: chosen on the first screen, or with ?side=maison in the link.
   // One person's day can be followed on its own: chosen on the first screen, or with ?profile=arun in the link.
-  var ICON_PERSON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c.9-3.8 3.9-6 7.5-6s6.6 2.2 7.5 6"/></svg>';
-  var ICON_TEAM = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="9" cy="8.5" r="3.2"/><path d="M2.8 19.5c.8-3.3 3.3-5.2 6.2-5.2s5.4 1.9 6.2 5.2"/><circle cx="16.6" cy="7.4" r="2.6"/><path d="M15.6 13.1c.3 0 .7-.1 1-.1 2.5 0 4.6 1.7 5.2 4.5"/></svg>';
+  // AI portraits of the fictional team (assets/img/team), in place of person icons (Charles, 16/11)
+  var face = function (id) { return '<img src="assets/img/team/' + id + '.webp" alt="" width="96" height="96" loading="lazy" decoding="async">'; };
   var PROFILES = {
     dmc: [["nok", "Nok", "Event manager"], ["arun", "Arun", "Transport coordinator"], ["ploy", "Ploy", "Airport host"], ["somchai", "Somchai", "Driver"], ["mai", "Mai", "Accounts"]],
     maison: [["claire", "Claire", "Client experience director"], ["mei", "Mei", "Client advisor"]]
@@ -489,7 +492,7 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
           '<div class="tri">' + ["Create", "Orchestrate", "Analyse"].map(function (m, i) { return '<div><span class="label">' + m + '</span><span>' + MODL[S.side][i] + '</span></div>'; }).join("") + '</div>' +
           '<div class="label">Follow the whole team, or one person\'s day</div>' +
           '<div class="team who-pick" role="group" aria-label="Choose a profile">' +
-          [["all", "The whole team", "Every screen"]].concat(PROFILES[S.side]).map(function (p) { return '<button data-profile="' + p[0] + '" aria-pressed="' + (S.profile === p[0]) + '"><span class="ic">' + (p[0] === "all" ? ICON_TEAM : ICON_PERSON) + '</span><span class="t">' + p[1] + '</span><span class="s">' + p[2] + '</span></button>'; }).join("") +
+          [["all", "The whole team", "Every screen"]].concat(PROFILES[S.side]).map(function (p) { return '<button data-profile="' + p[0] + '" aria-pressed="' + (S.profile === p[0]) + '"><span class="ic' + (p[0] === "all" ? ' stack' : '') + '">' + (p[0] === "all" ? PROFILES[S.side].slice(0, 3).map(function (q) { return face(q[0]); }).join("") : face(p[0])) + '</span><span class="t">' + p[1] + '</span><span class="s">' + p[2] + '</span></button>'; }).join("") +
           '</div>' +
           '<p class="sum">' + (S.side === "maison" ? "And the advisors of eleven boutiques, each with their own clients." : "And seventeen hosts, guides and drivers, each with their own day.") + '</p>';
       },
