@@ -29,6 +29,10 @@ Published with GitHub Pages from `main`, root folder. One file per version, no b
   agency to answer each.
 - **One person's day.** The first screen lets the viewer follow the whole team or one profile (for the DMC: Nok, Arun,
   Ploy, Somchai, Mai; for the maison: Claire, Mei). `?profile=arun` opens it that way.
+- **Pictures**: a faded picture behind the story, one per scene, the same generated pictures as the website
+  (`assets/img/`, no faces, no text, no logos). Opacity .2 keeps the muted text above 4.5:1.
+- **Fits the screen**: on desktop the base size follows the height of the window too, so the story on the left always
+  fits without scrolling (checked on every scene, from 1100 x 640 to 2560 x 1300).
 - **Back to the start**: click the Ellie logo, or press Home.
 
 ## Shared

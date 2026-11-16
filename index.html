@@ -60,6 +60,19 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 input { font: inherit; color: var(--text); }
 button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
+/* A faded picture behind the story, one per scene (the website's pictures). It fades out towards the Ellie screen on
+   desktop and towards the bottom on small screens. Opacity .2 keeps the muted text above 4.5:1 even on a white pixel. */
+.backdrop { position: fixed; inset: 0; z-index: 0; pointer-events: none; background: center / cover no-repeat; opacity: .2;
+  -webkit-mask-image: linear-gradient(90deg, #000 0%, rgba(0, 0, 0, .75) 28%, transparent 52%);
+  mask-image: linear-gradient(90deg, #000 0%, rgba(0, 0, 0, .75) 28%, transparent 52%); }
+.backdrop.in { animation: bdin .7s ease both; }
+@keyframes bdin { from { opacity: 0; } to { opacity: .2; } }
+@media (max-width: 1099px) {
+  .backdrop { -webkit-mask-image: linear-gradient(180deg, #000 0, rgba(0, 0, 0, .6) 40vh, transparent 75vh);
+    mask-image: linear-gradient(180deg, #000 0, rgba(0, 0, 0, .6) 40vh, transparent 75vh); }
+}
+@media (prefers-reduced-motion: reduce) { .backdrop.in { animation: none; } }
+.app { position: relative; z-index: 1; }
 .app { min-height: 100vh; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 1.2rem;
   padding: env(safe-area-inset-top, 0px) max(1.6rem, env(safe-area-inset-right, 0px)) env(safe-area-inset-bottom, 0px) max(1.6rem, env(safe-area-inset-left, 0px)); }
 @media (min-width: 1100px) and (min-height: 640px) { .app { height: 100vh; } }
@@ -286,12 +299,15 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
 
 .fade { animation: fade .3s ease both; }
 @keyframes fade { from { opacity: .3; transform: translateY(3px); } to { opacity: 1; transform: none; } }
-@media (max-height: 820px) and (min-width: 1100px) { html { font-size: 14.5px; } }
+/* Desktop: the base size follows the height too, so the story on the left always fits the screen without scrolling
+   (Charles, 16/11), whatever the shape of the window. */
+@media (min-width: 1100px) { html { font-size: clamp(13px, min(0.55vw + 8.5px, 1.9vh), 21px); } }
 @media (prefers-reduced-motion: reduce) { .fade { animation: none; } .progress i, .mapcar, .sw::after { transition: none; } }
 </style>
 </head>
 <body>
 <script>document.documentElement.setAttribute("data-theme","dark");document.documentElement.setAttribute("data-look","a");</script>
+<div class="backdrop" id="backdrop" aria-hidden="true"></div>
 <div class="app" id="app"></div>
 <script>
 (function () {
@@ -1027,7 +1043,25 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
     if (same) $("#sbody").scrollTop = keep;
     render.last = S.i;
     wire(sc);
+    backdrop(sc.id);
   }
+  // ------------------------------------------------------------ the picture behind each scene
+  var BG = {
+    team: "hero-car", brief: "agency-desk", fleet: "arrival-cars", checklist: "hero-car", arrivals: "arrival-cars",
+    delay: "river-night", driver: "hero-car", review: "agency-desk", asks: "maison-viewing", together: "dinner-table",
+    rundown: "maison-viewing", programme: "dinner-table", follow: "river-night", challenges: "arrival-cars",
+    memory: "discretion-folder", pilot: "dinner-table"
+  };
+  var BIG = { "hero-car": 928, "maison-viewing": 1024 };
+  function backdrop(id) {
+    var name = BG[id], el = $("#backdrop");
+    if (!el || !name || backdrop.last === name) return;
+    backdrop.last = name;
+    var small = false; try { small = window.matchMedia("(max-width: 700px)").matches; } catch (e) {}
+    el.style.backgroundImage = 'url("assets/img/' + name + '-' + (small ? 800 : (BIG[name] || 1264)) + '.webp")';
+    el.classList.remove("in"); void el.offsetWidth; el.classList.add("in");
+  }
+
   function wire(sc) {
     var on = function (id, fn) { var e = document.getElementById(id); if (e) e.onclick = fn; };
     on("prev", function () { step(-1); });
