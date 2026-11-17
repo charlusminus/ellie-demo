@@ -7,6 +7,7 @@ The website lives in its own repository, https://github.com/charlusminus/ellie-s
 |---|---|
 | **https://charlusminus.github.io/ellie-demo/** | The interactive demo, a day at a maison or a DMC (`index.html`) |
 | **https://charlusminus.github.io/ellie-demo/onboarding/** | An agency account to click through, with a guided first visit (`onboarding/index.html`) |
+| `/max/` | A short version for a DMC, built from one guest's journey: six screens, the driver on WhatsApp, the coordinator's live map (`max/index.html`). On the `max-dmc` branch, not published yet |
 | `/story/` | An earlier version of the demo in eight scenes, kept for reference |
 | `/account/`, `/demo/` | Earlier addresses, redirect to the onboarding tour and to the demo |
 
@@ -40,6 +41,19 @@ Published with GitHub Pages from `main`, root folder. One file per version, no b
 - **Fits the screen**: on desktop the base size follows the height of the window too, so the story on the left always
   fits without scrolling (checked on every scene, from 1100 x 640 to 2560 x 1300).
 - **Back to the start**: click the Ellie logo, or press Home.
+
+## The guest's journey (`max/`)
+
+- Six screens, one idea each: the guest lands; six moments of her journey (what she lives, what the agency has settled,
+  what Ellie did unseen); the driver's WhatsApp conversation with Ellie; the coordinator's live map and log; who works
+  in Ellie and who stays on WhatsApp; three questions to design together.
+- Shown after the real application, for what is not built yet: everything about WhatsApp, the drivers' answers and the
+  live map is marked "In co-design".
+- Follows the Ellie charter (Cormorant Garamond and Mulish, night blue, ivory, one gold). `?dmc=Name` sets the agency's
+  name. Arrow keys to move, F for full screen, Home or the logo to start again.
+- Rules: codes instead of names, a sign with a code, cars located during the ride only, never a guest.
+- Checked at render from 1024 x 768 to 2560 x 1300 and at 390 x 844: no scrolling on desktop, no text under 14 px,
+  contrast of at least 4.5:1.
 
 ## Shared
 
