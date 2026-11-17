@@ -1,1217 +1,521 @@
 <!doctype html>
-<html lang="en">
+<html lang="en-GB">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
-<meta name="description" content="Ellie for a DMC: a day of transport, from the brief to the review.">
-<title>Ellie for DMCs</title>
+<meta name="description" content="Ellie: one guest's journey in Bangkok, and the invisible work behind it.">
+<title>Ellie, a guest's journey</title>
 <link rel="icon" href="assets/logo/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="assets/logo/icon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="assets/logo/icon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400..600&family=Hanken+Grotesk:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Mulish:wght@400;500;600&display=swap">
 <style>
-/* One look, dark only: the Ellie charter, night blue and gold (decision of 15/11/2026; the two other looks and the light
-   theme were dropped). No tools in the header: N shows the presenter notes, F goes full screen.
-   Layout: built for a projector. The story on the left, a live Ellie screen on the right, one counter at the bottom.
-   No cards inside the screen: sections are separated by space and hairlines. One status marker per scene, in the screen bar. */
-
-/* ---------- "Maison de nuit": night blue, ivory, gold kept for the one filled button. Didone titles. */
-:root[data-look="a"] {
-  --f-display: "Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
-  --f-body: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --f-num: var(--f-body); --f-kpi: var(--f-display);
-  --title-w: 500; --title-ls: -0.012em; --title-lh: 1.08; --title-1: 3rem; --title-2: 2.55rem; --title-opsz: 18;
-  --nav-tt: uppercase; --nav-ls: .1em; --nav-size: var(--fs-s);
-  --fs-s: .9rem; --fs-b: 1rem; --fs-l: 1.15rem; --fs-sub: 1.5rem; --fs-num: 1.9rem;
-  --radius: 2px; --radius-lg: 4px;
-  --brand-font: var(--f-display); --brand-ls: .36em; --brand-w: 500; --brand-size: 1.3rem;
-}
-:root[data-look="a"][data-theme="dark"] {
-  --bg: #070d1a; --surface: #0c1628; --raised: #132240;
-  --text: #ece6d8; --muted: #c2bcaf; --line: rgba(236, 230, 216, .13); --line-strong: #62708a;
-  --accent: #cfab63; --btn-bg: #cfab63; --btn-ink: #0a0f1a;
-  --ok: #86c7a0; --warn: #e0b25a; --crit: #e89482; --soon: #a3b6ea;
-}
-
-
-
-/* Contrast, measured on the worst ground (design/contrast.py): text and statuses at 4.5 or more,
-   control borders (--line-strong) at 3.0 or more. Exception: --line is a decorative hairline between rows, about 1.3 to 1,
-   never the only cue for a control or a state. */
-/* Derived tints. */
+/* Ellie, a guest's journey. A short version of the demo for a DMC: six screens, one idea each.
+   Charter: Cormorant Garamond and Mulish, night blue, ivory, one gold. One text scale, nothing under 14 px.
+   Desktop: everything fits the window, no scrolling. Phone: title, text, screen, navigation fixed at the bottom. */
 :root {
-  --wash: color-mix(in srgb, var(--accent) 9%, transparent);
-  --grid: color-mix(in srgb, var(--text) 6%, transparent);
-  --win-bg: color-mix(in srgb, var(--text) 9%, var(--surface));
-  --vip-bg: color-mix(in srgb, var(--accent) 22%, var(--surface));
-  --other: color-mix(in srgb, var(--crit) 45%, transparent);
-  --bad-bg: color-mix(in srgb, var(--crit) 16%, var(--surface));
-  --river: color-mix(in srgb, var(--soon) 26%, var(--surface));
-  --map-bg: var(--bg); --map-street: color-mix(in srgb, var(--text) 6%, transparent);
-  --map-road: color-mix(in srgb, var(--text) 13%, var(--bg)); --map-exp: color-mix(in srgb, var(--text) 24%, var(--bg));
-  --map-park: color-mix(in srgb, var(--ok) 10%, var(--bg));
+  --bg: #051022; --panel: #0b2447; --raised: #13305a;
+  --text: #f7f3ea; --muted: #c2bcaf; --gold: #d8b873; --ink: #0b1a33;
+  --alert: #e09a8a; --ok: #86c7a0; --line: #2a4470; --ctl: #8f897c;
+  --f-title: "Cormorant Garamond", "Cormorant", Georgia, serif;
+  --f-text: "Mulish", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --s: .875rem; --b: 1rem; --l: 1.125rem; --h3: 1.375rem; --h1: 2.7rem; --h0: 3.5rem;
+  --map-bg: #06142b; --map-street: rgba(247, 243, 234, .06); --map-road: #1b2a45; --map-exp: #36435b;
+  --map-park: #0f2a30; --river: #173a63;
+  /* the driver's phone: a light chat, as most people know it */
+  --wa-bar: #008069; --wa-wall: #efeae2; --wa-in: #ffffff; --wa-out: #d9fdd3; --wa-ink: #111b21; --wa-meta: #54656f;
 }
-:root[data-theme="dark"] { color-scheme: dark; }
-
 * { box-sizing: border-box; }
-b, strong { font-weight: 500; }
-.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-html { font-size: clamp(14px, 0.55vw + 8.5px, 21px); }
-html, body { background: var(--bg); color: var(--text); margin: 0; }
-body { font-family: var(--f-body); line-height: 1.45; }
-button { font: inherit; color: inherit; cursor: pointer; background: none; border: 0; padding: 0; }
-input { font: inherit; color: var(--text); }
-button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+html { font-size: clamp(16px, min(1.15vw, 2vh), 28px); -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 400 var(--b)/1.5 var(--f-text); min-height: 100dvh; display: grid; grid-template-rows: auto 1fr auto; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+img { display: block; }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
 
-/* A faded picture behind the story, one per scene (the website's pictures). It fades out towards the Ellie screen on
-   desktop and towards the bottom on small screens. Opacity .2 keeps the muted text above 4.5:1 even on a white pixel. */
-.backdrop { position: fixed; inset: 0; z-index: 0; pointer-events: none; background: center / cover no-repeat; opacity: .2;
-  -webkit-mask-image: linear-gradient(90deg, #000 0%, rgba(0, 0, 0, .75) 28%, transparent 52%);
-  mask-image: linear-gradient(90deg, #000 0%, rgba(0, 0, 0, .75) 28%, transparent 52%); }
-.backdrop.in { animation: bdin .7s ease both; }
-@keyframes bdin { from { opacity: 0; } to { opacity: .2; } }
-@media (max-width: 1099px) {
-  .backdrop { -webkit-mask-image: linear-gradient(180deg, #000 0, rgba(0, 0, 0, .6) 40vh, transparent 75vh);
-    mask-image: linear-gradient(180deg, #000 0, rgba(0, 0, 0, .6) 40vh, transparent 75vh); }
-}
-@media (prefers-reduced-motion: reduce) { .backdrop.in { animation: none; } }
-.app { position: relative; z-index: 1; }
-.app { min-height: 100vh; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 1.2rem;
-  padding: env(safe-area-inset-top, 0px) max(1.6rem, env(safe-area-inset-right, 0px)) env(safe-area-inset-bottom, 0px) max(1.6rem, env(safe-area-inset-left, 0px)); }
-@media (min-width: 1100px) and (min-height: 640px) { .app { height: 100vh; } }
-@media (max-width: 700px) { .app { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); } }
+#bg { position: fixed; inset: 0; z-index: -1; background: var(--bg) center / cover no-repeat; opacity: 0; transition: opacity .6s ease; }
+#bg.is-split { opacity: .13; } #bg.is-cover { opacity: .2; }
 
-/* shared text styles */
-.label { font-size: var(--fs-s); color: var(--muted); }
-.mods .label, .who { font-size: var(--nav-size); letter-spacing: var(--nav-ls); text-transform: var(--nav-tt); }
-.s { color: var(--muted); font-size: var(--fs-s); }
-.t { color: var(--text); }
-.code { font-family: var(--f-num); color: var(--accent); font-variant-numeric: tabular-nums; }
-.tn { font-family: var(--f-num); font-variant-numeric: tabular-nums; }
+.top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.4rem 4rem 0; }
+.brand { display: inline-flex; color: var(--gold); padding: .4rem 0; }
+.brand svg { height: 1rem; width: auto; display: block; }
+.sign { font-size: var(--s); font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
 
+.eyebrow { margin: 0; font-size: var(--s); font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--gold); display: flex; flex-wrap: wrap; gap: .3rem 1rem; align-items: center; }
+.tag { display: inline-flex; align-items: center; gap: .5rem; color: var(--text); letter-spacing: .12em; }
+.tag::before { content: ""; width: .45rem; height: .45rem; border-radius: 50%; background: var(--gold); }
+h1 { margin: 0; font: 400 var(--h1)/1.1 var(--f-title); letter-spacing: -.01em; text-wrap: balance; }
+h1 em { font-style: italic; color: var(--gold); }
+.lede { margin: 0; font-size: var(--l); color: var(--muted); max-width: 34rem; text-wrap: pretty; }
+.rule { margin: 0; padding-left: 1rem; border-left: 1px solid var(--gold); color: var(--text); max-width: 30rem; }
 
-/* header */
-.hdr { display: flex; align-items: baseline; justify-content: space-between; gap: .6rem 2rem; flex-wrap: wrap; padding-top: 1.1rem; }
-.brand { display: inline-flex; vertical-align: middle; color: var(--text); padding: .2rem 0; }
-.brand svg { height: .95rem; width: auto; display: block; }
-:root[data-look="a"] .brand { color: var(--accent); }
-.evt { color: var(--muted); font-size: var(--fs-s); margin-left: 1.2rem; }
-.mods { display: flex; gap: 1.8rem; }
-.mods button { padding: .25rem 0; border-bottom: 1px solid transparent; }
-.mods button[aria-current="true"] { color: var(--text); border-bottom-color: var(--accent); }
+main { min-height: 0; padding: 0 4rem; }
+.split { height: 100%; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 4rem; align-items: center; }
+.story { display: grid; gap: 1.4rem; align-content: center; }
+.screen { height: 100%; min-height: 0; display: flex; align-items: center; justify-content: center; }
+.cover { height: 100%; display: grid; align-content: center; justify-items: start; gap: 1.6rem; max-width: 62rem; }
+.cover h1 { font-size: var(--h0); }
 
-/* stage */
-.stage { display: grid; grid-template-columns: minmax(0, 34fr) minmax(0, 66fr); gap: 2.6rem; min-height: 0; }
-@media (max-width: 1099px) { .stage { grid-template-columns: 1fr; gap: 1.6rem; } }
-.story { display: flex; flex-direction: column; gap: 1rem; min-height: 0; overflow-y: auto; padding: .8rem .2rem .2rem 0; }
-.who b { color: var(--text); }
-h1, h2 { font-family: var(--f-display); font-weight: var(--title-w); letter-spacing: var(--title-ls); line-height: var(--title-lh); margin: 0; text-wrap: balance; font-variation-settings: "opsz" var(--title-opsz, 14); }
-h1 { font-size: var(--title-1); }
-h2 { font-size: var(--title-2); }
-.lede { color: var(--muted); font-size: var(--fs-l); max-width: 40ch; margin: 0; }
-.ba { margin: .9rem 0 0; }
-.ba > div { display: grid; grid-template-columns: 7rem minmax(0, 1fr); gap: 1rem; padding: .65rem 0; border-top: 1px solid var(--line); }
-.ba dt { padding-top: .12rem; }
-.ba dd { margin: 0; color: var(--muted); font-size: var(--fs-b); }
-/* With Ellie: the logo in gold instead of the word, the line in full colour and one step larger (Charles, 16/11) */
-.ba .after dd { color: var(--text); }
-@media (min-height: 700px) { .ba .after dd { font-size: var(--fs-l); } }
-.ba dt.with { display: flex; align-items: center; align-self: start; gap: .45rem; padding-top: .3rem; color: var(--accent); }
-.ba dt.with .mark { height: .74em; width: auto; flex: none; }
-.ba .after { border-top-color: color-mix(in srgb, var(--accent) 55%, transparent); }
-.priv { margin: 0; font-size: var(--fs-s); color: var(--muted); }
-.notes { border-top: 1px dashed var(--line-strong); padding-top: .8rem; display: grid; gap: .4rem; font-size: var(--fs-s); color: var(--muted); }
-.notes b { color: var(--text); }
-.nav { display: flex; align-items: center; gap: .6rem; margin-top: auto; padding-top: .4rem; }
-.nav .pos { font-size: var(--fs-s); color: var(--muted); margin-left: .6rem; }
-.nav .notes-btn { margin-left: auto; }
-@media (hover: none) { .nav .notes-btn { display: none; } }
-.notes { position: relative; }
-.notes .notes-close { justify-self: end; }
+.nav { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 4rem 1.4rem; }
+.count { font-size: var(--s); color: var(--muted); letter-spacing: .08em; }
+.count b { color: var(--text); font-weight: 600; }
+.navb { display: flex; gap: .75rem; }
+.btn { display: inline-flex; align-items: center; justify-content: center; min-height: 2.75rem; padding: 0 1.5rem; border: 1px solid var(--ctl); border-radius: 4px; font-weight: 500; color: var(--text); transition: border-color .2s, background .2s; }
+.btn:hover { border-color: var(--text); }
+.btn.primary { background: var(--gold); border-color: var(--gold); color: var(--ink); font-weight: 600; }
+.btn.primary:hover { background: #e3c98f; }
+.btn[disabled] { visibility: hidden; }
 
-/* Small screens (Alex, 16/11): the reading order is title, text, the Ellie screen, then Today and With Ellie;
-   Back and Next live in a bar fixed at the bottom, so they never cut the content. */
-@media (max-width: 1099px) {
-  .stage { display: flex; flex-direction: column; gap: 1.1rem; }
-  .story { display: contents; }
-  .story > .who { order: 1; }
-  .story > h1, .story > h2 { order: 2; }
-  .story > .lede { order: 3; }
-  .story > .priv { order: 4; }
-  .screen { order: 5; margin-top: .6rem; }
-  .story > .ba { order: 6; }
-  .story > .notes { order: 7; }
-  .story > .nav { order: 8; position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; margin: 0; background: var(--bg); border-top: 1px solid var(--line);
-    padding: .7rem max(16px, env(safe-area-inset-right, 0px)) calc(.7rem + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
-  .story > .nav .pos { margin-left: auto; }
-  .app { padding-bottom: calc(4.6rem + env(safe-area-inset-bottom, 0px)); }
-}
-@media (max-width: 700px) {
-  h1 { font-size: 2.35rem; }
-  h2 { font-size: 2.05rem; }
-  .stage { gap: 1rem; }
-  .screen .tabs { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
-  .screen .tabs button { white-space: nowrap; }
-  .app .meter { display: none; }
-}
+/* ---------- 1. the thread of the journey (cover) */
+.thread { list-style: none; margin: .6rem 0 0; padding: 0; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); width: 100%; border-top: 1px solid var(--gold); }
+.thread li { position: relative; padding: 1.1rem 1rem 0 0; display: grid; gap: .1rem; }
+.thread li::before { content: ""; position: absolute; top: -.3rem; left: 0; width: .55rem; height: .55rem; border-radius: 50%; background: var(--gold); }
+.thread b { font: 500 var(--h3)/1.2 var(--f-title); }
+.thread span { font-size: var(--s); color: var(--muted); }
 
-.btn { border-radius: var(--radius); padding: .55rem 1.2rem; border: 1px solid var(--line-strong); font-size: var(--fs-b); }
-.btn.primary { background: var(--btn-bg); color: var(--btn-ink); border-color: var(--btn-bg); font-weight: 500; }
-.btn.sm { padding: .3rem .8rem; font-size: var(--fs-s); }
-.btn[disabled] { opacity: .45; cursor: default; }
-.link { font-size: var(--fs-s); color: var(--muted); text-decoration: underline; text-underline-offset: .22em; }
-.link:hover { color: var(--text); }
+/* ---------- 2. six moments */
+.moments { width: 100%; display: grid; gap: 1.1rem; }
+.pills { display: flex; flex-wrap: wrap; gap: .5rem; }
+.pill { min-height: 2.5rem; padding: 0 1rem; border: 1px solid var(--ctl); border-radius: 999px; font-size: var(--s); font-weight: 500; color: var(--text); }
+.pill:hover { border-color: var(--text); }
+.pill[aria-pressed="true"] { background: var(--gold); border-color: var(--gold); color: var(--ink); font-weight: 600; }
+.moment { display: grid; grid-template-columns: 13rem minmax(0, 1fr); background: var(--panel); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.moment .pic { background: var(--raised) center / cover no-repeat; min-height: 100%; }
+.moment .body { padding: 1.5rem 1.75rem; display: grid; gap: 1rem; align-content: center; }
+.moment h2 { margin: 0; font: 500 var(--h3)/1.2 var(--f-title); display: flex; flex-wrap: wrap; align-items: baseline; gap: .2rem .9rem; }
+.moment h2 span { font: 400 var(--s)/1.5 var(--f-text); color: var(--muted); }
+.rows { display: grid; }
+.rows > div { padding: .8rem 0; border-top: 1px solid var(--line); display: grid; gap: .15rem; }
+.rows .k { font-size: var(--s); font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); display: flex; flex-wrap: wrap; gap: .2rem 1rem; }
+.rows .ellie .k { color: var(--gold); }
+.rows p { margin: 0; }
+.rows .guest p { font: 400 var(--h3)/1.3 var(--f-title); }
 
-/* the Ellie screen */
-.screen { background: var(--surface); border-radius: var(--radius-lg); display: grid; grid-template-rows: auto minmax(0, 1fr); min-height: 0; max-height: 100%; align-self: start; overflow: hidden; }
-.bar { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding: 1.2rem 1.6rem 0; flex-wrap: wrap; }
-.state { font-size: var(--fs-s); }
-.sbody { padding: 1rem 1.6rem 1.5rem; overflow-y: auto; display: grid; gap: 1rem; align-content: start; min-height: 0; }
-.sec { display: grid; gap: 0; align-content: start; min-width: 0; }
-.sec > .label { padding-bottom: .45rem; border-bottom: 1px solid var(--line); }
-.cols2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2.2rem; }
-@media (max-width: 700px) { .cols2 { grid-template-columns: 1fr; gap: 1.2rem; } }
+/* ---------- 3. the driver's phone */
+.phonewrap { height: 100%; min-height: 0; display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: .7rem; justify-items: center; align-content: center; }
+.phone { height: 100%; max-height: 37rem; width: 21rem; max-width: 100%; display: grid; grid-template-rows: auto minmax(0, 1fr); border: .45rem solid #1b2940; border-radius: 2.2rem; overflow: hidden; background: var(--wa-wall); color: var(--wa-ink); }
+.wa-bar { background: var(--wa-bar); color: #fff; display: flex; align-items: center; gap: .7rem; padding: .7rem .9rem; }
+.wa-bar img { width: 2.3rem; height: 2.3rem; border-radius: 50%; }
+.wa-bar b { display: block; font-weight: 600; line-height: 1.25; }
+.wa-bar span { display: block; font-size: var(--s); line-height: 1.3; }
+.chat { overflow-y: auto; padding: .8rem .7rem 1rem; display: flex; flex-direction: column; gap: .45rem; scrollbar-width: thin; }
+.day, .sys { align-self: center; background: #fff; border-radius: 6px; padding: .15rem .7rem; font-size: var(--s); color: var(--wa-meta); text-align: center; }
+.sys { background: #fdf4c5; color: var(--wa-ink); max-width: 92%; }
+.bub { max-width: 88%; padding: .45rem .65rem .3rem; border-radius: 8px; background: var(--wa-in); align-self: flex-start; box-shadow: 0 1px 0 rgba(11, 20, 26, .12); }
+.bub.me { background: var(--wa-out); align-self: flex-end; }
+.bub .t { display: block; text-align: right; font-size: var(--s); color: var(--wa-meta); line-height: 1.3; }
+.bub .card { display: block; margin: .4rem 0 .2rem; padding: .45rem .6rem; border-left: 3px solid var(--wa-bar); background: #f0f2f5; border-radius: 4px; }
+.bub .card small { display: block; font-size: var(--s); color: var(--wa-meta); }
+.replies { align-self: flex-start; width: 88%; display: grid; gap: .35rem; }
+.reply { min-height: 2.6rem; background: #fff; border: 1px solid #008069; border-radius: 8px; color: #00705c; font-weight: 600; box-shadow: 0 1px 0 rgba(11, 20, 26, .12); }
+.reply:hover { background: #e7f6f2; }
+.reply.alt { border-color: #8696a0; color: var(--wa-ink); font-weight: 500; }
+.cap { margin: 0; font-size: var(--s); color: var(--muted); text-align: center; display: flex; flex-wrap: wrap; gap: .3rem 1rem; align-items: center; justify-content: center; }
+.textbtn { min-height: 2.5rem; padding: 0 1rem; border: 1px solid var(--ctl); border-radius: 4px; font-size: var(--s); font-weight: 500; }
+.textbtn:hover { border-color: var(--text); }
 
-.line { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .5rem 0; border-bottom: 1px solid var(--line); }
-.line .l { display: grid; gap: .1rem; min-width: 0; }
-.line.sel { background: var(--wash); box-shadow: -.6rem 0 0 var(--wash), .6rem 0 0 var(--wash); }
-.prow { display: grid; grid-template-columns: 6.2rem minmax(0, 1fr) auto; gap: 1rem; align-items: baseline; padding: .6rem 0; border-bottom: 1px solid var(--line); }
-
-/* one status style: a coloured word */
-.st { font-size: var(--fs-s); white-space: nowrap; color: var(--muted); }
-.st.ok { color: var(--ok); } .st.warn { color: var(--warn); } .st.crit { color: var(--crit); } .st.soon { color: var(--soon); }
-.crit { color: var(--crit); } .ok { color: var(--ok); } .warn { color: var(--warn); }
-
-/* Tabs read as buttons: a framed pill each, the chosen one in gold. */
-.tabs { display: flex; gap: .5rem; flex-wrap: wrap; }
-.tabs button { padding: .35rem .95rem; font-size: var(--fs-b); color: var(--muted); border: 1px solid var(--line-strong); border-radius: 999px; transition: border-color .15s, color .15s, background-color .15s; }
-.tabs button:hover { border-color: var(--text); color: var(--text); }
-.tabs button[aria-pressed="true"] { color: var(--text); border-color: var(--accent); background: var(--wash); }
-.tabs .nx { margin-left: .45rem; font-size: var(--fs-s); color: var(--soon); }
-.note.soon { border-color: var(--soon); color: var(--soon); }
-.tabs .c { font-family: var(--f-num); font-size: var(--fs-s); margin-left: .4rem; }
-
-.note { margin: 0; border-left: 2px solid var(--line-strong); padding: .15rem 0 .15rem .85rem; font-size: var(--fs-b); }
-.note.ok { border-color: var(--ok); } .note.warn { border-color: var(--warn); } .note.crit { border-color: var(--crit); }
-.sum { margin: 0; font-size: var(--fs-s); color: var(--muted); }
-.alert { margin: 0; display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
-.alert b { font-size: var(--fs-sub); font-weight: 400; letter-spacing: -.01em; }
-.t > span + span { margin-left: .7rem; }
-
-.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr)); gap: 1.6rem; }
-.kpi { display: grid; gap: .1rem; }
-.kpi b { font-variation-settings: "opsz" var(--title-opsz, 14); font-family: var(--f-kpi); font-weight: var(--title-w); font-size: var(--fs-num); line-height: 1.05; font-variant-numeric: lining-nums tabular-nums; letter-spacing: var(--title-ls); }
-
-.tbl { overflow-x: auto; }
-table { width: 100%; border-collapse: collapse; font-size: var(--fs-b); font-variant-numeric: tabular-nums; }
-th, td { text-align: left; padding: .55rem .8rem .55rem 0; border-bottom: 1px solid var(--line); vertical-align: top; }
-th { font-weight: 400; color: var(--muted); }
-td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num); white-space: nowrap; }
-.sides { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.sides .t { font-family: var(--f-display); font-weight: var(--title-w); letter-spacing: var(--title-ls); font-size: var(--fs-sub); line-height: 1.15; font-variation-settings: "opsz" var(--title-opsz, 14); }
-.sides button:not([aria-pressed="true"]) .t { color: var(--muted); }
-.tri { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.6rem; padding-bottom: .4rem; }
-.tri div { display: grid; gap: .25rem; align-content: start; }
-@media (max-width: 700px) { .tri { grid-template-columns: 1fr; gap: .8rem; } }
-.prow.wide { grid-template-columns: 11rem minmax(0, 1fr) auto; }
-@media (max-width: 700px) { .prow.wide { grid-template-columns: 7rem minmax(0, 1fr); } .prow.wide > :last-child { grid-column: 2; } }
-
-.team { display: grid; grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr)); gap: 1.2rem; }
-.team button { display: grid; gap: .1rem; text-align: left; align-content: start; padding: .65rem 0 0; border-top: 1px solid var(--line-strong); }
-.team button[aria-pressed="true"] { border-top: 2px solid var(--accent); padding-top: calc(.65rem - 1px); }
-
-/* First screen: the side and the profile are choices. A frame, a selection mark, gold on the one chosen. */
-.team.sides { gap: 1rem; }
-.team.sides button, .team.sides button[aria-pressed="true"] { position: relative; border: 1px solid var(--line-strong); border-radius: var(--radius-lg);
-  padding: .95rem 1rem 1rem 2.9rem; gap: .25rem; transition: border-color .15s, background-color .15s; }
-.team.sides button::before { content: ""; position: absolute; left: 1.05rem; top: 1.4rem; width: 1rem; height: 1rem; border-radius: 50%;
-  border: 1.5px solid var(--line-strong); box-sizing: border-box; }
-.team.sides button:hover { border-color: var(--text); }
-.team.sides button[aria-pressed="true"] { border-color: var(--accent); background: var(--wash); }
-.team.sides button[aria-pressed="true"]::before { border-color: var(--accent); background: radial-gradient(circle, var(--accent) 0 38%, transparent 44%); }
-.team.sides .s { font-size: var(--fs-b); }
-.team.who-pick { grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr)); gap: .6rem; }
-.team.who-pick button, .team.who-pick button[aria-pressed="true"] { grid-template-columns: auto minmax(0, 1fr); column-gap: .75rem; row-gap: .05rem; align-items: center;
-  border: 1px solid var(--line-strong); border-radius: var(--radius-lg); padding: .65rem .85rem; transition: border-color .15s, background-color .15s; }
-.team.who-pick .ic { grid-row: 1 / span 2; display: flex; align-items: center; }
-.team.who-pick .ic img { width: 2.6rem; height: 2.6rem; border-radius: 50%; object-fit: cover; border: 2px solid var(--line-strong); background: var(--raised); }
-.team.who-pick .ic.stack img { width: 2.2rem; height: 2.2rem; border-color: var(--surface); }
-.team.who-pick .ic.stack img + img { margin-left: -.8rem; }
-.team.who-pick button[data-profile="all"] { grid-column: 1 / -1; }
-.team.who-pick button:hover { border-color: var(--text); }
-.team.who-pick button[aria-pressed="true"] { border-color: var(--accent); background: var(--wash); }
-.team.who-pick button[aria-pressed="true"] .ic:not(.stack) img { border-color: var(--accent); }
-.mods button[disabled] { opacity: .35; cursor: default; }
-
-/* transport plan */
-.gantt { display: grid; gap: .22rem; }
-.g-head, .g-row { display: grid; grid-template-columns: 7.2rem minmax(0, 1fr); gap: .6rem; align-items: center; }
-.g-hours { position: relative; height: 1.1rem; }
-.g-hours span { position: absolute; transform: translateX(-50%); font-family: var(--f-num); font-size: var(--fs-s); color: var(--muted); font-variant-numeric: tabular-nums; }
-.g-hours .g-nowlab { color: var(--text); font-weight: 500; background: var(--surface); padding: 0 .3rem; z-index: 1; }
-.g-lab { font-size: var(--fs-b); white-space: nowrap; }
-.g-track { position: relative; height: 2.25rem; background: repeating-linear-gradient(90deg, transparent 0, transparent calc(100%/18 - 1px), var(--grid) calc(100%/18 - 1px), var(--grid) calc(100%/18)); border-bottom: 1px solid var(--line); }
-.g-win { position: absolute; top: 0; bottom: 0; background: var(--win-bg); border-left: 1px solid var(--line-strong); border-right: 1px solid var(--line-strong); }
-.g-other { position: absolute; top: 0; bottom: 0; background: repeating-linear-gradient(135deg, var(--other) 0 5px, transparent 5px 10px); }
-.g-blk { position: absolute; top: .3rem; height: 1.65rem; min-width: max-content; border-radius: min(var(--radius), 3px); background: var(--raised); border: 1px solid var(--line-strong); font-family: var(--f-num); font-size: var(--fs-s); font-weight: 500; padding: 0 .45rem; display: flex; align-items: center; white-space: nowrap; }
-.g-blk.none { background: var(--bad-bg); border-color: var(--crit); color: var(--crit); }
-.g-row.nocar .g-track { background: none; }
-.g-row.nocar .g-lab { color: var(--crit); }
-.g-blk.vip { background: var(--vip-bg); border-color: var(--accent); }
-.g-blk.new { background: var(--btn-bg); color: var(--btn-ink); border-color: var(--btn-bg); font-weight: 500; }
-.g-blk.bad { border-color: var(--crit); background: var(--bad-bg); }
-.g-now { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--text); }
-.legend { display: flex; gap: 1.4rem; flex-wrap: wrap; font-size: var(--fs-s); color: var(--muted); }
-.legend i { display: inline-block; width: .9rem; height: .55rem; margin-right: .4rem; vertical-align: middle; }
-.stepper { display: inline-flex; align-items: baseline; gap: .5rem; margin-left: .4rem; }
-.stepper b { font-family: var(--f-num); font-size: var(--fs-l); font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums; }
-.stepper button { width: 1.5rem; color: var(--muted); font-size: var(--fs-l); }
-.stepper button:hover { color: var(--text); }
-/* A priority action in a list (Assign, Approve): a small gold-outlined button, not a link. */
-.link.strong { color: var(--accent); text-decoration: none; border: 1px solid var(--accent); border-radius: var(--radius); padding: .3rem .85rem; white-space: nowrap; transition: background-color .15s, color .15s; }
-.link.strong:hover { background: var(--btn-bg); color: var(--btn-ink); }
-
-/* board */
-.kan { display: grid; grid-template-columns: repeat(4, minmax(8.5rem, 1fr)); gap: 1.6rem; overflow-x: auto; }
-.kcard { padding: .6rem 0; border-bottom: 1px solid var(--line); display: grid; gap: .25rem; }
-.kcard.blocked { box-shadow: inset 2px 0 0 var(--crit); padding-left: .7rem; }
-.acts { display: flex; gap: .9rem; flex-wrap: wrap; }
-
-/* check-list */
-.task { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: .9rem; align-items: center; padding: .5rem 0; border-bottom: 1px solid var(--line); cursor: pointer; }
-.task input { width: 1rem; height: 1rem; accent-color: var(--accent); }
-.task.done .tt { text-decoration: line-through; color: var(--muted); }
-.task .meta { text-align: right; font-size: var(--fs-s); color: var(--muted); white-space: nowrap; }
-
-/* phone and map */
-.duo { display: grid; grid-template-columns: minmax(0, 17rem) minmax(0, 1fr); gap: 1.8rem; align-items: start; }
-@media (max-width: 700px) { .duo { grid-template-columns: 1fr; } }
-.phone { border: 1px solid var(--line-strong); border-radius: 1.6rem; padding: .9rem; background: var(--bg); display: grid; gap: .55rem; }
-.bub { background: var(--raised); border-radius: .75rem; padding: .5rem .7rem; font-size: var(--fs-s); }
-.bub.me { background: transparent; border: 1px solid var(--line-strong); justify-self: end; }
-.bub .w { font-size: var(--fs-s); color: var(--muted); display: block; }
-.share { display: flex; justify-content: space-between; align-items: center; gap: .6rem; padding: .1rem .2rem .5rem; border-bottom: 1px solid var(--line); font-size: var(--fs-s); }
-.stat { display: grid; grid-template-columns: 1fr 1fr; gap: .35rem; }
-.stat button { border: 1px solid var(--line-strong); border-radius: .6rem; padding: .45rem; font-size: var(--fs-s); }
-.stat button[aria-pressed="true"] { border-color: var(--ok); color: var(--ok); }
-.sw { width: 2.4rem; height: 1.35rem; border-radius: 999px; background: var(--raised); border: 1px solid var(--line-strong); position: relative; flex: 0 0 auto; }
-.sw::after { content: ""; position: absolute; top: .12rem; left: .12rem; width: .95rem; height: .95rem; border-radius: 50%; background: var(--muted); transition: left .2s; }
-.sw[aria-checked="true"] { background: var(--ok); border-color: var(--ok); }
-.sw[aria-checked="true"]::after { left: 1.25rem; background: var(--surface); }
-.map { width: 100%; height: auto; display: block; }
-.side { display: grid; gap: .9rem; align-content: start; min-width: 0; }
-/* The drivers' live map: a night map, cars that drive, labels in HTML so they keep the type scale. */
-.mapbox { position: relative; width: 100%; max-width: calc(var(--ar, 2) * 32vh); border: 1px solid var(--line); border-radius: var(--radius-lg); overflow: hidden; }
+/* ---------- 4. the coordinator's view, inside Ellie */
+.win { width: 100%; max-width: calc(2 * (100vh - 9rem) * .47 + 2.5rem); background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 1rem 1.25rem 1.1rem; display: grid; gap: .8rem; }
+.win-bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.win-bar .n { display: flex; align-items: center; gap: .8rem; font-size: var(--s); font-weight: 600; letter-spacing: .14em; text-transform: uppercase; }
+.win-bar .n svg { height: .75rem; width: auto; color: var(--gold); }
+.who { display: flex; align-items: center; gap: .55rem; font-size: var(--s); color: var(--muted); }
+.who img, .ride img { width: 2rem; height: 2rem; border-radius: 50%; object-fit: cover; }
+.mapbox { position: relative; width: 100%; border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
 .mapbox .map { display: block; width: 100%; height: auto; }
 .mcar .halo { transform-box: fill-box; transform-origin: center; opacity: .35; animation: halo 1.8s ease-out infinite; }
 @keyframes halo { from { transform: scale(.5); opacity: .45; } to { transform: scale(1.5); opacity: 0; } }
-.mlab { position: absolute; pointer-events: none; white-space: nowrap; font-size: var(--fs-s); line-height: 1.25; }
-.mlab.place { color: var(--muted); }
-.mlab.place.t { transform: translate(-50%, calc(-100% - 10px)); }
-.mlab.place.r { transform: translate(14px, -50%); }
-.mlab.place.b { transform: translate(-50%, 12px); }
-.mlab.car { transform: translate(var(--ax, -50%), calc(-100% - 13px)); background: var(--surface); border: 1px solid var(--line-strong); border-radius: 999px; padding: .1rem .6rem; color: var(--text); }
-.mlab.car.amb { color: var(--muted); padding: 0 .45rem; transform: translate(var(--ax, -50%), 15px); }
-@media (max-width: 700px) {
-  .mlab.place:not(.keep), .mlab.car.amb { display: none; }
-}
-.mlab.car .eta { margin-left: .5rem; padding-left: .5rem; border-left: 1px solid var(--line-strong); color: var(--muted); }
-.mlab.car .eta.crit { color: var(--crit); } .mlab.car .eta.ok { color: var(--ok); }
-.live { position: absolute; top: .55rem; right: .55rem; display: flex; align-items: center; gap: .45rem; background: var(--surface); border: 1px solid var(--line-strong); border-radius: 999px; padding: .1rem .65rem; font-size: var(--fs-s); }
+.mlab { position: absolute; white-space: nowrap; font-size: var(--s); line-height: 1.5; pointer-events: none; }
+.mlab.place { color: var(--muted); transform: translate(-50%, 12px); }
+.mlab.place.t { transform: translate(-50%, calc(-100% - 12px)); }
+.mlab.car { transform: translate(var(--ax, -50%), calc(-100% - 13px)); background: var(--bg); border: 1px solid var(--ctl); border-radius: 999px; padding: .05rem .6rem; color: var(--text); }
+.mlab.car.amb { color: var(--muted); border-color: var(--line); padding: 0 .45rem; transform: translate(var(--ax, -50%), 13px); }
+.mlab.car .eta { margin-left: .5rem; padding-left: .5rem; border-left: 1px solid var(--ctl); color: var(--muted); }
+.mlab.car .eta.alert { color: var(--alert); } .mlab.car .eta.ok { color: var(--ok); }
+.live { position: absolute; top: .5rem; right: .5rem; display: flex; align-items: center; gap: .45rem; background: var(--bg); border: 1px solid var(--line); border-radius: 999px; padding: .05rem .65rem; font-size: var(--s); }
 .live i { width: .5rem; height: .5rem; border-radius: 50%; background: var(--ok); animation: blink 1.6s ease-in-out infinite; }
-@keyframes blink { 50% { opacity: .35; } }
-.mchip { position: absolute; bottom: .55rem; right: .55rem; background: var(--surface); border: 1px solid var(--line-strong); border-radius: 999px; padding: .1rem .65rem; font-size: var(--fs-s); color: var(--soon); }
-@media (min-width: 701px) and (max-width: 1599px) { .sec.two { grid-template-columns: 1fr 1fr; column-gap: 2rem; } }
-/* the maison's Day 1: the map beside the guests on a computer */
-.mapside { display: grid; gap: 1rem; }
-@media (min-width: 1600px) { .mapside { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 1.6rem; align-items: start; } }
-@media (max-width: 700px) {
-  /* on a phone the Live badge and the chip hang under the map, so they never cover a car */
-  .mapbox { overflow: visible; margin-bottom: 2.1rem; }
-  .mapbox .map { border-radius: var(--radius-lg); }
-  .live { top: auto; bottom: -2.05rem; right: auto; left: 0; }
-  .mchip { bottom: -2.05rem; }
+@keyframes blink { 50% { opacity: .3; } }
+.under { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: .5rem 1.5rem; align-items: start; }
+.ride { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .1rem .7rem; align-items: center; }
+.ride .l1 { font-weight: 500; } .ride .l2 { grid-column: 2; font-size: var(--s); color: var(--muted); }
+.code { font-weight: 600; letter-spacing: .06em; color: var(--gold); margin-right: .5rem; }
+.st { display: inline-flex; align-items: center; gap: .45rem; font-size: var(--s); font-weight: 500; }
+.st::before { content: ""; width: .5rem; height: .5rem; border-radius: 50%; background: var(--muted); }
+.st.ok::before { background: var(--ok); } .st.alert::before { background: var(--alert); } .st.gold::before { background: var(--gold); }
+.st.alert { color: var(--alert); }
+.log { list-style: none; margin: 0; padding: 0; display: grid; gap: .15rem; font-size: var(--s); }
+.log li { display: grid; grid-template-columns: 3rem minmax(0, 1fr); color: var(--muted); }
+.log li:last-child { color: var(--text); }
+.log li.alert { color: var(--alert); }
+.log li.k { display: block; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.win .acts { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; justify-content: space-between; }
+.win .acts span { font-size: var(--s); color: var(--muted); }
+
+/* ---------- 5. who works where */
+.where { width: 100%; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 1.25rem; align-items: stretch; }
+.box { border: 1px solid var(--line); border-radius: 6px; background: var(--panel); padding: 1.4rem 1.5rem; display: grid; gap: 1rem; align-content: start; }
+.box.gold { border-color: var(--gold); }
+.box h2 { margin: 0; font-size: var(--s); font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--gold); }
+.box .p { display: grid; gap: .1rem; padding-top: .9rem; border-top: 1px solid var(--line); }
+.box .p b { font: 500 var(--h3)/1.25 var(--f-title); }
+.box .p span { color: var(--muted); }
+.msg { background: var(--wa-wall); border-radius: 6px; padding: .8rem; display: grid; gap: .4rem; color: var(--wa-ink); }
+.msg .bub { max-width: 100%; }
+.msg .ans { justify-self: end; }
+.note { margin: 0; font-size: var(--s); color: var(--muted); }
+
+/* ---------- 6. the close */
+.ask { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; width: 100%; max-width: 46rem; }
+.ask li { display: grid; grid-template-columns: 3.5rem minmax(0, 1fr); align-items: baseline; padding: .9rem 0; border-top: 1px solid var(--line); font-size: var(--l); }
+.ask li i { font: 400 var(--h3)/1 var(--f-title); font-style: normal; color: var(--gold); }
+.legend { display: grid; gap: .35rem; margin: 0; }
+.legend div { display: grid; grid-template-columns: 11rem minmax(0, 1fr); gap: 1rem; }
+.legend dt { font-size: var(--s); font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); padding-top: .15rem; }
+.legend dd { margin: 0; color: var(--muted); }
+
+.fade { animation: fade .45s ease both; }
+@keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+/* ---------- desktop: fits the window, never scrolls */
+@media (min-width: 900px) {
+  html, body { height: 100%; overflow: hidden; }
+  body { height: 100dvh; }
 }
-@media (prefers-reduced-motion: reduce) { .mcar .halo, .live i { animation: none; } }
+@media (min-width: 900px) and (max-width: 1300px) {
+  .top { padding-left: 3rem; padding-right: 3rem; } main { padding: 0 3rem; } .nav { padding-left: 3rem; padding-right: 3rem; }
+  .split { gap: 2.5rem; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); }
+  .pill { padding: 0 .8rem; } .pills { gap: .4rem; }
+  .moment { grid-template-columns: 10rem minmax(0, 1fr); }
+}
+@media (min-width: 900px) and (max-height: 720px) {
+  .moments { gap: .8rem; } .pill { min-height: 2.25rem; }
+  .rows .guest p { font-size: 1.25rem; }
+  :root { --h1: 2.4rem; --h0: 3rem; }
+  .top { padding-top: 1rem; } .nav { padding-top: .7rem; padding-bottom: 1rem; }
+  .story { gap: 1.1rem; }
+  .moment .body { padding: 1.1rem 1.5rem; gap: .6rem; } .rows > div { padding: .55rem 0; }
+  .box { padding: 1.1rem 1.25rem; gap: .8rem; }
+}
 
-/* review */
-.bars { display: grid; gap: .4rem; }
-.bl { display: grid; grid-template-columns: 3rem minmax(0, 1fr) 3.4rem; gap: .8rem; align-items: center; font-size: var(--fs-s); }
-.bl .tr { height: .5rem; background: var(--grid); overflow: hidden; }
-.bl .f { display: block; height: 100%; background: var(--text); }
-.bl .f.hot { background: var(--crit); }
-.bl .v { text-align: right; color: var(--muted); }
-.progress { height: .35rem; background: var(--grid); overflow: hidden; }
-.progress i { display: block; height: 100%; background: var(--ok); transition: width .5s ease; }
-
-/* co-design priorities */
-.opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); gap: .6rem; }
-@media (max-width: 700px) { .opts { grid-template-columns: 1fr; } }
-/* Priorities: cards to tap. An empty "+" slot becomes the rank, gold, in the order of the taps. */
-.opt { display: grid; grid-template-columns: 1.9rem minmax(0, 1fr); gap: .75rem; align-items: center; text-align: left; padding: .65rem .9rem;
-  border: 1px solid var(--line-strong); border-radius: var(--radius-lg); color: var(--text); transition: border-color .15s, background-color .15s; }
-.opt:hover { border-color: var(--text); }
-.opt .rk { width: 1.9rem; height: 1.9rem; border-radius: 50%; border: 1px solid var(--line-strong); display: grid; place-items: center;
-  font-family: var(--f-num); font-size: var(--fs-b); color: var(--muted); font-variant-numeric: tabular-nums; }
-.opt[aria-pressed="true"] { border-color: var(--accent); background: var(--wash); }
-.opt[aria-pressed="true"] .rk { border-color: var(--btn-bg); background: var(--btn-bg); color: var(--btn-ink); font-weight: 500; }
-.pick-help { margin: 0 0 .7rem; color: var(--text); }
-
-/* maison: challenges */
-.chl { display: grid; align-content: start; }
-.chl button { display: grid; gap: .1rem; text-align: left; padding: .55rem 0 .55rem .8rem; border-bottom: 1px solid var(--line); box-shadow: inset 2px 0 0 transparent; }
-.chl button .t { color: var(--muted); }
-.chl button[aria-pressed="true"] { box-shadow: inset 2px 0 0 var(--accent); }
-.chl button[aria-pressed="true"] .t { color: var(--text); }
-
-/* the one counter */
-.meter { display: flex; gap: .4rem 2.4rem; align-items: baseline; flex-wrap: wrap; padding: .75rem 0 1rem; border-top: 1px solid var(--line); }
-.meter b { font-family: var(--f-kpi); font-size: var(--fs-num); font-weight: var(--title-w); letter-spacing: var(--title-ls); font-variation-settings: "opsz" var(--title-opsz, 14); font-variant-numeric: lining-nums tabular-nums; }
-.meter .u { font-size: var(--fs-s); color: var(--muted); margin-left: .4rem; }
-.meter .ill { margin-left: auto; font-size: var(--fs-s); color: var(--muted); }
-
-.fade { animation: fade .3s ease both; }
-@keyframes fade { from { opacity: .3; transform: translateY(3px); } to { opacity: 1; transform: none; } }
-/* Desktop: the base size follows the height too, so the story on the left always fits the screen without scrolling
-   (Charles, 16/11), whatever the shape of the window. */
-@media (min-width: 1100px) { html { font-size: clamp(13.5px, min(0.55vw + 8.5px, 2.05vh), 21px); } }
-@media (prefers-reduced-motion: reduce) { .fade { animation: none; } .progress i, .mapcar, .sw::after { transition: none; } }
+/* ---------- phone: title, text, screen; navigation fixed at the bottom */
+@media (max-width: 899px) {
+  :root { --h1: 2rem; --h0: 2.3rem; }
+  .top { padding: 1rem 1.25rem 0; } .sign { display: none; }
+  main { padding: 1.25rem 1.25rem 6.5rem; }
+  .split { display: block; height: auto; }
+  .story { gap: .9rem; margin-bottom: 1.4rem; }
+  .screen { height: auto; display: block; }
+  .cover { height: auto; gap: 1.2rem; padding-top: 1rem; }
+  .thread { grid-template-columns: 1fr; border-top: 0; border-left: 1px solid var(--gold); margin-left: .3rem; width: auto; }
+  .thread li { padding: 0 0 .9rem 1.25rem; grid-template-columns: minmax(0, 1fr) 8.5rem; align-items: baseline; }
+  .thread li::before { top: .55rem; left: -.3rem; }
+  .moment { grid-template-columns: 1fr; } .moment .pic { min-height: 7rem; } .moment .body { padding: 1.1rem; }
+  .pill { padding: 0 .8rem; }
+  .phonewrap { height: auto; } .phone { height: 33rem; width: 100%; max-width: 22rem; }
+  .win { padding: .8rem; max-width: none; } .who span { display: none; }
+  .under { grid-template-columns: 1fr; }
+  .mlab.place:not(.keep), .mlab.car.amb { display: none; }
+  .live { top: auto; right: auto; bottom: .5rem; left: .5rem; }
+  .where { grid-template-columns: 1fr; }
+  .ask li { grid-template-columns: 2.5rem minmax(0, 1fr); }
+  .legend div { grid-template-columns: 1fr; gap: 0; }
+  .nav { position: fixed; left: 0; right: 0; bottom: 0; padding: .7rem 1.25rem calc(.7rem + env(safe-area-inset-bottom)); background: var(--bg); border-top: 1px solid var(--line); }
+  .btn { padding: 0 1.2rem; }
+}
+@media (prefers-reduced-motion: reduce) { .mcar .halo, .live i, .fade { animation: none; } #bg { transition: none; } }
 </style>
 </head>
 <body>
-<script>document.documentElement.setAttribute("data-theme","dark");document.documentElement.setAttribute("data-look","a");</script>
-<div class="backdrop" id="backdrop" aria-hidden="true"></div>
-<div class="app" id="app"></div>
+<div id="bg" aria-hidden="true"></div>
+<header class="top">
+  <button class="brand" id="home" title="Back to the start" aria-label="Ellie, back to the start"><svg viewBox="0 0 1013 146" fill="currentColor" aria-hidden="true" focusable="false"><rect x="0" y="0" width="130.5" height="12.5"/><rect x="0" y="0" width="12.5" height="60"/><path d="M114.5 66H30A30 30 0 0 0 0 96V146H12.5V96A17.5 17.5 0 0 1 30 78.5H114.5Z"/><rect x="0" y="133.5" width="130.5" height="12.5"/><rect x="267" y="0" width="12.5" height="146"/><rect x="267" y="133.5" width="92.5" height="12.5"/><rect x="499" y="0" width="12.5" height="146"/><rect x="499" y="133.5" width="92" height="12.5"/><rect x="737.5" y="0" width="12.5" height="146"/><rect x="905" y="0" width="12.5" height="146"/><rect x="905" y="0" width="107.5" height="12.5"/><rect x="905" y="66" width="96.5" height="12.5"/><rect x="905" y="133.5" width="107.5" height="12.5"/></svg></button>
+  <span class="sign">Orchestrate the invisible</span>
+</header>
+<main id="app"></main>
+<footer class="nav">
+  <span class="count" id="count"></span>
+  <span class="navb"><button class="btn" id="prev">Back</button><button class="btn primary" id="next">Next</button></span>
+</footer>
+
 <script>
 (function () {
   "use strict";
-  var $ = function (s, el) { return (el || document).querySelector(s); };
-  var $$ = function (s, el) { return Array.prototype.slice.call((el || document).querySelectorAll(s)); };
+  var $ = function (s) { return document.querySelector(s); };
+  var $$ = function (s) { return Array.prototype.slice.call(document.querySelectorAll(s)); };
   var esc = function (s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
-  var root = document.documentElement;
 
-  // The DMC's name can be set for a meeting with ?dmc=Name ; the published page never names a real company.
-  var DMC = "your DMC";
-  try { var q = new URLSearchParams(location.search).get("dmc"); if (q && q.trim()) DMC = q.trim().slice(0, 40); } catch (e) {}
+  // The agency's name comes from ?dmc=Name for a meeting. The page itself names nobody.
+  var DMC = "";
+  try { DMC = (new URLSearchParams(location.search).get("dmc") || "").trim().slice(0, 40); } catch (e) {}
 
-  // ------------------------------------------------------------ fictional data
-  var H0 = 6, H1 = 24;
-  var toMin = function (t) { var p = t.split(":"); return (+p[0]) * 60 + (+p[1]); };
-  var pct = function (t) { return ((toMin(t) - H0 * 60) / ((H1 - H0) * 60)) * 100; };
-  var CARS = [
-    { code: "S-01", cat: "S-Class", seats: 3, driver: "Somchai", win: ["08:00", "23:00"] },
-    { code: "S-02", cat: "S-Class", seats: 3, driver: "Niran", win: ["12:00", "24:00"] },
-    { code: "V-01", cat: "V-Class", seats: 6, driver: "Kiet", win: ["06:00", "22:00"] },
-    { code: "V-02", cat: "V-Class", seats: 6, driver: "Anan", win: ["14:00", "24:00"], other: ["18:00", "21:00"] },
-    { code: "E-01", cat: "E-Class", seats: 3, driver: "Chai", win: ["07:00", "19:00"] },
-    { code: "M-01", cat: "Van", seats: 10, driver: "Preecha", win: ["06:00", "14:00"] }
+  var LOGO = '<svg viewBox="0 0 1013 146" fill="currentColor" role="img" aria-label="Ellie"><rect x="0" y="0" width="130.5" height="12.5"/><rect x="0" y="0" width="12.5" height="60"/><path d="M114.5 66H30A30 30 0 0 0 0 96V146H12.5V96A17.5 17.5 0 0 1 30 78.5H114.5Z"/><rect x="0" y="133.5" width="130.5" height="12.5"/><rect x="267" y="0" width="12.5" height="146"/><rect x="267" y="133.5" width="92.5" height="12.5"/><rect x="499" y="0" width="12.5" height="146"/><rect x="499" y="133.5" width="92" height="12.5"/><rect x="737.5" y="0" width="12.5" height="146"/><rect x="905" y="0" width="12.5" height="146"/><rect x="905" y="0" width="107.5" height="12.5"/><rect x="905" y="66" width="96.5" height="12.5"/><rect x="905" y="133.5" width="107.5" height="12.5"/></svg>';
+  var CODESIGN = '<span class="tag">In co-design</span>';
+
+  // p: how far the ride has gone, shared by the driver's phone (screen 3) and the coordinator's map (screen 4).
+  // 0 ride sent · 1 confirmed · 2 position on · 3 in place (or late) · 4 guest on board · 5 dropped off
+  var S = { i: 0, m: 0, p: 0, late: false, role: "hotel", fresh: false, _mf: {}, _amb: {} };
+
+  // ------------------------------------------------------------ the six moments of the guest's journey
+  var MOMENTS = [
+    { k: "Landing", when: "Thursday, 16:10", img: "arrival-cars",
+      guest: "A host is at the gate before she is. The sign reads ELLIE 12, never her name.",
+      agency: "Host, fast track and porter, booked against the flight itself.",
+      ellie: "Saw the flight land twenty minutes early. Told the host and the driver." },
+    { k: "Transfer", when: "Thursday, 16:25", img: "hero-car",
+      guest: "The car is at the kerb, cool and quiet. The driver knows where she is going.",
+      agency: "One car and one driver for her three days. No change at the last minute.",
+      ellie: "Sent the ride, logged each answer, put the car on the coordinator's map." },
+    { k: "Hotel", when: "Thursday, 17:10", img: "river-night",
+      guest: "No desk, no form. Her suite is ready, on the eighth floor.",
+      agency: "The suite checked an hour before. For this guest, never a fourth floor.",
+      ellie: "Told the hotel her car was fifteen minutes away. The answer: suite ready." },
+    { k: "Private viewing", when: "Friday, 15:00", img: "maison-viewing",
+      guest: "Her client advisor is at the door as the car stops. The pieces are waiting.",
+      agency: "Cars spaced so that no two guests arrive together.",
+      ellie: "Told the maison's team that her car was five minutes away." },
+    { k: "Gala dinner", when: "Friday, 19:30", img: "dinner-table",
+      guest: "Her place is set and the menu is already hers. Nobody asks.",
+      agency: "Her dietary note with the chef since Tuesday. Table 8.",
+      ellie: "Had the restaurant confirm the note. Brought her car round on your host's signal." },
+    { k: "Departure", when: "Saturday, 11:00", img: "discretion-folder",
+      guest: "Her luggage is already in the car. The same driver takes her to the airport.",
+      agency: "A late check-out, and her driver kept for the morning.",
+      ellie: "Checked the flight, set the pick-up, closed the driver's position link." }
   ];
-  var TRANSFERS0 = [
-    { id: "t1", party: "AU01", pax: 2, a: "07:10", b: "08:20", what: "BKK → Riverside Suites", car: "E-01" },
-    { id: "t2", party: "ES01", pax: 1, a: "08:30", b: "09:40", what: "BKK → Lumière Bangkok", car: "V-01" },
-    { id: "t3", party: "CN01", pax: 2, a: "09:35", b: "10:45", what: "BKK → Riverside Suites", car: "S-01" },
-    { id: "t4", party: "SG01", pax: 1, a: "09:40", b: "10:50", what: "BKK → Lumière Bangkok", car: "E-01" },
-    { id: "t5", party: "JP01", pax: 1, a: "11:55", b: "13:05", what: "BKK → Lumière Bangkok", car: "S-01" },
-    { id: "t6", party: "TH01", pax: 2, a: "14:50", b: "16:00", what: "BKK → Riverside Suites", car: "S-02", vip: true },
-    { id: "t7", party: "KR01", pax: 3, a: "16:00", b: "17:10", what: "BKK → Lumière Bangkok", car: null },
-    { id: "t8", party: "HK01", pax: 2, a: "16:10", b: "17:20", what: "BKK → Lumière Bangkok", car: "S-01", vip: true },
-    { id: "t9", party: "TH01", pax: 2, a: "19:30", b: "20:00", what: "Riverside Suites → dinner", car: "S-02", vip: true },
-    { id: "t10", party: "SG01+JP01", pax: 2, a: "19:40", b: "20:10", what: "Lumière Bangkok → dinner", car: null },
-    { id: "t11", party: "AE01", pax: 4, a: "20:05", b: "21:15", what: "BKK → Riverside Suites", car: null, vip: true }
+
+  // ------------------------------------------------------------ everyone who stays on WhatsApp
+  var ROLES = [
+    ["driver", "Drivers", "Ride at 16:30, BKK arrivals. Party <b>HK01</b>, sign <b>ELLIE 12</b>.", "Confirm", "A code and a sign. Never a name."],
+    ["host", "Airport hosts", "<b>HK01</b> has landed, twenty minutes early. Gate B in ten minutes.", "At the gate", "A code and a sign. Never a name."],
+    ["hotel", "Hotels", "<b>HK01</b> is fifteen minutes away. Is the suite ready?", "Suite ready", "A code and a suite. The hotel holds the name already."],
+    ["restaurant", "Restaurants", "Table 8 tonight: one guest without shellfish. Can you confirm?", "Confirmed", "A table and a note. Never a name."],
+    ["advisor", "Client advisors", "Your client's car is five minutes from the residence.", "I am at the door", "The maison's side: the advisor knows the client."]
   ];
-  var overlap = function (a1, b1, a2, b2) { return toMin(a1) < toMin(b2) && toMin(a2) < toMin(b1); };
-  function warningsFor(car, tr, transfers) {
-    var w = [];
-    if (transfers.some(function (x) { return x.car === car.code && x.id !== tr.id && overlap(x.a, x.b, tr.a, tr.b); })) w.push("Overlaps with another transfer on this vehicle");
-    if (tr.pax > car.seats) w.push("Over capacity: " + car.seats + " seats for " + tr.pax + " pax");
-    if (!(toMin(tr.a) >= toMin(car.win[0]) && toMin(tr.b) <= toMin(car.win[1]))) w.push("Outside its service window, " + car.win[0] + " to " + car.win[1]);
-    if (car.other && overlap(car.other[0], car.other[1], tr.a, tr.b)) w.push("Also promised to another event, " + car.other[0] + " to " + car.other[1]);
-    return w;
+
+  // ------------------------------------------------------------ the driver's conversation
+  function chat() {
+    var p = S.p, out = [], n = 0;
+    var add = function (step, html) { out.push(html.replace("<div class=\"", "<div class=\"" + (S.fresh && step === p ? "fade " : ""))); n++; };
+    var inb = function (step, t, html) { add(step, '<div class="bub">' + html + '<span class="t">' + t + '</span></div>'); };
+    var me = function (step, t, html) { add(step, '<div class="bub me">' + html + '<span class="t">' + t + '</span></div>'); };
+    out.push('<div class="day">Today</div>');
+    inb(0, "14:35", "Good afternoon, Khun Somchai. Your ride today:<br><b>16:30</b>, BKK arrivals, gate B<br>Party <b>HK01</b>, one guest<br>Sign: <b>ELLIE 12</b><br>To Lumière Bangkok");
+    if (p >= 1) {
+      me(1, "14:36", "Confirm");
+      inb(1, "14:36", 'Thank you. Please share the position of your car, for this ride only.<span class="card"><b>Share my position</b><small>Opens in your browser. Closes at drop-off.</small></span>');
+    }
+    if (p >= 2) {
+      add(2, '<div class="sys">Position shared for this ride. Only the coordinator sees the car.</div>');
+      inb(2, "15:48", "The flight will land twenty minutes early, at <b>16:10</b>. Can you be in place at 16:00?");
+    }
+    if (p >= 3) {
+      me(3, "15:49", S.late ? "I will be late" : "In place at 16:00");
+      if (S.late) inb(3, "15:49", "Noted. The host will keep the guest in the lounge. Drive safely.");
+      inb(3, "16:22", "The host is walking <b>HK01</b> to you now. Bay 7.");
+    }
+    if (p >= 4) {
+      me(4, "16:24", "Guest on board");
+      inb(4, "16:24", "Thank you. The hotel has been told.");
+    }
+    if (p >= 5) {
+      me(5, "17:08", "Dropped off");
+      inb(5, "17:08", "Thank you, Khun Somchai. The position link is closed. Tomorrow: 14:20, the same guest.");
+    }
+    var R = [[["Confirm"]], [["Share my position"]], [["In place at 16:00"], ["I will be late", "late"]], [["Guest on board"]], [["Dropped off"]], []][p];
+    if (R.length) out.push('<div class="replies' + (S.fresh ? ' fade' : '') + '">' + R.map(function (r) { return '<button class="reply' + (r[1] ? ' alt' : '') + '" data-reply="' + (r[1] || "") + '">' + r[0] + '</button>'; }).join("") + '</div>');
+    return out.join("");
   }
 
-  // ------------------------------------------------------------ state
-  var S = {
-    i: 0, notes: false, side: "dmc",
-    theme: "dark", look: "a",
-    imp: 0,
-    transfers: JSON.parse(JSON.stringify(TRANSFERS0)), pick: null, lastAssign: null, freeAt: "16:00",
-    owner: "all", tasksDone: {},
-    signal: "all", cards: { AU01: "confirmed", ES01: "confirmed", CN01: "confirmed", SG01: "confirmed", JP01: "confirmed", TH01: "progress", HK01: "progress", KR01: "todo", AE01: "todo" }, reasons: {}, blocking: null,
-    delay: 0,
-    drv: 0, drvAlert: 0, drvNight: false, loc: false, choice: null,
-    tab: "costs",
-    picks: [],
-    // the maison's side of the same event
-    mD: 0, mAppr: { dinner: "proposed", temple: "proposed", gift: "proposed" }, mCh: "flight",
-    mT: 0, mTab: "markets", mPicks: [], mClose: 0
-  };
-  // Two sides of the same event, the maison and the DMC: chosen on the first screen, or with ?side=maison in the link.
-  // One person's day can be followed on its own: chosen on the first screen, or with ?profile=arun in the link.
-  // AI portraits of the fictional team (assets/img/team), in place of person icons (Charles, 16/11)
-  var MARK = '<svg class="mark" viewBox="0 0 1013 146" fill="currentColor" aria-hidden="true" focusable="false"><rect x="0" y="0" width="130.5" height="12.5"/><rect x="0" y="0" width="12.5" height="60"/><path d="M114.5 66H30A30 30 0 0 0 0 96V146H12.5V96A17.5 17.5 0 0 1 30 78.5H114.5Z"/><rect x="0" y="133.5" width="130.5" height="12.5"/><rect x="267" y="0" width="12.5" height="146"/><rect x="267" y="133.5" width="92.5" height="12.5"/><rect x="499" y="0" width="12.5" height="146"/><rect x="499" y="133.5" width="92" height="12.5"/><rect x="737.5" y="0" width="12.5" height="146"/><rect x="905" y="0" width="12.5" height="146"/><rect x="905" y="0" width="107.5" height="12.5"/><rect x="905" y="66" width="96.5" height="12.5"/><rect x="905" y="133.5" width="107.5" height="12.5"/></svg>';
-  var face = function (id) { return '<img src="assets/img/team/' + id + '.webp" alt="" width="96" height="96" loading="lazy" decoding="async">'; };
-  var PROFILES = {
-    dmc: [["nok", "Nok", "Event manager"], ["arun", "Arun", "Transport coordinator"], ["ploy", "Ploy", "Airport host"], ["somchai", "Somchai", "Driver"], ["mai", "Mai", "Accounts"]],
-    maison: [["claire", "Claire", "Client experience director"], ["mei", "Mei", "Client advisor"]]
-  };
-  S.profile = "all";
-  try {
-    var qs = new URLSearchParams(location.search), sd = (qs.get("side") || "").toLowerCase(), pr = (qs.get("profile") || "").toLowerCase();
-    if (sd === "maison" || sd === "dmc") S.side = sd;
-    ["dmc", "maison"].forEach(function (k) { if (PROFILES[k].some(function (p) { return p[0] === pr; })) { S.profile = pr; S.side = k; } });
-  } catch (e) {}
-  try { var saved = JSON.parse(localStorage.getItem("ellie-dmc-picks") || "[]"); if (Array.isArray(saved)) S.picks = saved.slice(0, 9); } catch (e) {}
-  try { var savedM = JSON.parse(localStorage.getItem("ellie-maison-picks") || "[]"); if (Array.isArray(savedM)) S.mPicks = savedM.slice(0, 9); } catch (e) {}
-  // The maison's guests. The same people the DMC knows by their codes.
-  var MG = [
-    { k: "srisuk", name: "Mrs P. Srisuk", code: "TH-0001", tier: "VVIP", land: "14:20", req: "River suite, white flowers, no lilies", diet: "No shellfish, severe allergy", crit: true },
-    { k: "lau", name: "Mrs W. Lau", code: "HK-0001", tier: "VVIP", land: "15:40", req: "Suite, feather pillows, green tea welcome", diet: "No shellfish" },
-    { k: "mansour", name: "Dr A. Mansour", code: "AE-0001", tier: "VVIP", land: "19:35", req: "Two connecting suites, party of four", diet: "No pork, no alcohol" },
-    { k: "tan", name: "Ms R. Tan", code: "SG-0001", tier: "VIP", land: "09:10", req: "Quiet floor", diet: "Vegetarian" },
-    { k: "mori", name: "Mrs Y. Mori", code: "JP-0001", tier: "VIP", land: "11:25", req: "Japanese-speaking guide", diet: "Gluten-free" },
-    { k: "chen", name: "Mr J. Chen", code: "CN-0001", tier: "VIP", land: "09:05", req: "Mandarin-speaking guide", diet: "Halal" }
-  ];
+  // ------------------------------------------------------------ what the coordinator reads back
+  function rideState() {
+    var p = S.p;
+    var st = p === 0 ? ["", "Sent, awaiting his answer"] : p === 1 ? ["gold", "Confirmed"] : p === 2 ? ["gold", "On the way to BKK"]
+      : p === 3 ? (S.late ? ["alert", "About 10 minutes late"] : ["ok", "In place at BKK"]) : p === 4 ? ["gold", "Guest on board"] : ["ok", "Dropped off"];
+    var eta = p === 2 ? ["", "at BKK 15:58"] : p === 3 ? (S.late ? ["alert", "10 min late, traffic"] : ["ok", "in place"]) : ["", "HK01 on board, hotel 17:10"];
+    var log = [["14:35", "Ride sent to Khun Somchai"]];
+    if (p >= 1) log.push(["14:36", "Confirmed"]);
+    if (p >= 2) log.push(["14:37", "Position on, for this ride"]);
+    if (p >= 3) log.push(S.late ? ["15:49", "Late, about 10 minutes. Host told.", "alert"] : ["15:49", "In place at 16:00"]);
+    if (p >= 4) log.push(["16:24", "Guest on board. Hotel told."]);
+    if (p >= 5) log.push(["17:08", "Dropped off. Position closed."]);
+    var time = ["14:35", "14:36", "15:40", S.late ? "16:02" : "16:00", "16:40", "17:08"][p];
+    return { st: st, eta: eta, log: log.slice(-3), time: time };
+  }
 
-  var st = function (tone, text) { return '<span class="st ' + tone + '">' + text + '</span>'; };
-  var STATUS = { confirmed: ["ok", "Confirmed"], progress: ["warn", "In progress"], todo: ["", "To do"], blocked: ["crit", "Blocked"] };
-
-  // ------------------------------------------------------------ scenes
+  // ------------------------------------------------------------ the six screens
   var SCENES = [
-    {
-      id: "team", mod: null, status: null,
-      who: function () { return S.side === "maison" ? "An event at a maison" : "A day at a DMC"; },
-      title: "Ellie looks after your team, so your team can look after the guests.",
-      lede: function () { return S.side === "maison" ? "Thirty of your best clients, four days in Bangkok. Behind every invitation: a client experience director, and the advisors who know each guest." : "Thirty VIP guests, four days in Bangkok. Behind every perfect arrival: an event manager, a coordinator, a host, a driver."; },
-      impact: null, where: "One event, two sides. Choose yours",
-      notes: { say: "Ellie has two users on the same event: the maison, who owns the guests, and the DMC, who delivers on the ground. Same three modules, different jobs. In Ellie they are the three phases of an event: Definition, Live, Close-out.", ask: "On an event like this one, who in your team carries the most?" },
+    { id: "arrival", name: "Arrival", bg: "arrival-cars", cover: true,
+      html: function () {
+        return '<div class="cover">' +
+          '<p class="eyebrow">' + (DMC ? "Prepared for " + esc(DMC) : "A guest's journey") + '</p>' +
+          '<h1>She lands in Bangkok twenty minutes early. <em>Everyone</em> already knows.</h1>' +
+          '<p class="lede">A maison invites its most valued clients to three days of high jewellery. To your team, this guest is HK01.</p>' +
+          '<ol class="thread">' + MOMENTS.map(function (m) { return '<li><b>' + m.k + '</b><span>' + m.when + '</span></li>'; }).join("") + '</ol>' +
+        '</div>';
+      } },
+    { id: "journey", name: "Her journey", bg: "river-night",
+      story: function () {
+        return '<p class="eyebrow">Her journey</p>' +
+          '<h1>Six moments. <em>Nothing</em> she has to ask for.</h1>' +
+          '<p class="lede">Choose a moment: what she lives, what you have settled, and what Ellie did without being seen.</p>';
+      },
       screen: function () {
-        var SIDES = [["maison", "A maison", "The whole event at a glance, from the first bookings to the first arrivals"], ["dmc", "A DMC", "Everything to deliver on the ground"]];
-        var MODL = {
-          maison: ["Where the event stands, and what waits for you", "Every arrival and every surprise, without calling", "The guest experience, reviewed"],
-          dmc: ["Transfers, rooms, dining and activities to prepare", "Fleet, team and every change on the ground", "Punctuality, changes, costs"]
-        };
-        return '' +
-          '<div class="team sides" role="group" aria-label="Choose your side">' + SIDES.map(function (x) { return '<button data-side="' + x[0] + '" aria-pressed="' + (S.side === x[0]) + '"><span class="t">' + x[1] + '</span><span class="s">' + x[2] + '</span></button>'; }).join("") + '</div>' +
-          '<div class="tri">' + ["Create", "Orchestrate", "Analyse"].map(function (m, i) { return '<div><span class="label">' + m + '</span><span>' + MODL[S.side][i] + '</span></div>'; }).join("") + '</div>' +
-          '<div class="label">Follow the whole team, or one person\'s day</div>' +
-          '<div class="team who-pick" role="group" aria-label="Choose a profile">' +
-          [["all", "The whole team", "Every screen"]].concat(PROFILES[S.side]).map(function (p) { return '<button data-profile="' + p[0] + '" aria-pressed="' + (S.profile === p[0]) + '"><span class="ic' + (p[0] === "all" ? ' stack' : '') + '">' + (p[0] === "all" ? PROFILES[S.side].slice(0, 3).map(function (q) { return face(q[0]); }).join("") : face(p[0])) + '</span><span class="t">' + p[1] + '</span><span class="s">' + p[2] + '</span></button>'; }).join("") +
+        var m = MOMENTS[S.m];
+        return '<div class="moments">' +
+          '<div class="pills" role="group" aria-label="Moments of the journey">' + MOMENTS.map(function (x, i) { return '<button class="pill" data-m="' + i + '" aria-pressed="' + (i === S.m) + '">' + x.k + '</button>'; }).join("") + '</div>' +
+          '<div class="moment">' +
+            '<div class="pic" style="background-image:url(assets/img/' + m.img + '-800.webp)"></div>' +
+            '<div class="body fade"><h2>' + m.k + '<span>' + m.when + '</span></h2>' +
+              '<div class="rows">' +
+                '<div class="guest"><span class="k">What she lives</span><p>' + m.guest + '</p></div>' +
+                '<div><span class="k">What ' + (DMC ? esc(DMC) + ' has' : 'you have') + ' settled</span><p>' + m.agency + '</p></div>' +
+                '<div class="ellie"><span class="k">What Ellie did, unseen ' + CODESIGN + '</span><p>' + m.ellie + '</p></div>' +
+              '</div></div>' +
+          '</div></div>';
+      },
+      wire: function () { $$("[data-m]").forEach(function (b) { b.onclick = function () { S.m = +b.getAttribute("data-m"); render(); }; }); } },
+    { id: "driver", name: "The driver", bg: "hero-car",
+      story: function () {
+        return '<p class="eyebrow">The driver ' + CODESIGN + '</p>' +
+          '<h1>Your drivers stay on <em>WhatsApp</em>.</h1>' +
+          '<p class="lede">Nothing to install. Ellie writes, the driver answers with one tap. Ellie knows him by his number.</p>' +
+          '<p class="rule">The driver reads a code and a sign. Never a name.</p>';
+      },
+      screen: function () {
+        return '<div class="phonewrap">' +
+          '<div class="phone" aria-label="The driver\'s phone, a WhatsApp conversation with Ellie">' +
+            '<div class="wa-bar"><img src="assets/logo/favicon.svg" alt=""><div><b>Ellie</b><span>Business account</span></div></div>' +
+            '<div class="chat" id="chat">' + chat() + '</div>' +
           '</div>' +
-          '<p class="sum">' + (S.side === "maison" ? "And the advisors of eleven boutiques, each with their own clients." : "And seventeen hosts, guides and drivers, each with their own day.") + '</p>';
+          '<p class="cap"><span>' + (S.p < 5 ? "Tap the driver's answer. Shown in English, sent in Thai." : "The ride is closed. Shown in English, sent in Thai.") + '</span>' +
+            (S.p > 0 ? '<button class="textbtn" id="again">Start the ride again</button>' : '') + '</p>' +
+        '</div>';
       },
       wire: function () {
-        $$("[data-side]").forEach(function (b) { b.onclick = function () { S.side = b.getAttribute("data-side"); S.profile = "all"; render(); }; });
-        $$("[data-profile]").forEach(function (b) { b.onclick = function () { S.profile = b.getAttribute("data-profile"); render(); }; });
-      }
-    },
-    {
-      id: "brief", p: "nok", mod: "create", status: "today", who: "<b>Nok</b>, event manager",
-      title: "Version 3 of the guest list just arrived. What changed?",
-      lede: "The maison's list keeps changing until the last week. Ellie compares each version with what is already booked, and shows only what changed and what it affects.",
-      before: "Two spreadsheets side by side, line by line. The plus-one shows up at the airport.",
-      after: "Five changes and one question on one screen, each with what it affects. Applied in a minute.",
-      impact: { hours: 14, messages: 60, calls: 0, caught: 3 }, where: "Guests · Version 3",
-      notes: { live: "Guest management, Import: load the new version of the maison's file. The review shows what will be created, updated or is in error before anything is written; transfers follow the flights.", ask: "How many versions of the list did you get on your last big event? Who finds what changed, and how?" },
-      screen: function () {
-        var done = S.imp > 0;
-        var CH = [
-          ["KR01", "A plus-one added, party of 3", "Transfer needs a car for 3", "warn"],
-          ["TH01", "New allergy: shellfish, critical", "Flagged to the restaurant", "crit"],
-          ["JP01", "New flight, lands 11:25", "Pick-up moved to 11:55", ""],
-          ["AE01", "New party of 4, lands 19:35 on EK 372", "Arrival transfer created", ""],
-          ["HK01", "A suite instead of a deluxe room", "Added to the hotel check-list", ""]
-        ];
-        return '' +
-          '<div class="kpis">' +
-            '<div class="kpi"><b>5</b><span class="s">changes since version 2</span></div>' +
-            '<div class="kpi"><b class="crit">1</b><span class="s">to ask the maison</span></div>' +
-            '<div class="kpi"><b>112</b><span class="s">bookings unchanged</span></div>' +
-          '</div>' +
-          '<div class="sec">' + CH.map(function (c) {
-            return '<div class="line"><div class="l"><span class="t"><span class="code">' + c[0] + '</span><span>' + c[1] + '</span></span><span class="s">' + c[2] + '</span></div>' + (done ? st("ok", "Applied") : st(c[3], c[3] === "crit" ? "Critical" : c[3] === "warn" ? "Affects the fleet" : "Updated")) + '</div>';
-          }).join("") +
-            '<div class="line"><div class="l"><span class="t"><span class="code">ES01</span><span>Departure, day 4: no flight time</span></span><span class="s">Row 48 of the file. Nothing is guessed</span></div>' + st("crit", done ? "Sent back to the maison" : "To ask the maison") + '</div>' +
-          '</div>' +
-          (done ? '<p class="note ok fade">Five changes applied, one question sent to the maison. The 112 other bookings were not touched.</p>'
-                : '<div><button class="btn primary" id="impBtn">Apply the five changes</button></div>');
+        $$("[data-reply]").forEach(function (b) { b.onclick = function () { if (S.p === 2) S.late = b.getAttribute("data-reply") === "late"; S.p++; S.fresh = true; render(); }; });
+        var a = $("#again"); if (a) a.onclick = resetRide;
+        var c = $("#chat"); if (c) c.scrollTop = c.scrollHeight;
+      } },
+    { id: "coordinator", name: "The coordinator", bg: "agency-desk",
+      story: function () {
+        return '<p class="eyebrow">The coordinator ' + CODESIGN + '</p>' +
+          '<h1>One tap from the driver, and the car is on <em>your</em> map.</h1>' +
+          '<p class="lede">Every answer is logged in Ellie. Nobody calls a driver at the wheel.</p>' +
+          '<p class="rule">Cars only, during the ride. A guest is never located.</p>';
       },
-      wire: function () { var b = $("#impBtn"); if (b) b.onclick = function () { S.imp = 1; render(); }; }
-    },
-    {
-      id: "checklist", p: "ploy", mod: "create", status: "today", who: "<b>Ploy</b>, airport host",
-      title: "Each person sees what they have to do today, and nothing else.",
-      lede: "The itinerary writes the check-list, with an owner and a time for every task.",
-      before: "The run sheet lives in the event manager's head and in forty WhatsApp groups.",
-      after: "Tomorrow is ready tonight. A new person knows what to do in five minutes.",
-      impact: { hours: 5, messages: 30, calls: 10, caught: 2 }, where: "Orchestration · To do · Day 1",
-      notes: { live: "Orchestration, To do view: filter Transport, Hotel or Concierge, tick a task.", ask: "Who writes tomorrow's run sheet today, and at what time of night?" },
       screen: function () {
-        var TASKS = [
-          ["m1", "morning", "Transport", "Check the flight status", "TH01, TG 102", "11:00", true],
-          ["m2", "morning", "Transport", "Meet & greet agent in place", "SG01, lands 09:10", "08:40", true],
-          ["m3", "morning", "Hotel", "Confirm the room with the hotel", "HK01, Lumière Bangkok", "11:30"],
-          ["m4", "morning", "Concierge", "Send the dietary requirements to the restaurant", "TH01, dinner 20:00", "12:00"],
-          ["a1", "afternoon", "Transport", "Print the signage", "HK01, KR01", "14:00"],
-          ["a2", "afternoon", "Transport", "Brief the driver", "S-01, HK01 16:10", "15:00"],
-          ["a3", "afternoon", "Hotel", "Prepare the room and the welcome", "TH01, Riverside Suites", "15:30"],
-          ["a4", "afternoon", "Concierge", "Reconfirm the booking", "Dinner 20:00, 6 covers", "16:00"],
-          ["e1", "evening", "Transport", "Assign a vehicle", "Day 2, temple visit 09:30", "19:00"],
-          ["e2", "evening", "Concierge", "Confirm the guide and the language", "Day 2, Mandarin guide", "19:00"],
-          ["e3", "evening", "Concierge", "Collect the main-course choice", "Gala, Day 3, 4 missing", "20:00"]
-        ];
-        var shown = TASKS.filter(function (t) { return S.owner === "all" || t[2] === S.owner; });
-        var done = shown.filter(function (t) { return S.tasksDone[t[0]]; }).length;
-        var late = shown.filter(function (t) { return t[6] && !S.tasksDone[t[0]]; }).length;
-        var block = function (k, label) {
-          var list = shown.filter(function (t) { return t[1] === k; });
-          if (!list.length) return "";
-          return '<div class="sec"><div class="label">' + label + '</div>' + list.map(function (t) {
-            var d = !!S.tasksDone[t[0]];
-            return '<label class="task' + (d ? " done" : "") + '"><input type="checkbox" data-task="' + t[0] + '"' + (d ? " checked" : "") + '><span><span class="tt">' + t[3] + '</span><br><span class="s">' + t[4] + '</span></span><span class="meta">' + (S.owner === "all" ? t[2] + ', ' : '') + (t[6] && !d ? '<span class="crit">late, due ' + t[5] + '</span>' : '<span class="tn">' + t[5] + '</span>') + '</span></label>';
-          }).join("") + '</div>';
-        };
-        return '' +
-          '<div class="tabs">' + ["all", "Transport", "Hotel", "Concierge"].map(function (o) { var n = TASKS.filter(function (t) { return o === "all" || t[2] === o; }).length; return '<button data-owner="' + o + '" aria-pressed="' + (S.owner === o) + '">' + (o === "all" ? "Everyone" : o) + '<span class="c">' + n + '</span></button>'; }).join("") + '</div>' +
-          '<p class="sum">' + done + ' of ' + shown.length + ' done · ' + (late ? '<span class="crit">' + late + ' late</span>' : '<span class="ok">nothing late</span>') + '</p>' +
-          block("morning", "This morning") + block("afternoon", "This afternoon") + block("evening", "Before you leave");
-      },
-      wire: function () {
-        $$("[data-owner]").forEach(function (b) { b.onclick = function () { S.owner = b.getAttribute("data-owner"); render(); }; });
-        $$("[data-task]").forEach(function (c) { c.onchange = function () { S.tasksDone[c.getAttribute("data-task")] = c.checked; render(); }; });
-      }
-    },
-    {
-      id: "fleet", p: "arun", mod: "create", status: "today", who: "<b>Arun</b>, transport coordinator",
-      title: "Every car, every transfer, every conflict, before the day.",
-      lede: "Each transfer finds its car. Ellie warns on an overlap, a car too small, or a car already promised elsewhere. It warns, it never blocks.",
-      before: "A whiteboard and the phone. The double booking shows up at the airport.",
-      after: "Conflicts show days before. Who is free at 16:00 answers in a second.",
-      impact: { hours: 6, messages: 40, calls: 25, caught: 4 }, where: "Fleet · Day 1",
-      notes: { live: "Orchestration, Transportation tab, Fleet view: type a time in Who's free at, open a car to see its timeline and the transfers without a car, then Assign. Show a warning (overlap, capacity, another event).", ask: "How many cars on a big event? Your own fleet or subcontracted? Where do double bookings happen today?" },
-      screen: function () {
-        var T = S.transfers;
-        var unassigned = T.filter(function (t) { return !t.car; });
-        var onMission = CARS.filter(function (c) { return T.some(function (t) { return t.car === c.code; }); }).length;
-        var hours = []; for (var h = H0; h <= H1; h += 2) hours.push(h);
-        var nowH = +S.freeAt.split(":")[0], nowOnTick = S.freeAt.split(":")[1] === "00" && nowH % 2 === 0;
-        var freeList = CARS.filter(function (c) {
-          var m = toMin(S.freeAt);
-          return m >= toMin(c.win[0]) && m < toMin(c.win[1]) && !T.some(function (t) { return t.car === c.code && m >= toMin(t.a) && m < toMin(t.b); });
-        });
-        // transfers without a car get their own row, stacked when their labels would collide
-        var lanes = [], laneOf = {};
-        unassigned.forEach(function (t) { var a = toMin(t.a), e = Math.max(toMin(t.b), a + 110), k = 0; while (lanes[k] !== undefined && lanes[k] > a) k++; lanes[k] = e; laneOf[t.id] = k; });
-        var blk = function (t, cls, lane) { return '<span class="g-blk' + cls + '" style="left:' + pct(t.a) + '%;width:' + (pct(t.b) - pct(t.a)) + '%' + (lane ? ';top:calc(' + lane + ' * 1.95rem + .3rem)' : '') + '" title="' + t.party + ' ' + t.a + '">' + t.party + '</span>'; };
-        var html = '' +
-          '<p class="alert">' + (unassigned.length ? '<b class="crit">' + unassigned.length + (unassigned.length > 1 ? ' transfers' : ' transfer') + ' without a car</b>' : '<b class="ok">Every transfer has a car</b>') + '<span class="s">' + CARS.length + ' vehicles, ' + onMission + ' on mission</span></p>' +
-          '<div class="gantt" aria-label="Transport plan, day 1">' +
-            '<div class="g-head"><span></span><div class="g-hours">' + hours.filter(function (h) { return !(nowOnTick && h === nowH); }).map(function (h) { return '<span style="left:' + pct((h < 10 ? "0" : "") + h + ":00") + '%">' + h + '</span>'; }).join("") + '<span class="g-nowlab" style="left:' + pct(S.freeAt) + '%">' + S.freeAt + '</span></div></div>' +
-            (unassigned.length ? '<div class="g-row nocar"><div class="g-lab">No car</div><div class="g-track" style="height:calc(' + lanes.length + ' * 1.95rem + .35rem)">' + unassigned.map(function (t) { return blk(t, " none", laneOf[t.id]); }).join("") + '<span class="g-now" style="left:' + pct(S.freeAt) + '%"></span></div></div>' : '') +
-            CARS.map(function (c) {
-              return '<div class="g-row"><div class="g-lab"><span class="t tn">' + c.code + '</span> <span class="s">' + c.cat + '</span></div><div class="g-track">' +
-                '<span class="g-win" style="left:' + pct(c.win[0]) + '%;width:' + (pct(c.win[1]) - pct(c.win[0])) + '%"></span>' +
-                (c.other ? '<span class="g-other" style="left:' + pct(c.other[0]) + '%;width:' + (pct(c.other[1]) - pct(c.other[0])) + '%" title="Promised to another event"></span>' : '') +
-                T.filter(function (t) { return t.car === c.code; }).map(function (t) {
-                  var bad = warningsFor(c, t, T).length > 0, isNew = S.lastAssign && S.lastAssign.id === t.id;
-                  return blk(t, (t.vip ? " vip" : "") + (isNew ? " new" : "") + (bad ? " bad" : ""), 0);
-                }).join("") +
-                '<span class="g-now" style="left:' + pct(S.freeAt) + '%"></span>' +
-              '</div></div>';
-            }).join("") +
-          '</div>' +
-          '<div class="legend"><span><i style="background:var(--win-bg);outline:1px solid var(--line-strong)"></i>In service</span><span><i style="background:var(--vip-bg);outline:1px solid var(--accent)"></i>VVIP</span><span><i style="background:repeating-linear-gradient(135deg, var(--crit) 0 2px, transparent 2px 5px)"></i>Promised to another event</span></div>' +
-          '<div class="cols2">' +
-            '<div class="sec"><div class="label">Without a car</div>' +
-              (unassigned.length ? unassigned.map(function (t) { return '<div class="line' + (S.pick === t.id ? ' sel' : '') + '"><div class="l"><span class="t"><span class="code">' + t.party + '</span><span class="tn">' + t.a + '</span><span>' + t.pax + ' pax</span></span><span class="s">' + t.what + '</span></div><button class="link strong" data-pick="' + t.id + '">Assign</button></div>'; }).join("") : '<div class="line"><span class="ok">Every transfer today has a car.</span></div>') +
-            '</div>' +
-            '<div class="sec"><div class="label">Who is free at <span class="stepper"><button data-step="-30" aria-label="Thirty minutes earlier">−</button><b id="freeAt">' + S.freeAt + '</b><button data-step="30" aria-label="Thirty minutes later">+</button></span></div>' +
-              (freeList.length ? freeList.map(function (c) { return '<div class="line"><span class="t"><span class="tn">' + c.code + '</span><span>' + c.driver + '</span></span><span class="s">' + c.cat + ', ' + c.seats + ' seats</span></div>'; }).join("") : '<div class="line"><span class="s">No vehicle is free at ' + S.freeAt + '.</span></div>') +
-            '</div>' +
-          '</div>';
-        if (S.pick) {
-          var tr = T.filter(function (t) { return t.id === S.pick; })[0];
-          html += '<div class="sec fade" id="assignSheet"><div class="label">Assign a vehicle to ' + tr.party + ', ' + tr.a + ', ' + tr.pax + ' pax</div>' +
-            CARS.map(function (c) {
-              var w = warningsFor(c, tr, T);
-              return '<div class="line"><div class="l"><span class="t"><span class="tn">' + c.code + '</span><span>' + c.cat + ', ' + c.seats + ' seats</span></span>' + (w.length ? w.map(function (x) { return '<span class="s warn">' + x + '</span>'; }).join("") : '<span class="s ok">Free, fits the party</span>') + '</div><button class="link' + (w.length ? '' : ' strong') + '" data-car="' + c.code + '">Assign</button></div>';
-            }).join("") + '</div>';
-        }
-        if (S.lastAssign) {
-          var la = S.lastAssign;
-          html += la.w.length
-            ? '<p class="note warn fade">' + la.car + ' assigned to ' + la.party + ' anyway. The warning stays on the plan: ' + la.w.join("; ").toLowerCase() + '.</p>'
-            : '<p class="note ok fade">' + la.car + ' assigned to ' + la.party + ' at ' + la.a + '. Signage and driver brief added to the check-list.</p>';
-        }
-        return html;
-      },
-      wire: function () {
-        $$("[data-pick]").forEach(function (b) { b.onclick = function () { S.pick = b.getAttribute("data-pick"); S.lastAssign = null; render(); var a = $("#assignSheet"); if (a) a.scrollIntoView({ block: "nearest" }); }; });
-        $$("[data-car]").forEach(function (b) { b.onclick = function () {
-          var tr = S.transfers.filter(function (t) { return t.id === S.pick; })[0];
-          var car = CARS.filter(function (c) { return c.code === b.getAttribute("data-car"); })[0];
-          var w = warningsFor(car, tr, S.transfers);
-          tr.car = car.code; S.lastAssign = { id: tr.id, car: car.code, party: tr.party, a: tr.a, w: w }; S.pick = null; render();
-        }; });
-        $$("[data-step]").forEach(function (b) { b.onclick = function () {
-          var m = Math.max(6 * 60, Math.min(23 * 60 + 30, toMin(S.freeAt) + (+b.getAttribute("data-step"))));
-          S.freeAt = ("0" + Math.floor(m / 60)).slice(-2) + ":" + ("0" + (m % 60)).slice(-2); render();
-        }; });
-      }
-    },
-    {
-      id: "driver", p: "somchai", mod: "orchestrate", status: "soon", who: "<b>Somchai</b>, driver, S-01",
-      title: "Your drivers get their ride. Arun sees every car.",
-      lede: "A status is one tap. With location on, a late car is seen before anyone has to call.",
-      privacy: "Location is the driver's choice, during rides only, seen by the coordinator only, deleted after the event.",
-      before: "The coordinator calls every driver, often while they drive.",
-      after: "Every car on one map. Nobody calls a driver at the wheel.",
-      impact: { hours: 2, messages: 25, calls: 40, caught: 2 }, where: "Somchai's phone · Arun's live map",
-      notes: { say: "Turn on location on Somchai's phone first, then press the 15:55 button: Ellie sees the traffic jam on the map, warns Arun and the airport host, and nobody calls the driver.", ask: "Do your drivers share their location today, with which app? Would they accept it during their rides only?" },
-      screen: function () {
-        var ST = ["On my way", "At arrivals", "Guest met", "Dropped off"];
-        var stuck = S.drvAlert >= 1 && S.drv === 0;
-        var msgs = ['<div class="bub"><span class="w">Ellie · 14:35 · in Thai</span>Next ride <b>16:10</b>, BKK arrivals, party <b>HK01</b>, sign <b>ELLIE 12</b>.</div>'];
-        if (S.loc) msgs.push('<div class="bub fade"><span class="w">Ellie · 14:36</span>Location on until 23:00. Only Arun sees it.</div>');
-        if (stuck && S.loc) msgs.push('<div class="bub fade"><span class="w">Ellie · 15:56</span>Arun can see the traffic. No need to call, drive safely.</div>');
-        if (stuck && !S.loc) msgs.push('<div class="bub fade"><span class="w">Ellie · 15:55</span>No status yet for HK01. Are you on your way?</div>');
-        if (S.drvAlert >= 2 && !S.loc && S.drv === 0) msgs.push('<div class="bub fade"><span class="w">Ellie · 16:00</span>Calling you now, in Thai.</div>', '<div class="bub me fade"><span class="w">Somchai · by voice</span>"Stuck on the expressway, ten minutes."</div>');
-        if (S.drvNight) msgs.push('<div class="bub fade"><span class="w">Ellie · 23:10</span>Six rides today, and HK01 asked for you again. Thank you. Location is off. Tomorrow, 09:30.</div>');
-        var s01 = S.drv >= 4 ? st("ok", "Dropped off") : S.drv >= 1 ? st("warn", ST[S.drv - 1]) : stuck ? (S.loc ? st("crit", "8 min late, seen on the map") : (S.drvAlert >= 2 ? st("warn", "10 min late, told by voice") : st("crit", "No status"))) : st("", "To do");
-        var TIME = S.drvNight ? "23:10" : S.drv >= 4 ? "17:05" : S.drv === 3 ? "16:25" : S.drv === 2 ? "16:12" : S.drv === 1 ? "16:02" : stuck ? (S.drvAlert >= 2 ? "16:00" : "15:56") : S.loc ? "14:36" : "14:35";
-        var ETA = !S.loc ? ["", "location off"] : S.drv >= 4 ? ["ok", "Dropped off"] : S.drv === 3 ? ["", "HK01 aboard, 40 min"] : S.drv === 2 ? ["", "At arrivals"] : S.drv === 1 ? ["", "At BKK in 3 min"] : stuck ? ["crit", "8 min late, traffic"] : ["", "At BKK 15:58"];
+        var r = rideState(), p = S.p, on = p >= 2 && p < 5;
         var map = mapView({
-          vb: [0, -15, 600, 300], time: TIME, route: "rExp", jam: stuck && S.loc,
-          aria: "Live map of the cars between the hotels and BKK airport",
-          cars: [{ id: "cS02", lab: "S-02" }, { id: "cV01", lab: "V-01" }, { id: "cV02", lab: "V-02" },
-            { id: "cS01", main: true, fill: !S.loc ? "var(--muted)" : stuck ? "var(--crit)" : "var(--accent)", halo: S.loc,
-              lab: '<b>S-01</b> Somchai<span class="eta ' + ETA[0] + '">' + ETA[1] + '</span>' }]
+          time: r.time, jam: p === 3 && S.late,
+          cars: [{ id: "cS02", lab: "S-02" }, { id: "cV01", lab: "V-01" }, { id: "cV02", lab: "V-02" }].concat(on ? [
+            { id: "cS01", main: true, halo: true, fill: (p === 3 && S.late) ? "var(--alert)" : "var(--gold)",
+              lab: '<b>S-01</b><span class="eta ' + r.eta[0] + '">' + r.eta[1] + '</span>' }] : [])
         });
-        var alert = '';
-        if (stuck && S.loc) {
-          alert = S.choice === "keep" ? '<p class="note ok fade">S-01 keeps HK01, about 8 minutes late. Ploy holds the guests in the lounge.</p>'
-            : S.choice === "swap" ? '<p class="note ok fade">V-01 takes HK01 in 4 minutes. Somchai is told when he stops, not while he drives.</p>'
-            : '<p class="note crit fade">No status for HK01, but the map shows S-01 in traffic: about 8 minutes late. Ploy, the airport host, has been told.</p><div class="acts"><button class="btn sm" data-choice="keep">Keep S-01</button><button class="btn sm primary" data-choice="swap">Send V-01, 4 min away</button></div>';
-        }
-        return '' +
-          '<div class="duo">' +
-            '<div class="phone" aria-label="Somchai\'s phone">' +
-              '<div class="share"><span>Share my location during my rides</span><button class="sw" id="locBtn" role="switch" aria-checked="' + S.loc + '" aria-label="Share my location during my rides"></button></div>' +
-              msgs.join("") +
-              '<div class="stat">' + ST.map(function (x, i) { return '<button data-st="' + (i + 1) + '" aria-pressed="' + (S.drv >= i + 1) + '">' + x + '</button>'; }).join("") + '</div>' +
-            '</div>' +
-            '<div class="side">' + map + alert +
-              '<div class="sec"><div class="line"><div class="l"><span class="t"><span class="code">HK01</span><span class="tn">16:10</span><span>S-01, Somchai</span></span><span class="s">BKK → Lumière Bangkok</span></div>' + s01 + '</div>' +
-              '<div class="line"><div class="l"><span class="t"><span class="code">KR01</span><span class="tn">16:00</span><span>V-02, Anan</span></span><span class="s">BKK → Lumière Bangkok</span></div>' + st("ok", "Guest met") + '</div></div>' +
-              '<div class="acts">' +
-                (S.drvAlert < (S.loc ? 1 : 2) && S.drv === 0 ? '<button class="link" id="drvAlert">' + (S.drvAlert === 0 ? "15:55, still no status" : "Five minutes later") + '</button>' : '') +
-                (!S.drvNight ? '<button class="link" id="drvNight">End of the day</button>' : '') +
-              '</div>' +
-            '</div>' +
-          '</div>';
+        return '<div class="win">' +
+          '<div class="win-bar"><span class="n">' + LOGO + '<span>Transport, live</span></span><span class="who"><img src="assets/img/team/arun.webp" alt=""><span>Arun, coordinator</span></span></div>' +
+          map +
+          '<div class="under">' +
+            '<div class="ride"><img src="assets/img/team/somchai.webp" alt=""><span class="l1"><span class="code">HK01</span>S-01, Khun Somchai</span>' +
+              '<span class="l2">BKK to Lumière Bangkok</span><span class="l2"><span class="st ' + r.st[0] + '">' + r.st[1] + '</span></span></div>' +
+            '<ol class="log"><li class="k">Logged from WhatsApp</li>' + r.log.map(function (l) { return '<li' + (l[2] ? ' class="' + l[2] + '"' : '') + '><span>' + l[0] + '</span><span>' + l[1] + '</span></li>'; }).join("") + '</ol>' +
+          '</div>' +
+          '<div class="acts">' + (p < 5 ? '<button class="textbtn" id="adv">Next answer from the driver</button>' : '<button class="textbtn" id="again">Start the ride again</button>') +
+            '<span>' + (p < 2 ? "The car shows once the driver opens the link." : p < 5 ? "Position from a web link, this ride only." : "The link is closed. The car is no longer followed.") + '</span></div>' +
+        '</div>';
       },
       wire: function () {
-        $$("[data-st]").forEach(function (b) { b.onclick = function () { S.drv = +b.getAttribute("data-st"); render(); }; });
-        $$("[data-choice]").forEach(function (b) { b.onclick = function () { S.choice = b.getAttribute("data-choice"); render(); }; });
-        var l = $("#locBtn"); if (l) l.onclick = function () { S.loc = !S.loc; render(); };
-        var a = $("#drvAlert"); if (a) a.onclick = function () { S.drvAlert++; render(); };
-        var n = $("#drvNight"); if (n) n.onclick = function () { S.drvNight = true; render(); };
-        var stuck = S.drvAlert >= 1 && S.drv === 0;
+        var a = $("#adv"); if (a) a.onclick = function () { S.p++; S.fresh = true; render(); };
+        var g = $("#again"); if (g) g.onclick = resetRide;
+        var p = S.p;
         liveMap({
-          vb: [0, -15, 600, 300],
           amb: [{ id: "cV02", path: "rExp", f: .9, v: -1 / 90, flip: true }, { id: "cS02", path: "rRiv", f: .55, v: 1 / 70 }, { id: "cV01", path: "rV01", f: .35, v: 1 / 80 }],
-          main: !S.loc ? { id: "cS01", path: "rExp", to: .35, drift: 0, route: "none", off: true }
-            : S.drv >= 4 ? { id: "cS01", path: "rExp", to: 0, drift: 0, flip: true, route: "none" }
-            : S.drv === 3 ? { id: "cS01", path: "rExp", to: .97, drift: -.25, flip: true, route: "behind" }
-            : S.drv === 2 ? { id: "cS01", path: "rExp", to: 1, drift: 0, route: "none" }
-            : S.drv === 1 ? { id: "cS01", path: "rExp", to: .86, drift: .1, route: "ahead" }
-            : stuck ? { id: "cS01", path: "rExp", to: .6, drift: .025, route: "ahead" }
-            : { id: "cS01", path: "rExp", to: .33, drift: .12, route: "ahead" },
+          main: p < 2 || p === 5 ? { id: "cS01", path: "rExp", to: .02, drift: 0, route: "none", off: true }
+            : p === 2 ? { id: "cS01", path: "rExp", to: .33, drift: .12, route: "ahead" }
+            : p === 3 ? (S.late ? { id: "cS01", path: "rExp", to: .6, drift: .025, route: "ahead" } : { id: "cS01", path: "rExp", to: 1, drift: 0, route: "none" })
+            : { id: "cS01", path: "rExp", to: .9, drift: -.3, flip: true, route: "behind" },
           jam: [.5, .68]
         });
-      }
-    },
-    {
-      id: "arrivals", p: "nok", mod: "orchestrate", status: "today", who: "<b>Nok</b>, event manager",
-      title: "The morning starts with what needs attention.",
-      lede: "One day at a time, problems first: VVIP arrivals, a bottleneck at the airport, a party nobody meets.",
-      before: "Problems are found when a guest is already waiting at arrivals.",
-      after: "At 08:00 the team sees the 15:00 bottleneck and adds a host.",
-      impact: { hours: 3, messages: 20, calls: 15, caught: 3 }, where: "Orchestration · Day 1 · Transportation",
-      notes: { live: "Orchestration, Day 1: the Points of attention (critical dietary, VVIP arrivals, no meet and greet), then the Kanban view. Drag a card; blocking asks for a reason.", ask: "What went wrong at arrivals in Bangkok last time? Where did your team lose time?" },
-      screen: function () {
-        var SIG = [
-          { k: "vvip", label: "VVIP arrivals", tone: "warn", items: [["TH01", "Lands 14:20, TG 102"], ["HK01", "Lands 15:40, CX 705"], ["AE01", "Lands 19:35, EK 372, party of 4"]] },
-          { k: "bottle", label: "Arrival bottleneck", tone: "crit", items: [["BKK", "14:20 to 16:00, three parties land, one host at arrivals"]] },
-          { k: "mg", label: "No meet & greet", tone: "crit", items: [["KR01", "Lands 15:30, KE 651, no host assigned"]] },
-          { k: "time", label: "Transfer without a time", tone: "crit", items: [["ES01", "Departure, Day 4, flight time missing"]] }
-        ];
-        var shown = SIG.filter(function (s) { return S.signal === "all" || s.k === S.signal; });
-        var cols = ["blocked", "todo", "progress", "confirmed"];
-        var next = { todo: "progress", progress: "confirmed" };
-        var REASONS = ["No car for a party of 4", "No host at arrivals", "Waiting for the flight time"];
-        return '' +
-          '<div class="tabs">' + [{ k: "all", label: "Points of attention", n: 6 }].concat(SIG.map(function (s) { return { k: s.k, label: s.label, n: s.items.length }; })).map(function (s) { return '<button data-sig="' + s.k + '" aria-pressed="' + (S.signal === s.k) + '">' + s.label + '<span class="c">' + s.n + '</span></button>'; }).join("") + '</div>' +
-          '<div class="sec">' + shown.map(function (s) { return s.items.map(function (it) { return '<div class="line fade"><div class="l"><span class="code">' + it[0] + '</span><span class="s">' + it[1] + '</span></div>' + st(s.tone, s.label) + '</div>'; }).join(""); }).join("") + '</div>' +
-          '<div class="kan">' + cols.map(function (c) {
-            var parties = Object.keys(S.cards).filter(function (p) { return S.cards[p] === c; });
-            return '<div class="sec"><div class="label">' + STATUS[c][1] + ' <span class="tn">' + parties.length + '</span></div>' + parties.map(function (p) {
-              var acts = '';
-              if (next[c]) acts += '<button class="link" data-next="' + p + '">' + (c === "todo" ? "Start" : "Confirm") + '</button>';
-              if (c === "todo" || c === "progress") acts += '<button class="link" data-block="' + p + '">Block</button>';
-              if (c === "blocked") acts += '<button class="link" data-unblock="' + p + '">Unblock</button>';
-              return '<div class="kcard' + (c === "blocked" ? " blocked" : "") + '"><span class="code">' + p + '</span><span class="s">' + (S.reasons[p] && c === "blocked" ? S.reasons[p] : "Arrival transfer") + '</span>' + (acts ? '<div class="acts">' + acts + '</div>' : '') +
-                (S.blocking === p ? '<span class="s">Why is it blocked?</span><div class="acts">' + REASONS.map(function (r, i) { return '<button class="link" data-reason="' + i + '">' + r + '</button>'; }).join("") + '</div>' : '') + '</div>';
-            }).join("") + '</div>';
-          }).join("") + '</div>';
+      } },
+    { id: "everyone", name: "Everyone else", bg: "dinner-table",
+      story: function () {
+        return '<p class="eyebrow">Everyone else ' + CODESIGN + '</p>' +
+          '<h1>Two teams work in Ellie. Everyone else is simply <em>told</em>.</h1>' +
+          '<p class="lede">Hosts, hotels and restaurants receive one message at the right moment, and answer it with one tap.</p>' +
+          '<p class="rule">Your team and your suppliers work with codes. The name stays with the maison.</p>';
       },
-      wire: function () {
-        var REASONS = ["No car for a party of 4", "No host at arrivals", "Waiting for the flight time"];
-        var next = { todo: "progress", progress: "confirmed" };
-        $$("[data-sig]").forEach(function (b) { b.onclick = function () { S.signal = b.getAttribute("data-sig"); render(); }; });
-        $$("[data-next]").forEach(function (b) { b.onclick = function () { var p = b.getAttribute("data-next"); S.cards[p] = next[S.cards[p]]; S.blocking = null; render(); }; });
-        $$("[data-block]").forEach(function (b) { b.onclick = function () { S.blocking = b.getAttribute("data-block"); render(); }; });
-        $$("[data-reason]").forEach(function (b) { b.onclick = function () { S.reasons[S.blocking] = REASONS[+b.getAttribute("data-reason")]; S.cards[S.blocking] = "blocked"; S.blocking = null; render(); }; });
-        $$("[data-unblock]").forEach(function (b) { b.onclick = function () { S.cards[b.getAttribute("data-unblock")] = "todo"; render(); }; });
-      }
-    },
-    {
-      id: "delay", p: "arun", mod: "orchestrate", status: "soon", who: "<b>Arun</b>, transport coordinator",
-      title: "TG 102 lands two hours late. Everyone knows in a minute.",
-      lede: "Ellie proposes the new pick-up and a free car, and tells each person what changes for them. A person approves.",
-      before: "Twelve calls in twenty minutes, and the restaurant hears about it last.",
-      after: "One approval. The board shows who confirmed.",
-      impact: { hours: 1, messages: 15, calls: 12, caught: 1 }, where: "Orchestration · Day 1 · Flight change",
-      notes: { ask: "How do you hear about a flight change today? Who calls whom, and how long until everyone knows?" },
       screen: function () {
-        var s = S.delay, conf = s === 0 ? 0 : s === 1 ? 6 : 9;
-        var prop = [["Transport", "Pick-up moves to 16:50", "30 minutes after landing"], ["Fleet", "V-01 takes the new pick-up", "Free at 16:50, six seats, Kiet at the wheel"], ["Hotel", "Late check-in at 17:45", "Room and welcome kept"], ["Concierge", "Dinner moves to 21:00", "Allergy note sent again"], ["Cost", "One more hour of V-01, USD 45", "On TH01's line, Thailand market. In co-design"]];
-        var told = [["Kiet, V-01", "New pick-up 16:50", true], ["Niran, S-02", "TH01 removed, back on the 21:00 dinner run", true], ["Ploy, airport host", "Meet TH01 at 16:20", true], ["Riverside Suites", "Late check-in 17:45", s > 1], ["Restaurant", "Dinner 21:00, allergy note", s > 1], ["The maison", "New times for TH01", true]];
-        return '' +
-          '<p class="note crit">13:05. TG 102 now lands at 16:20 instead of 14:20, with party TH01, VVIP.</p>' +
-          (s === 0 ? '<div class="sec"><div class="label">What Ellie proposes</div>' + prop.map(function (r) { return '<div class="prow"><span class="s">' + r[0] + '</span><span class="l"><span class="t">' + r[1] + '</span><br><span class="s">' + r[2] + '</span></span></div>'; }).join("") + '</div>' +
-            '<div><button class="btn primary" id="delayBtn">Approve and tell everyone</button></div>'
-          : '<div class="sec fade"><div class="label">Approved by Arun at 13:07 · who was told</div>' + told.map(function (r) { return '<div class="prow"><span class="l"><span class="t">' + r[0] + '</span></span><span class="s">' + r[1] + '</span>' + (r[2] ? st("ok", "Confirmed") : st("warn", "Called again")) + '</div>'; }).join("") + '</div>' +
-            '<div class="sec"><div class="label">Confirmations <span class="tn">' + conf + ' of 9</span></div><div class="progress"><i style="width:' + Math.round(conf / 9 * 100) + '%"></i></div></div>' +
-            (s === 1 ? '<div><button class="btn" id="delayBtn">Ten minutes later</button></div>' : '<p class="note ok fade">Everyone confirmed in twelve minutes. Arun made no call.</p>'));
+        var r = ROLES.filter(function (x) { return x[0] === S.role; })[0];
+        return '<div class="where">' +
+          '<div class="box gold"><h2>In Ellie</h2>' +
+            '<div class="p"><b>The maison</b><span>Its client experience team. Sees the guests by name.</span></div>' +
+            '<div class="p"><b>' + (DMC ? esc(DMC) : 'Your agency') + '</b><span>Coordinators and event managers. See codes.</span></div></div>' +
+          '<div class="box"><h2>On WhatsApp</h2>' +
+            '<div class="pills" role="group" aria-label="Who receives a message">' + ROLES.map(function (x) { return '<button class="pill" data-role="' + x[0] + '" aria-pressed="' + (x[0] === S.role) + '">' + x[1] + '</button>'; }).join("") + '</div>' +
+            '<div class="msg fade"><div class="bub">' + r[2] + '<span class="t">Ellie</span></div><div class="bub me ans">' + r[3] + '<span class="t">One tap</span></div></div>' +
+            '<p class="note">' + r[4] + '</p></div>' +
+        '</div>';
       },
-      wire: function () { var b = $("#delayBtn"); if (b) b.onclick = function () { S.delay++; render(); }; }
-    },
-    {
-      id: "review", p: "mai", mod: "analyse", status: "soon", who: "<b>Mai</b>, accounts",
-      title: "After the event, the review writes itself.",
-      lede: "Every transfer and change was recorded as it happened. Costs land per guest and per market.",
-      before: "A week rebuilding what happened. The recharge leaves a month later.",
-      after: "A debrief with the maison the next morning, with facts.",
-      impact: { hours: 16, messages: 10, calls: 5, caught: 0 }, where: "Analyse · Private Viewing Bangkok",
-      notes: { ask: "What does the maison ask you after an event? How long does the recharge take today?" },
-      screen: function () {
-        var tabs = [["costs", "Costs"], ["transport", "Transport"], ["team", "Team"], ["feedback", 'Client feedback<span class="nx">later</span>']];
-        var body = "";
-        if (S.tab === "transport") {
-          var arr = [["06", 2], ["08", 1], ["09", 3], ["11", 1], ["14", 2], ["15", 5], ["19", 4]];
-          body = '<div class="kpis">' +
-            '<div class="kpi"><b>142</b><span class="s">transfers over four days</span></div>' +
-            '<div class="kpi"><b>97 %</b><span class="s">on time, longest delay 12 min</span></div>' +
-            '<div class="kpi"><b>6 min</b><span class="s">from landing to the car</span></div>' +
-            '<div class="kpi"><b>38</b><span class="s">changes handled, 11 flights</span></div>' +
-          '</div>' +
-          '<div class="sec"><div class="label">Guests landing per hour, Day 1</div><div class="bars" style="padding-top:.7rem">' + arr.map(function (r) { return '<div class="bl"><span class="tn">' + r[0] + ':00</span><span class="tr"><span class="f' + (r[1] >= 5 ? " hot" : "") + '" style="width:' + (r[1] / 5 * 100) + '%"></span></span><span class="v tn">' + r[1] + ' pax</span></div>'; }).join("") + '</div></div>' +
-          '<div class="sec"><div class="label">Next time</div><div class="line"><span>A second host at BKK between 14:00 and 16:00.</span></div><div class="line"><span>A V-Class for any party of four with luggage.</span></div></div>';
-        } else if (S.tab === "feedback") {
-          body = '<div class="kpis">' +
-            '<div class="kpi"><b>4.7</b><span class="s">out of 5, from 24 of 30 guests, asked by their advisor</span></div>' +
-            '<div class="kpi"><b>3</b><span class="s">points raised by the maison</span></div>' +
-            '<div class="kpi"><b>2</b><span class="s">to change next time</span></div>' +
-          '</div>' +
-          '<div class="sec"><div class="label">What came back</div>' + [
-            ["Arrivals", "A guest from Hong Kong: \u201cThe driver already knew which water I drink.\u201d", "ok", "Praise"],
-            ["Hotel", "A guest from Thailand: the white flowers in her suite, as asked.", "ok", "Praise"],
-            ["Gala", "The maison: the seating changed late, the advisors heard at 18:00.", "warn", "To improve"],
-            ["Transport", "A party from the UAE: twelve minutes at the hotel before the temple visit.", "warn", "To improve"]
-          ].map(function (r) { return '<div class="prow"><span class="s">' + r[0] + '</span><span>' + r[1] + '</span>' + st(r[2], r[3]) + '</div>'; }).join("") + '</div>' +
-          '<p class="note soon">Later: each answer is tied to the guest, the service and the person on duty, and goes back to the maison only.</p>';
-        } else if (S.tab === "team") {
-          body = '<div class="tbl"><table><thead><tr><th class="label">Driver</th><th class="label num">Rides</th><th class="label num">Hours</th><th class="label num">Status on time</th></tr></thead><tbody>' +
-            [["Somchai, S-01", 21, 38, "100 %"], ["Niran, S-02", 18, 36, "94 %"], ["Kiet, V-01", 26, 44, "96 %"], ["Anan, V-02", 15, 29, "100 %"], ["Chai, E-01", 17, 31, "88 %"], ["Preecha, M-01", 12, 22, "100 %"]].map(function (r) { return '<tr><td>' + r[0] + '</td><td class="num">' + r[1] + '</td><td class="num">' + r[2] + '</td><td class="num">' + r[3] + '</td></tr>'; }).join("") +
-            '</tbody></table></div><p class="note ok">Twenty-two thank-you messages sent at the end of each day.</p>';
-        } else {
-          body = '<div class="tbl"><table><thead><tr><th class="label">Market</th><th class="label num">Guests</th><th class="label num">Transport</th><th class="label num">Dining</th><th class="label num">Activities</th><th class="label num">Total USD</th></tr></thead><tbody>' +
-            [["Thailand", 8, 4600, 5100, 3200], ["Hong Kong", 6, 3900, 3800, 2500], ["China", 7, 4300, 4100, 2900], ["UAE", 4, 3800, 2400, 1600], ["Others", 5, 1800, 1700, 1300]].map(function (m) { var t = m[2] + m[3] + m[4]; return '<tr><td>' + m[0] + '</td><td class="num">' + m[1] + '</td><td class="num">' + m[2].toLocaleString("en-US") + '</td><td class="num">' + m[3].toLocaleString("en-US") + '</td><td class="num">' + m[4].toLocaleString("en-US") + '</td><td class="num">' + t.toLocaleString("en-US") + '</td></tr>'; }).join("") +
-            '</tbody></table></div><p class="note ok">Every advance is already on a guest, a market and a service: the recharge is ready at close-out.</p>';
-        }
-        return '<div class="tabs">' + tabs.map(function (t) { return '<button data-tab="' + t[0] + '" aria-pressed="' + (S.tab === t[0]) + '">' + t[1] + '</button>'; }).join("") + '</div>' + body;
-      },
-      wire: function () { $$("[data-tab]").forEach(function (b) { b.onclick = function () { S.tab = b.getAttribute("data-tab"); render(); }; }); }
-    },
-    {
-      id: "asks", side: "dmc", mod: "analyse", status: null, who: "What a maison asks",
-      title: "Five questions a maison asks before choosing you.",
-      lede: "A client experience director asks every agency the same five questions before handing over her clients. Ellie gives you the proof for each.",
-      impact: null, where: "Your answer to a maison's brief",
-      notes: { say: "These are the questions a client experience director asks when she chooses an agency for her clients. Billing per market is where agencies lose maisons: one waited more than two months for the bill of a 300-guest event.", ask: "Which of these do you lose a brief on today?" },
-      screen: function () {
-        var Q = [
-          ["Similar events in the region: how many guests, how many days?", "Every event you run in Ellie stays on record: guests, days, markets, arrivals met on time.", "soon"],
-          ["How big is the team?", "Your team in Ellie, each person with a role on the event, from the event manager to the drivers.", "today"],
-          ["How do you keep us informed, before and during the event?", "The maison follows the same file: what is ready, what waits for her, every arrival and every change, without a call.", "today"],
-          ["How is billing done per market, in what form, and how fast?", "Each cost tied to a guest, a market and a service; the bill per market, with its detail, the week after.", "soon"],
-          ["What are your agency fees?", "Fees on their own line, per event, shown to the maison as they are.", "soon"]
-        ];
-        return '' +
-          '<div class="sec">' + Q.map(function (q) { return '<div class="prow wide"><span class="t">' + q[0] + '</span><span>' + q[1] + '</span>' + (q[2] === "today" ? st("ok", "In Ellie today") : st("soon", "In co-design")) + '</div>'; }).join("") + '</div>' +
-          '<p class="note ok">Ellie works for the agency in front of the maison: it shows how you run an event, not only what it costs.</p>';
-      }
-    },
-    {
-      id: "together", side: "dmc", mod: null, status: null, who: "Co-design",
-      title: "Start with transport. Build the rest with us.",
-      lede: "On a real event in January. Pick what your team would build first.",
-      impact: null, where: "Your priorities",
-      notes: { say: "Hand Max the screen: he taps the options himself, in his order. The top three become the agenda of the first workshop.", ask: "What is missing from this list?" },
-      screen: function () {
-        var OPTS = ["Live flight tracking and automatic re-timing", "Driver app with one-tap status, in Thai", "Live location of each car, shared by the driver", "Ellie calls a driver when a status is missing", "Incident protocols for the whole team", "Subcontracted cars and partner suppliers", "Transport review after each event", "Cost recharge per market"];
-        return '' +
-          '<div class="sec"><p class="pick-help">' + (S.picks.length ? S.picks.length + ' chosen. Keep going in your order, or tap one again to remove it.' : 'Tap them in your order: the first one you tap is number 1.') + '</p>' +
-            '<div class="opts" role="group" aria-label="Your priorities, in order">' + OPTS.map(function (o) { var r = S.picks.indexOf(o) + 1; return '<button class="opt" data-opt="' + esc(o) + '" aria-pressed="' + (r > 0) + '"><span class="rk" aria-hidden="true">' + (r || "+") + '</span><span>' + esc(o) + (r ? '<span class="sr">, priority ' + r + '</span>' : '') + '</span></button>'; }).join("") + '</div></div>' +
-          '<div class="cols2">' +
-            '<div class="sec"><div class="label">What you get</div><div class="line"><span>Ellie free for your team until your January event ends</span></div><div class="line"><span>Your priorities first on the roadmap</span></div><div class="line"><span>Our team on site for the first event</span></div></div>' +
-            '<div class="sec"><div class="label">What we ask</div><div class="line"><span>One lead person, about two hours a week</span></div><div class="line"><span>One real event in January, run on Ellie</span></div><div class="line"><span>Honest feedback, and a case study without names</span></div></div>' +
-          '</div>' +
-          '<p class="sum">Kick-off the week of 8 December · two workshops in December · the pilot event in January.' + (S.picks.length ? ' <button class="link" id="resetPicks">Clear the choices</button>' : '') + '</p>';
-      },
-      wire: function () {
-        $$("[data-opt]").forEach(function (b) { b.onclick = function () {
-          var o = b.getAttribute("data-opt"), i = S.picks.indexOf(o);
-          if (i >= 0) S.picks.splice(i, 1); else S.picks.push(o);
-          try { localStorage.setItem("ellie-dmc-picks", JSON.stringify(S.picks)); } catch (e) {}
-          render();
-        }; });
-        var r = $("#resetPicks"); if (r) r.onclick = function () { S.picks = []; try { localStorage.removeItem("ellie-dmc-picks"); } catch (e) {} render(); };
-      }
-    },
-
-    // ---------------------------------------------------------- the maison's side
-    {
-      id: "rundown", p: "claire", mod: "create", status: "today", who: "<b>Claire</b>, client experience director",
-      title: "Where the event stands, from the first bookings to the eve.",
-      lede: "Your agency books and prepares. You see where each part stands, and only what waits for you. Nothing to upload, nothing to chase.",
-      before: "A status call every week, and a spreadsheet out of date the day it is sent.",
-      after: "The event at a glance, whenever you want it. What waits for you comes first.",
-      impact: { hours: 6, messages: 35, calls: 6, caught: 3 }, where: "Event · Overview",
-      notes: { live: "Brand side, the event page: each module with its progress, and Needs your attention for what waits for the maison.", ask: "Three weeks before an event, how do you know where things stand?" },
-      screen: function () {
-        var k = S.mD;
-        var STG = ["3 weeks before", "1 week before", "The eve"];
-        var AREAS = [
-          ["Invitations", ["28 of 30 confirmed", "30 of 30 confirmed", "30 of 30 confirmed"], ["warn", "ok", "ok"]],
-          ["Flights", ["19 of 30 received", "28 of 30 received", "30 of 30, times checked"], ["warn", "warn", "ok"]],
-          ["Rooms", ["30 booked, 4 suites to confirm", "30 confirmed, rooming lists with the hotels", "30 ready, welcome gifts in place"], ["warn", "ok", "ok"]],
-          ["Cars", ["7 cars booked for the week", "11 arrivals planned, 2 without a car", "11 arrivals, each with a car and a host"], ["ok", "warn", "ok"]],
-          ["Dining", ["Welcome dinner booked, the gala table plan to approve", "Table plan approved, 1 main course to choose", "Every main course chosen, allergies with the kitchens"], ["warn", "warn", "ok"]],
-          ["Gifts", ["In production", "Delivered to the hotels", "In the suites before arrival"], ["", "ok", "ok"]]
-        ];
-        var WORD = { ok: "Ready", warn: "In progress", "": "Under way" };
-        var TONE = { ok: "ok", warn: "", "": "" };
-        var NEED = [["Approve the gala table plan", "Confirm two connecting suites for the Mansour family"], ["Choose Mrs Lau's main course, with her advisor"], []];
-        var READY = [62, 88, 100];
-        var MILES = [["Invitations closed", "D-21"], ["Rooming lists to the hotels", "D-10"], ["Run-through with the agency", "D-1, 18:00"], ["First arrivals", "Day 1, 09:30"]];
-        var DONE = [1, 2, 3];
-        return '' +
-          '<div class="tabs">' + STG.map(function (s, i) { return '<button data-md="' + i + '" aria-pressed="' + (k === i) + '">' + s + '</button>'; }).join("") + '</div>' +
-          '<p class="alert"><b' + (READY[k] === 100 ? ' class="ok"' : '') + '>' + READY[k] + ' % ready</b><span class="s">30 guests, 11 parties. First arrivals on Day 1 at 09:30.</span></p>' +
-          '<div class="progress"><i style="width:' + READY[k] + '%"></i></div>' +
-          '<div class="cols2">' +
-            '<div class="sec"><div class="label">Where each part stands</div>' + AREAS.map(function (a) { return '<div class="prow"><span class="s">' + a[0] + '</span><span>' + a[1][k] + '</span>' + st(TONE[a[2][k]], WORD[a[2][k]]) + '</div>'; }).join("") + '</div>' +
-            '<div class="sec"><div class="label">Waiting for you</div>' +
-              (NEED[k].length ? NEED[k].map(function (n) { return '<div class="line"><span>' + n + '</span>' + st("warn", "Your turn") + '</div>'; }).join("") : '<div class="line"><span>Nothing waits for you.</span>' + st("ok", "All set") + '</div>') +
-              '<div class="label" style="padding-top:1.1rem">Milestones</div>' +
-              MILES.map(function (m, i) { var d = i < DONE[k]; return '<div class="line"><div class="l"><span class="t">' + m[0] + '</span><span class="s">' + m[1] + '</span></div>' + st(d ? "ok" : "", d ? "Done" : "To come") + '</div>'; }).join("") +
-            '</div>' +
-          '</div>';
-      },
-      wire: function () { $$("[data-md]").forEach(function (b) { b.onclick = function () { S.mD = +b.getAttribute("data-md"); render(); }; }); }
-    },
-    {
-      id: "programme", p: "claire", mod: "create", status: "today", who: "<b>Claire</b>, client experience director",
-      title: "The programme, approved where it is described.",
-      lede: "The agency proposes each element: the venue, the dinners, the activities, the rooms, the gifts. You approve or comment on the item itself.",
-      before: "Forty e-mails and three versions of a deck to approve one dinner.",
-      after: "One decision on the item. Nothing is confirmed without the maison.",
-      impact: { hours: 6, messages: 40, calls: 8, caught: 1 }, where: "Event · Programme",
-      notes: { live: "Brand side, the event page: the items waiting for the maison are listed under Needs your attention. Open one to approve or comment.", ask: "How do you approve a programme today, and how many rounds does it take?" },
-      screen: function () {
-        var ITEMS = [["venue", "Venue", "Rooftop salon for the private viewing", "ok", "Approved"], ["dinner", "Dining", "Welcome dinner on the river terrace, three courses"], ["temple", "Activities", "Temple visit with a private guide"], ["rooms", "Rooms", "Riverside Suites, twelve rooms", "ok", "Confirmed"], ["gift", "Gifts", "Welcome gift, a silk scarf"]];
-        var n = 2 + ["dinner", "temple", "gift"].filter(function (k) { return S.mAppr[k] === "approved"; }).length;
-        var left = ["dinner", "temple", "gift"].filter(function (k) { return S.mAppr[k] === "proposed"; }).length;
-        return '' +
-          '<p class="alert"><b' + (left ? '' : ' class="ok"') + '>' + (left ? left + (left > 1 ? ' items wait' : ' item waits') + ' for you' : 'Nothing waits for you') + '</b><span class="s">' + n + ' of 5 approved</span></p>' +
-          '<div class="sec">' + ITEMS.map(function (it) {
-            var a = S.mAppr[it[0]], right;
-            if (it[3]) right = st(it[3], it[4]);
-            else if (a === "approved") right = st("ok", "Approved by you");
-            else if (a === "commented") right = st("warn", "Sent back to the agency");
-            else right = '<span class="acts">' + (it[0] === "gift" ? '<button class="link" data-comment="gift">Comment</button>' : '') + '<button class="link strong" data-appr="' + it[0] + '">Approve</button></span>';
-            return '<div class="prow"><span class="s">' + it[1] + '</span><span><span class="t">' + it[2] + '</span>' + (a === "commented" ? '<br><span class="s">Your comment: the colours of the house, not red.</span>' : '') + '</span>' + right + '</div>';
-          }).join("") + '</div>' +
-          (left ? '' : '<p class="note ok fade">The agency sees each decision on the item, at once.</p>');
-      },
-      wire: function () {
-        $$("[data-appr]").forEach(function (b) { b.onclick = function () { S.mAppr[b.getAttribute("data-appr")] = "approved"; render(); }; });
-        $$("[data-comment]").forEach(function (b) { b.onclick = function () { S.mAppr[b.getAttribute("data-comment")] = "commented"; render(); }; });
-      }
-    },
-    {
-      id: "follow", p: "claire", mod: "orchestrate", status: "today", who: "<b>Claire</b>, client experience director",
-      title: "Day 1: the event starts, and you see every arrival.",
-      lede: "Who has landed, who is in the car, what is blocked and why. The agency runs the day; you see it as it happens, without calling anyone.",
-      privacy: "The map shows cars, from the driver's app, during the ride only. A guest is never located.",
-      before: "The director calls the agency every hour to know where her guests are.",
-      after: "She opens the day. A blocked step says why.",
-      impact: { hours: 4, messages: 30, calls: 20, caught: 2 }, where: "Orchestration · Day 1",
-      notes: { live: "Brand side, Orchestration: the day tabs and the lanes, with the note that the lanes are run by the agency. The Points of attention filter the list.", ask: "During an event, how do you know where each guest is?" },
-      screen: function () {
-        var T = [
-          [["Ms R. Tan", "Checked in at 11:20", "ok", "Settled"], ["Mrs P. Srisuk", "Landed at 14:20, in the car", "warn", "On her way"], ["Mrs W. Lau", "Lands at 15:40, a host at the gate", "", "To come"], ["Dr A. Mansour", "Transfer at 20:30", "crit", "Blocked: no car for a party of four yet"]],
-          [["Ms R. Tan", "Checked in at 11:20", "ok", "Settled"], ["Mrs P. Srisuk", "Checked in at 15:35, the white flowers in place", "ok", "Settled"], ["Mrs W. Lau", "Met at the gate at 15:52, in the car", "warn", "On her way"], ["Dr A. Mansour", "Transfer at 20:30, a V-Class assigned at 15:10", "ok", "Unblocked"]],
-          [["Ms R. Tan", "At dinner", "ok", "Settled"], ["Mrs P. Srisuk", "At dinner, the allergy note with the kitchen", "ok", "Settled"], ["Mrs W. Lau", "Checked in at 17:05", "ok", "Settled"], ["Dr A. Mansour", "Met at the gate at 19:50, in the car", "warn", "On their way"]]
-        ][S.mT];
-        var blocked = T.filter(function (r) { return r[2] === "crit"; }).length;
-        var G = [["S-02", "Mrs P. Srisuk", "at Riverside Suites 15:35"], ["S-01", "Mrs W. Lau", "at Lumière Bangkok 17:05"], ["V-02", "Dr A. Mansour", "at Riverside Suites 21:00"]][S.mT];
-        return '' +
-          '<p class="alert"><b class="' + (blocked ? 'crit' : 'ok') + '">' + (blocked ? blocked + ' step blocked' : 'Nothing is blocked') + '</b><span class="s">Day 1, ' + ["14:30", "16:30", "20:45"][S.mT] + '</span></p>' +
-          '<div class="mapside">' +
-          mapView({ vb: [80, 55, 520, 205], time: ["14:30", "16:30", "20:45"][S.mT], route: ["rRS", "rExp", "rRS"][S.mT], chip: "Cars during rides only · in co-design",
-            aria: "Live map of the cars bringing your guests from the airport, during the ride only",
-            cars: [{ id: "cE01" }, { id: "cM01" }, { id: "g" + S.mT, main: true, fill: "var(--accent)", halo: true, lab: '<b>' + G[0] + '</b> ' + G[1] + '<span class="eta">' + G[2] + '</span>' }] }) +
-          '<div class="sec two">' + T.map(function (r) { return '<div class="line"><div class="l"><span class="t">' + r[0] + '</span><span class="s">' + r[1] + '</span></div>' + st(r[2], r[3]) + '</div>'; }).join("") + '</div>' +
-          '</div>' +
-          '<p class="sum">Run by the agency. You see it, they set it.' + (S.mT < 2 ? ' <button class="link" id="mLater">' + (S.mT === 0 ? "Two hours later" : "This evening") + '</button>' : '') + '</p>';
-      },
-      wire: function () {
-        var b = $("#mLater"); if (b) b.onclick = function () { S.mT++; render(); };
-        liveMap({ vb: [80, 55, 520, 205],
-          amb: [{ id: "cE01", path: "rRiv", f: .6, v: 1 / 70 }, { id: "cM01", path: "rV01", f: .3, v: 1 / 80 }],
-          main: [{ id: "g0", path: "rRS", to: .9, drift: -.2, flip: true, route: "behind" }, { id: "g1", path: "rExp", to: .75, drift: -.2, flip: true, route: "behind" }, { id: "g2", path: "rRS", to: .5, drift: -.2, flip: true, route: "behind" }][S.mT] });
-      }
-    },
-    {
-      id: "challenges", p: "mei", mod: "orchestrate", status: "today", who: "<b>Mei</b>, client advisor",
-      title: "Six things that go wrong. What you see, what you do.",
-      lede: "A late flight, a guest who brings her sister, rain on the terrace. The agency handles it on the ground. You see it on the guest's journey, and you decide only what is yours to decide.",
-      before: "Each surprise is a phone call, a WhatsApp thread, and a director who learns it last.",
-      after: "Each surprise sits on the guest's step, with what was done, by whom and when.",
-      impact: { hours: 5, messages: 40, calls: 18, caught: 6 }, where: "Orchestration · Day 1 and Day 2",
-      notes: { say: "Let the maison pick the challenge that worries her most. Costs are followed here, during the event, and analysed after it, by market: today this is done by hand in Excel.", live: "Brand side: open a guest's journey. A changed step shows the new time, a blocked step says why, and Request a change sits on the step itself.", ask: "Which of these happened at your last event, and how did you hear about it?" },
-      screen: function () {
-        var CH = [
-          { k: "flight", t: "A flight is two hours late", g: "Mr and Mrs Chen, CI 833", res: "Rearranged in 10 minutes",
-            rows: [["13:05", "CI 833 now lands at 16:20, not 14:20."], ["13:12", "The agency moves their car to 16:50, with the same host at the gate."], ["13:15", "Their suite is held, their dinner moves to 21:00."]],
-            you: "Nothing to do. Their journey shows the new times, before they land.", soon: "An alert on the advisor's phone is in co-design.",
-            cost: "No extra cost: the same car and host, a later hour in the agency's package." },
-          { k: "sister", t: "A guest arrives with her sister", g: "Mrs W. Lau", res: "Answered in 35 minutes",
-            rows: [["11:05", "Mei asks for the change on Mrs Lau's hotel step: a connecting room, one more cover at the gala."], ["11:40", "The agency confirms both, on the same step."]],
-            you: "One request, on the step itself. The request and the answer stay in its history.",
-            cost: "USD 1,850 added to the Hong Kong market: a connecting room for three nights and one gala cover." },
-          { k: "rain", t: "Rain on the river terrace", g: "Welcome dinner, Day 1", res: "Decided in 11 minutes",
-            rows: [["16:00", "A storm is forecast at 19:00."], ["16:20", "The agency proposes the Lotus Room, indoors, with the same menu."], ["16:31", "Claire approves it on the dinner itself."], ["16:40", "Thirty journeys and the drivers' pick-up points follow."]],
-            you: "One approval. Every guest's plan follows it.",
-            cost: "USD 2,400 added to the event budget: the Lotus Room hire. You saw it before approving." },
-          { k: "suite", t: "A suite is not ready", g: "Ms R. Tan, Riverside Suites", res: "Handled before she arrived",
-            rows: [["10:05", "The hotel says her suite will be ready at 11:15, not 10:00."], ["10:10", "Her step shows Blocked, with the reason. Her host will take her to the river lounge and her luggage will go up."], ["11:20", "In her suite."]],
-            you: "You know before she asks, and why.",
-            cost: "No cost to the maison: the hotel offers the lounge and the late room." },
-          { k: "allergy", t: "A severe allergy at the gala", g: "Mrs P. Srisuk", res: "Confirmed before service",
-            rows: [["Weeks before", "A severe shellfish allergy, noted once in her file."], ["Day 2, 17:30", "The gala kitchen confirms her plate, on the dinner step."], ["Day 2, 19:45", "Her plate is served first, prepared apart."]],
-            you: "Said once, carried to the kitchen. Nobody had to repeat it.",
-            cost: "No extra cost." },
-          { k: "car", t: "A car breaks down", g: "Dr A. Mansour, a party of four", res: "Replaced in 2 minutes",
-            rows: [["Day 2, 19:10", "The V-Class taking the Mansour family to dinner is out of service."], ["19:12", "The agency gives the transfer to the Sprinter; Ellie checks it is free and has the seats."], ["19:31", "On their way, six minutes later than planned."]],
-            you: "Their step says On their way, with the new time. No call.",
-            cost: "No cost to the maison: the replacement car is the agency's." }
-        ];
-        var c = CH.filter(function (x) { return x.k === S.mCh; })[0] || CH[0];
-        return '' +
-          '<div class="cols2">' +
-            '<div class="chl" role="group" aria-label="Choose a challenge">' + CH.map(function (x) { return '<button data-ch="' + x.k + '" aria-pressed="' + (x.k === c.k) + '"><span class="t">' + x.t + '</span><span class="s">' + x.g + '</span></button>'; }).join("") + '</div>' +
-            '<div class="side fade">' +
-              '<p class="alert"><b class="ok">' + c.res + '</b><span class="s">' + c.g + '</span></p>' +
-              '<div class="sec"><div class="label">What happened, what the agency did</div>' + c.rows.map(function (r) { return '<div class="prow"><span class="tn s">' + r[0] + '</span><span>' + r[1] + '</span><span></span></div>'; }).join("") + '</div>' +
-              '<p class="note ok">' + c.you + '</p>' + (c.soon ? '<p class="s">' + c.soon + '</p>' : '') +
-              '<div class="sec"><div class="label">Cost, followed during the event</div><div class="prow"><span class="s">This change</span><span>' + c.cost + '</span>' + st("soon", "In co-design") + '</div>' +
-                '<div class="prow"><span class="s">Event so far</span><span>USD 562,400 of USD 580,000 budgeted, by market. The bill per market follows in Analyse.</span><span></span></div></div>' +
-            '</div>' +
-          '</div>';
-      },
-      wire: function () { $$("[data-ch]").forEach(function (b) { b.onclick = function () { S.mCh = b.getAttribute("data-ch"); render(); }; }); }
-    },
-    {
-      id: "memory", p: "claire", mod: "analyse", status: "soon", who: "<b>Claire</b>, client experience director",
-      title: "The bill per market, the week after. Not two months later.",
-      lede: "Each cost is tied to a guest, a market and a service as it happens. The week after the event, each market gets its bill, line by line.",
-      privacy: "Guest memory is kept only if the maison chooses, under the maison's rules. The agency keeps nothing.",
-      before: "Two months after the event, the maison still waits for the bill and its detail by market.",
-      after: "The bill per market, with its detail, five days after the last guest leaves.",
-      impact: { hours: 10, messages: 25, calls: 6, caught: 0 }, where: "Analyse · Private Viewing Bangkok",
-      notes: { say: "A maison chooses its agency on this: how billing is done per market, in what form, and how fast. Today the costs per market are not in Ellie: this is what we build with the agency.", ask: "How long did you wait for the bill of your last event, and in what form did it come?" },
-      screen: function () {
-        var body = "";
-        if (S.mTab === "guests") {
-          body = '<div class="kpis">' +
-            '<div class="kpi"><b>96 %</b><span class="s">of requirements kept to the letter</span></div>' +
-            '<div class="kpi"><b>9 of 9</b><span class="s">VVIP arrivals met at the gate</span></div>' +
-            '<div class="kpi"><b>11</b><span class="s">changes asked, all answered</span></div>' +
-            '<div class="kpi"><b>42 min</b><span class="s">to answer a change, on average</span></div>' +
-          '</div>' +
-          '<div class="tbl"><table><thead><tr><th class="label">Guest</th><th class="label">To the letter</th><th class="label">What changed</th><th class="label">Noted for next time</th></tr></thead><tbody>' +
-          [["Mrs W. Lau", "12 of 12", "Her sister joined", "Her towels on the left of the basin"], ["Mrs P. Srisuk", "11 of 12", "Flight delay, dinner moved", "Loved the river terrace"], ["Dr A. Mansour", "13 of 13", "Nothing", "A family breakfast in the suite"]].map(function (r) { return '<tr><td><span class="t">' + r[0] + '</span></td><td class="tn">' + r[1] + '</td><td>' + r[2] + '</td><td>' + r[3] + '</td></tr>'; }).join("") +
-          '</tbody></table></div>';
-        } else if (S.mTab === "markets") {
-          body = '<p class="alert"><b class="ok">Ready on Day 9</b><span class="s">The event ended on Day 4. Every line is tied to a guest and a service.</span></p>' +
-            '<div class="tbl"><table><thead><tr><th class="label">Market</th><th class="label num">Guests</th><th class="label num">Cost per guest, USD</th><th class="label num">Total USD</th></tr></thead><tbody>' +
-            [["Thailand", 8, 129000], ["Hong Kong", 6, 102000], ["China", 7, 113000], ["UAE", 4, 78000], ["Others", 5, 48000]].map(function (m) { return '<tr><td>' + m[0] + '</td><td class="num">' + m[1] + '</td><td class="num">' + Math.round(m[2] / m[1]).toLocaleString("en-US") + '</td><td class="num">' + m[2].toLocaleString("en-US") + '</td></tr>'; }).join("") +
-            '</tbody></table></div><p class="note ok">Each market receives its bill with the detail by guest and by service, in the same form every time.</p>';
-        } else {
-          body = '<div class="sec"><div class="line"><span>Ask the gala main course with the invitation.</span></div><div class="line"><span>Hold two connecting suites for every family of four.</span></div><div class="line"><span>A second host at the airport when three parties land within the hour.</span></div></div>';
-        }
-        return '<div class="tabs">' + [["markets", "Bill per market"], ["guests", "Guest experience"], ["next", "Next time"]].map(function (t) { return '<button data-mtab="' + t[0] + '" aria-pressed="' + (S.mTab === t[0]) + '">' + t[1] + '</button>'; }).join("") + '</div>' + body;
-      },
-      wire: function () { $$("[data-mtab]").forEach(function (b) { b.onclick = function () { S.mTab = b.getAttribute("data-mtab"); render(); }; }); }
-    },
-    {
-      id: "close", p: "claire", mod: "analyse", status: "soon", who: "<b>Claire</b>, client experience director",
-      title: "Your guests' data comes back to you, then it is deleted.",
-      lede: "At close-out the maison takes back its guest file, every outside access closes, and Ellie deletes what it held. Only anonymous figures stay.",
-      before: "The guest list lives on in the agency's inbox, the drivers' WhatsApp and a shared drive, long after the event.",
-      after: "One export, access closed the day after, deletion on the date you set, with a certificate.",
-      impact: { hours: 3, messages: 8, calls: 2, caught: 1 }, where: "Close-out · Guest data",
-      notes: { say: "The guests belong to the maison. Ellie gives the file back, then forgets it, and proves it.", live: "Field-by-field encryption and the deletion of guest data after the event are in Ellie today. The export to the maison and the closing of outside access are to build with the pilot maison.", ask: "Today, who decides when a guest list is deleted after an event, and how do you check that it was?" },
-      screen: function () {
-        var c = S.mClose;
-        var R = [
-          ["During", "Encrypted, field by field", "Names, passports, allergies: unreadable outside Ellie.", "today", false],
-          ["Day after", "Outside access closed", "The agency, its hosts and drivers: 21 accounts lose access to your guests.", "soon", c >= 1],
-          ["Day after", "The file comes back to you", "Every guest with what was learned: preferences, allergies, feedback. In your format, by an encrypted link.", "soon", c >= 1],
-          ["Day 30", "Deleted, with a certificate", "On the date you set. Only anonymous figures stay: costs per market, punctuality.", "today", c >= 2]
-        ];
-        return '' +
-          '<div class="sec">' + R.map(function (r) {
-            return '<div class="prow"><span class="s">' + r[0] + '</span><span class="l"><span class="t">' + r[1] + '</span><br><span class="s">' + r[2] + '</span></span>' + (r[4] ? st("ok", "Done") : r[3] === "today" ? st("ok", "In Ellie today") : st("soon", "In co-design")) + '</div>';
-          }).join("") + '</div>' +
-          (c === 0 ? '<div><button class="btn primary" id="closeBtn">Close the event and export the guest file</button></div>'
-            : c === 1 ? '<p class="note ok fade">Guest file sent to Claire by an encrypted link, valid seven days: 30 guests, 11 parties. 21 outside accounts closed.</p>' +
-              '<div class="acts"><button class="btn sm primary" id="closeBtn">Delete the guest data now</button><span class="s">or automatically, 30 days after the event</span></div>'
-            : '<div class="sec fade"><div class="label">Deletion certificate</div>' +
-              '<div class="line"><span>30 guests, 412 fields and 64 documents deleted, today at 10:12.</span>' + st("ok", "Certified") + '</div>' +
-              '<div class="line"><span class="s">Kept, without a name: costs per market, punctuality, the number of changes.</span></div></div>');
-      },
-      wire: function () { var b = $("#closeBtn"); if (b) b.onclick = function () { S.mClose++; render(); }; }
-    },
-    {
-      id: "pilot", side: "maison", mod: null, status: null, who: "A pilot",
-      title: "Start with your next event.",
-      lede: "With your agency on the same page. Pick what matters most to your team.",
-      impact: null, where: "Your priorities",
-      notes: { say: "Let the maison tick the options itself, in its order. The top three become the agenda of the first workshop.", ask: "What is missing from this list?" },
-      screen: function () {
-        var OPTS = ["The bill per market, the week after the event", "Guest memory from one event to the next", "The advisor's view of her clients, on her phone", "Told when a VIP's plan changes", "Preferences collected with the invitation", "Approvals from the phone", "A review of the guest experience after each event", "Costs per guest and per market", "The assistant in your language"];
-        return '' +
-          '<div class="sec"><div class="label">Tap in order of priority</div><div class="opts">' + OPTS.map(function (o) { var r = S.mPicks.indexOf(o) + 1; return '<button class="opt" data-mopt="' + esc(o) + '" aria-pressed="' + (r > 0) + '"><span class="rk">' + (r || "") + '</span><span>' + esc(o) + '</span></button>'; }).join("") + '</div></div>' +
-          '<div class="cols2">' +
-            '<div class="sec"><div class="label">What you get</div><div class="line"><span>Ellie on your next event, with your agency on board</span></div><div class="line"><span>Your priorities first on the roadmap</span></div><div class="line"><span>Our team beside yours during the event</span></div></div>' +
-            '<div class="sec"><div class="label">What we ask</div><div class="line"><span>One lead person, about two hours a week</span></div><div class="line"><span>Your guest file, in the format you already use</span></div><div class="line"><span>Honest feedback. No client is ever named</span></div></div>' +
-          '</div>' +
-          (S.mPicks.length ? '<p class="sum"><button class="link" id="resetMPicks">Clear the choices</button></p>' : '');
-      },
-      wire: function () {
-        $$("[data-mopt]").forEach(function (b) { b.onclick = function () {
-          var o = b.getAttribute("data-mopt"), i = S.mPicks.indexOf(o);
-          if (i >= 0) S.mPicks.splice(i, 1); else S.mPicks.push(o);
-          try { localStorage.setItem("ellie-maison-picks", JSON.stringify(S.mPicks)); } catch (e) {}
-          render();
-        }; });
-        var r = $("#resetMPicks"); if (r) r.onclick = function () { S.mPicks = []; try { localStorage.removeItem("ellie-maison-picks"); } catch (e) {} render(); };
-      }
-    }
+      wire: function () { $$("[data-role]").forEach(function (b) { b.onclick = function () { S.role = b.getAttribute("data-role"); render(); }; }); } },
+    { id: "together", name: "Together", bg: "discretion-folder", cover: true,
+      html: function () {
+        return '<div class="cover">' +
+          '<p class="eyebrow">To design together</p>' +
+          '<h1>What should Ellie say to <em>your</em> drivers?</h1>' +
+          '<ol class="ask">' +
+            '<li><i>01</i><span>Which channels do your drivers and suppliers use today: WhatsApp, LINE, the telephone?</span></li>' +
+            '<li><i>02</i><span>Would a driver share the position of his car for the length of a ride?</span></li>' +
+            '<li><i>03</i><span>What should Ellie never settle without your coordinator?</span></li>' +
+          '</ol>' +
+          '<dl class="legend">' +
+            '<div><dt>In Ellie today</dt><dd>Guests in codes, transfers, the fleet, the arrivals of the day.</dd></div>' +
+            '<div><dt>In co-design</dt><dd>The messages on WhatsApp, the answers logged, the cars on a live map.</dd></div>' +
+          '</dl>' +
+        '</div>';
+      } }
   ];
-  var MODS = [["create", "Create"], ["orchestrate", "Orchestrate"], ["analyse", "Analyse"]];
+
+  function resetRide() { S.p = 0; S.late = false; S._mf = {}; S.fresh = false; render(); }
 
   // ------------------------------------------------------------ render
-  // The screens of the presentation: all of them, or the first, one person's screens and the last.
-  function sideOf(s) { return s.side || (s.p ? (PROFILES.dmc.some(function (p) { return p[0] === s.p; }) ? "dmc" : "maison") : null); }
-  function seq() { var out = []; SCENES.forEach(function (s, i) { var sd = sideOf(s); if ((!sd || sd === S.side) && (!s.p || S.profile === "all" || s.p === S.profile)) out.push(i); }); return out; }
-  var val = function (v) { return typeof v === "function" ? v() : v; };
-  function impactUpTo(i) {
-    var t = { hours: 0, messages: 0, calls: 0, caught: 0 };
-    seq().forEach(function (k) { var m = SCENES[k].impact; if (k <= i && m) for (var x in t) t[x] += m[x]; });
-    return t;
-  }
   function render() {
-    var sc = SCENES[S.i], imp = impactUpTo(S.i), q = seq(), pos = q.indexOf(S.i);
-    var who = PROFILES[S.side].filter(function (p) { return p[0] === S.profile; })[0];
-    var html = '' +
-      '<div class="top">' +
-      '<header class="hdr">' +
-        '<div><button class="brand" id="homeBtn" title="Back to the start" aria-label="Ellie, back to the start"><svg viewBox="0 0 1013 146" fill="currentColor" aria-hidden="true" focusable="false"><rect x="0" y="0" width="130.5" height="12.5"/><rect x="0" y="0" width="12.5" height="60"/><path d="M114.5 66H30A30 30 0 0 0 0 96V146H12.5V96A17.5 17.5 0 0 1 30 78.5H114.5Z"/><rect x="0" y="133.5" width="130.5" height="12.5"/><rect x="267" y="0" width="12.5" height="146"/><rect x="267" y="133.5" width="92.5" height="12.5"/><rect x="499" y="0" width="12.5" height="146"/><rect x="499" y="133.5" width="92" height="12.5"/><rect x="737.5" y="0" width="12.5" height="146"/><rect x="905" y="0" width="12.5" height="146"/><rect x="905" y="0" width="107.5" height="12.5"/><rect x="905" y="66" width="96.5" height="12.5"/><rect x="905" y="133.5" width="107.5" height="12.5"/></svg></button><span class="evt">Private Viewing Bangkok, ' + (S.side === "maison" ? 'Maison Aurore' : 'with ' + esc(DMC)) + '</span></div>' +
-        '<nav class="mods" aria-label="Modules">' + MODS.map(function (m) {
-          var first = q.filter(function (k) { return SCENES[k].mod === m[0]; })[0];
-          return '<button class="label" ' + (first === undefined ? 'disabled' : 'data-mod="' + first + '"') + ' aria-current="' + (sc.mod === m[0]) + '">' + m[1] + '</button>';
-        }).join("") + '</nav>' +
-      '</header></div>' +
-      '<div class="stage">' +
-        '<section class="story" aria-live="polite">' +
-          '<div class="label who">' + val(sc.who) + '</div>' +
-          (S.i === 0 ? '<h1>' + sc.title + '</h1>' : '<h2>' + sc.title + '</h2>') +
-          '<p class="lede">' + val(sc.lede) + '</p>' +
-          (sc.privacy ? '<p class="priv">' + sc.privacy + '</p>' : '') +
-          (sc.before ? '<dl class="ba"><div><dt class="label">Today</dt><dd>' + sc.before + '</dd></div><div class="after"><dt class="label with" aria-label="With Ellie"><span aria-hidden="true">With</span>' + MARK + '</dt><dd>' + sc.after + '</dd></div></dl>' : '') +
-          (S.notes ? '<div class="notes"><button class="link notes-close" id="notesClose">Hide notes</button>' + (sc.notes.say ? '<span><b>Say.</b> ' + sc.notes.say + '</span>' : '') + (sc.notes.live ? '<span><b>Show it live in Ellie.</b> ' + sc.notes.live + '</span>' : (sc.status === "soon" ? '<span><b>Not in Ellie yet.</b> Present it as a proposal to design together.</span>' : '')) + (sc.notes.ask ? '<span><b>Ask.</b> ' + sc.notes.ask + '</span>' : '') + '<span>Keys: arrows to move, N to show or hide the notes, Esc to hide them, F for full screen. Click the logo to start over.</span></div>' : '') +
-          '<div class="nav">' + (pos > 0 ? '<button class="btn" id="prev">Back</button>' : '') + (pos < q.length - 1 ? '<button class="btn primary" id="next">' + (S.i === 0 ? (who ? "Follow " + who[1] : S.side === "maison" ? "Start three weeks before" : "Start with the brief") : "Next") + '</button>' : '') +
-            '<span class="pos tn" aria-label="Screen ' + (pos + 1) + ' of ' + q.length + '">' + (pos + 1) + ' / ' + q.length + '</span>' +
-            '<button class="link notes-btn" id="notesBtn" aria-pressed="' + S.notes + '" title="Presenter notes (N)">' + (S.notes ? "Hide notes" : "Notes") + '</button></div>' +
-        '</section>' +
-        '<section class="screen" aria-label="Ellie screen">' +
-          '<div class="bar"><span class="label">' + sc.where + '</span>' + (sc.status === "today" ? '<span class="state st ok">In Ellie today</span>' : sc.status === "soon" ? '<span class="state st soon">In co-design</span>' : '') + '</div>' +
-          '<div class="sbody" id="sbody">' + sc.screen() + '</div>' +
-        '</section>' +
-      '</div>' +
-      '<div class="meter" role="status" aria-label="Given back to your team so far"><span class="label">' + (who ? "Given back in " + who[1] + "'s day" : "Given back to your team") + '</span><span><b>' + imp.hours + '</b><span class="u">hours</span></span><span><b>' + imp.calls + '</b><span class="u">calls not made</span></span><span><b>' + imp.messages + '</b><span class="u">messages not sent</span></span><span><b>' + imp.caught + '</b><span class="u">problems seen early</span></span><span class="ill">Illustrative figures, fictional data</span></div>';
-    var sb = $("#sbody"), keep = sb ? sb.scrollTop : 0, same = render.last === S.i;
-    $("#app").innerHTML = html;
-    if (same) $("#sbody").scrollTop = keep;
-    render.last = S.i;
-    wire(sc);
-    backdrop(sc.id);
+    var sc = SCENES[S.i], app = $("#app");
+    if (S._raf) cancelAnimationFrame(S._raf);
+    app.innerHTML = sc.cover ? sc.html() : '<div class="split"><section class="story">' + sc.story() + '</section><section class="screen">' + sc.screen() + '</section></div>';
+    var bg = $("#bg"), small = false;
+    try { small = window.matchMedia("(max-width: 899px)").matches; } catch (e) {}
+    bg.style.backgroundImage = 'url("assets/img/' + sc.bg + '-' + (small ? 800 : sc.bg === "hero-car" ? 928 : 1264) + '.webp")';
+    bg.className = sc.cover ? "is-cover" : "is-split";
+    $("#count").innerHTML = '<b>' + (S.i + 1) + '</b> / ' + SCENES.length + ' &nbsp; ' + sc.name;
+    $("#prev").disabled = S.i === 0;
+    $("#next").disabled = S.i === SCENES.length - 1;
+    document.title = "Ellie, a guest's journey: " + sc.name.toLowerCase();
+    if (sc.wire) sc.wire();
+    S.fresh = false;
   }
-  // ------------------------------------------------------------ the picture behind each scene
-  var BG = {
-    team: "hero-car", brief: "agency-desk", fleet: "arrival-cars", checklist: "hero-car", arrivals: "arrival-cars",
-    delay: "river-night", driver: "hero-car", review: "agency-desk", asks: "maison-viewing", together: "dinner-table",
-    rundown: "maison-viewing", programme: "dinner-table", follow: "river-night", challenges: "arrival-cars",
-    memory: "discretion-folder", close: "discretion-folder", pilot: "dinner-table"
-  };
-  var BIG = { "hero-car": 928, "maison-viewing": 1024 };
-  function backdrop(id) {
-    var name = BG[id], el = $("#backdrop");
-    if (!el || !name || backdrop.last === name) return;
-    backdrop.last = name;
-    var small = false; try { small = window.matchMedia("(max-width: 700px)").matches; } catch (e) {}
-    el.style.backgroundImage = 'url("assets/img/' + name + '-' + (small ? 800 : (BIG[name] || 1264)) + '.webp")';
-    el.classList.remove("in"); void el.offsetWidth; el.classList.add("in");
+  function go(i) {
+    S.i = Math.max(0, Math.min(SCENES.length - 1, i));
+    var id = SCENES[S.i].id;
+    if (location.hash !== "#" + id) history.replaceState(null, "", location.pathname + location.search + "#" + id);
+    render(); window.scrollTo(0, 0);
+  }
+  function fromHash() {
+    var id = (location.hash || "").replace("#", ""), k = -1;
+    SCENES.forEach(function (s, i) { if (s.id === id) k = i; });
+    S.i = k >= 0 ? k : 0; render();
   }
 
-  // ------------------------------------------------------------ the live map: a night map, cars that drive
-  // One drawing, two uses: Arun's map of his cars (DMC) and Claire's map of her guests on their way (maison).
+  // ------------------------------------------------------------ the live map: a night map, cars that drive.
+  // The same drawing as the main demo. Only cars are shown, never a guest.
+  var VB = [0, 5, 600, 270];
   var MAP_PATHS = {
     rExp: "M165 95 C 215 102, 245 126, 305 130 S 430 126, 470 138 S 520 150, 548 150",
-    rRS: "M141 222 C 180 196, 200 150, 230 117 C 255 126, 280 130, 305 130 S 430 126, 470 138 S 520 150, 548 150",
     rRiv: "M120 -10 C 168 55, 110 120, 158 178 S 170 240, 188 290",
     rV01: "M230 262 C 330 244, 450 224, 540 166"
   };
   function mapView(o) {
-    var vb = o.vb, px = function (x) { return ((x - vb[0]) / vb[2] * 100).toFixed(2); }, py = function (y) { return ((y - vb[1]) / vb[3] * 100).toFixed(2); };
+    var vb = VB, px = function (x) { return ((x - vb[0]) / vb[2] * 100).toFixed(2); }, py = function (y) { return ((y - vb[1]) / vb[3] * 100).toFixed(2); };
     var lab = function (x, y, txt, cls) { return '<span class="mlab ' + cls + '" style="left:' + px(x) + '%;top:' + py(y) + '%">' + txt + '</span>'; };
     var road = function (d, id) { return '<path' + (id ? ' id="' + id + '"' : '') + ' d="' + d + '" fill="none" stroke="var(--map-road)" stroke-width="4" stroke-linecap="round"></path>'; };
     var car = function (c) {
@@ -1222,32 +526,30 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
         '<rect x="-8" y="-4.6" width="3" height="9.2" rx="1.2" fill="var(--bg)" opacity=".55"></rect></g>';
     };
     var bg = 'x="' + vb[0] + '" y="' + vb[1] + '" width="' + vb[2] + '" height="' + vb[3] + '"';
-    return '<div class="mapbox" style="--ar:' + (vb[2] / vb[3]).toFixed(3) + '">' +
-      '<svg class="map" viewBox="' + vb.join(" ") + '" role="img" aria-label="' + o.aria + '">' +
+    return '<div class="mapbox">' +
+      '<svg class="map" viewBox="' + vb.join(" ") + '" role="img" aria-label="Live map of the cars between the hotels and BKK airport">' +
         '<defs><pattern id="mStreets" width="21" height="21" patternUnits="userSpaceOnUse" patternTransform="rotate(-12)"><path d="M0 .5H21M.5 0V21" fill="none" stroke="var(--map-street)" stroke-width="1"></path></pattern></defs>' +
         '<rect ' + bg + ' fill="var(--map-bg)"></rect><rect ' + bg + ' fill="url(#mStreets)"></rect>' +
         '<rect x="292" y="176" width="64" height="40" rx="8" fill="var(--map-park)"></rect><rect x="436" y="58" width="48" height="30" rx="8" fill="var(--map-park)"></rect>' +
         '<path d="M60 -15 C 115 50, 30 110, 88 165 S 80 240, 120 290" fill="none" stroke="var(--river)" stroke-width="24" stroke-linecap="round"></path>' +
         road("M0 58 C 160 70, 330 52, 600 40") + road("M262 -5 C 255 90, 272 180, 262 280") + road("M410 -5 C 420 100, 402 190, 412 280") +
         road(MAP_PATHS.rRiv, "rRiv") + road(MAP_PATHS.rV01, "rV01") +
-        '<path id="rRS" d="' + MAP_PATHS.rRS + '" fill="none" stroke="var(--map-road)" stroke-width="4" stroke-linecap="round"></path>' +
         '<path id="rExp" d="' + MAP_PATHS.rExp + '" fill="none" stroke="var(--map-exp)" stroke-width="8" stroke-linecap="round"></path>' +
-        (o.jam ? '<path id="rJam" d="' + MAP_PATHS.rExp + '" fill="none" stroke="var(--crit)" stroke-width="8" stroke-linecap="round"></path>' : '') +
-        '<path id="rRoute" d="' + MAP_PATHS[o.route] + '" fill="none" stroke="var(--accent)" stroke-width="4" stroke-linecap="round" stroke-dasharray="0 3000"></path>' +
+        (o.jam ? '<path id="rJam" d="' + MAP_PATHS.rExp + '" fill="none" stroke="#c27a6b" stroke-width="8" stroke-linecap="round"></path>' : '') +
+        '<path id="rRoute" d="' + MAP_PATHS.rExp + '" fill="none" stroke="var(--gold)" stroke-width="4" stroke-linecap="round" stroke-dasharray="0 3000"></path>' +
         '<g transform="translate(566 150) rotate(-18)"><rect x="-34" y="-17" width="68" height="6" rx="2" fill="var(--map-exp)"></rect><rect x="-34" y="11" width="68" height="6" rx="2" fill="var(--map-exp)"></rect><rect x="-14" y="-6" width="28" height="12" rx="3" fill="var(--text)"></rect></g>' +
         '<rect x="159" y="89" width="12" height="12" rx="2" fill="var(--text)"></rect><rect x="129" y="216" width="12" height="12" rx="2" fill="var(--text)"></rect>' +
         o.cars.filter(function (c) { return !c.main; }).map(car).join("") + o.cars.filter(function (c) { return c.main; }).map(car).join("") +
       '</svg>' +
-      lab(165, 95, "Lumière Bangkok", "place t") + lab(135, 222, "Riverside Suites", "place b") + lab(566, 160, "BKK", "place b keep") +
+      lab(165, 95, "Lumière Bangkok", "place t") + lab(135, 222, "Riverside Suites", "place") + lab(566, 162, "BKK", "place keep") +
       o.cars.filter(function (c) { return c.lab; }).map(function (c) { return '<span class="mlab car' + (c.main ? '' : ' amb') + '" id="' + c.id + 'L">' + c.lab + '</span>'; }).join("") +
-      '<span class="live"><i></i>Live · ' + o.time + '</span>' + (o.chip ? '<span class="mchip">' + o.chip + '</span>' : '') +
+      '<span class="live"><i></i>Live · ' + o.time + '</span>' +
     '</div>';
   }
   function liveMap(o) {
-    var svg = $(".map"); if (!svg || !document.getElementById("rExp")) return;
-    if (S._mapRaf) cancelAnimationFrame(S._mapRaf);
+    var svg = $(".map"); if (!svg) return;
     var reduce = false; try { reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) {}
-    var vb = o.vb, P = {};
+    var vb = VB, P = {};
     var path = function (id) { if (!P[id]) { var el = document.getElementById(id); P[id] = { p: el, L: el.getTotalLength() }; } return P[id]; };
     var at = function (r, f, flip) {
       f = Math.max(0, Math.min(1, f));
@@ -1259,12 +561,11 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
       if (g) { g.setAttribute("transform", "translate(" + pt.x.toFixed(1) + " " + pt.y.toFixed(1) + ") rotate(" + pt.a.toFixed(1) + ") scale(" + (big ? 1.5 : 1.3) + ")"); g.style.opacity = op; }
       if (l) { l.style.left = (fx * 100) + "%"; l.style.top = ((pt.y - vb[1]) / vb[3] * 100) + "%"; l.style.opacity = op; l.style.setProperty("--ax", "-" + (8 + Math.max(0, Math.min(1, fx)) * 84).toFixed(1) + "%"); }
     };
-    S._amb = S._amb || {}; S._mf = S._mf || {};
     var m = o.main, mr = path(m.path), L = mr.L;
     var from = m.off || S._mf[m.id] === undefined || Math.abs(S._mf[m.id] - m.to) < .005 ? undefined : S._mf[m.id];
     if (m.off) delete S._mf[m.id];
     var jam = document.getElementById("rJam"), route = document.getElementById("rRoute");
-    if (jam && o.jam) { var J = path("rExp").L; jam.style.strokeDasharray = "0 " + (o.jam[0] * J) + " " + ((o.jam[1] - o.jam[0]) * J) + " " + J; }
+    if (jam) { var J = path("rExp").L; jam.style.strokeDasharray = "0 " + (o.jam[0] * J) + " " + ((o.jam[1] - o.jam[0]) * J) + " " + J; }
     var t0 = performance.now(), last = t0;
     function frame(now) {
       if (!svg.isConnected) return;
@@ -1282,57 +583,21 @@ td.num, th.num { text-align: right; padding-right: 0; font-family: var(--f-num);
       if (!m.off) S._mf[m.id] = f;
       put(m.id, at(mr, f, m.flip), 1, true);
       if (route) route.style.strokeDasharray = m.route === "ahead" ? "0 " + (f * L) + " " + ((1 - f) * L) + " " + L : m.route === "behind" ? (f * L) + " " + L : "0 " + L;
-      if (!reduce) S._mapRaf = requestAnimationFrame(frame);
+      if (!reduce) S._raf = requestAnimationFrame(frame);
     }
     frame(t0);
   }
 
-  function wire(sc) {
-    var on = function (id, fn) { var e = document.getElementById(id); if (e) e.onclick = fn; };
-    on("prev", function () { step(-1); });
-    on("next", function () { step(1); });
-    on("homeBtn", restart);
-    $$("[data-mod]").forEach(function (b) { b.onclick = function () { go(+b.getAttribute("data-mod")); }; });
-    on("notesBtn", function () { S.notes = !S.notes; render(); });
-    on("notesClose", function () { S.notes = false; render(); });
-    if (sc.wire) sc.wire();
-  }
-  function toggleFs() { try { if (!document.fullscreenElement) root.requestFullscreen(); else document.exitFullscreen(); } catch (e) {} }
-  function step(d) { var q = seq(), k = Math.max(0, q.indexOf(S.i)); go(q[Math.max(0, Math.min(q.length - 1, k + d))]); }
-  // Back to the first screen with every scene as new. The side, the profile and the priorities are kept.
-  function restart() {
-    S.imp = 0; S.transfers = JSON.parse(JSON.stringify(TRANSFERS0)); S.pick = null; S.lastAssign = null; S.freeAt = "16:00";
-    S.owner = "all"; S.tasksDone = {}; S.signal = "all"; S.reasons = {}; S.blocking = null;
-    S.cards = { AU01: "confirmed", ES01: "confirmed", CN01: "confirmed", SG01: "confirmed", JP01: "confirmed", TH01: "progress", HK01: "progress", KR01: "todo", AE01: "todo" };
-    S.delay = 0; S.drv = 0; S.drvAlert = 0; S.drvNight = false; S.loc = false; S.choice = null; S._mf = {}; S.tab = "costs";
-    S.mD = 0; S.mAppr = { dinner: "proposed", temple: "proposed", gift: "proposed" }; S.mCh = "flight";
-    S.mT = 0; S.mTab = "markets"; S.mClose = 0;
-    go(0);
-  }
-  function go(i) {
-    S.i = Math.max(0, Math.min(SCENES.length - 1, i));
-    var id = SCENES[S.i].id;
-    if (location.hash !== "#" + id) history.replaceState(null, "", location.pathname + location.search + "#" + id);
-    render();
-    window.scrollTo(0, 0);
-  }
-  function fromHash() {
-    var id = (location.hash || "").replace("#", "");
-    var k = SCENES.findIndex(function (s) { return s.id === id; });
-    S.i = k >= 0 ? k : 0;
-    var sd = sideOf(SCENES[S.i]);
-    if (sd && sd !== S.side) { S.side = sd; S.profile = "all"; }
-    if (seq().indexOf(S.i) < 0) S.profile = "all";
-    render();
-  }
+  // ------------------------------------------------------------ navigation
+  $("#prev").onclick = function () { go(S.i - 1); };
+  $("#next").onclick = function () { go(S.i + 1); };
+  $("#home").onclick = function () { S.m = 0; S.role = "hotel"; S.p = 0; S.late = false; S._mf = {}; go(0); };
   document.addEventListener("keydown", function (e) {
     if (e.target && /input|textarea|select/i.test(e.target.tagName)) return;
-    if (e.key === "ArrowRight" || e.key === "PageDown") step(1);
-    else if (e.key === "ArrowLeft" || e.key === "PageUp") step(-1);
-    else if (e.key === "n" || e.key === "N") { S.notes = !S.notes; render(); }
-    else if (e.key === "Escape" && S.notes) { S.notes = false; render(); }
-    else if (e.key === "f" || e.key === "F") toggleFs();
-    else if (e.key === "Home") restart();
+    if (e.key === "ArrowRight" || e.key === "PageDown") go(S.i + 1);
+    else if (e.key === "ArrowLeft" || e.key === "PageUp") go(S.i - 1);
+    else if (e.key === "Home") $("#home").onclick();
+    else if (e.key === "f" || e.key === "F") { try { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); } catch (x) {} }
   });
   window.addEventListener("hashchange", fromHash);
   fromHash();
