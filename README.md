@@ -8,12 +8,11 @@ The website lives in its own repository, https://github.com/charlusminus/ellie-s
 | **https://charlusminus.github.io/ellie-demo/** | The demo: one guest's journey in six screens, the driver on WhatsApp, the coordinator's live map (`index.html`) |
 | `/max/` | Earlier address of the same demo, redirects to the root and keeps `?dmc=` |
 | **https://charlusminus.github.io/ellie-demo/onboarding/** | An agency account to click through, with a guided first visit (`onboarding/index.html`) |
-| `/story/` | An earlier version of the demo in eight scenes, kept for reference |
 | `/account/`, `/demo/` | Earlier addresses, redirect to the onboarding tour and to the demo |
 
 Published with GitHub Pages from `main`, root folder. One file per version, no build step, no tracking, `noindex`.
 The earlier root demo (two sides, a maison or a DMC, with profiles) was replaced on 17/11/2026; it stays in the git
-history (last version: commit `fdc0ed2`).
+history (last version: commit `fdc0ed2`). The eight-scene version at `/story/` was removed the same day.
 
 ## The demo
 
